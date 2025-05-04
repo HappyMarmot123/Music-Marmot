@@ -6,10 +6,8 @@ WORKDIR /app
 
 # 3. Install dependencies only when needed
 FROM base AS deps
-# Check https://github.com/nodejs/docker-node/tree/b4117f9333da4138b03a546ec926ef50a31506c3#nodealpine to understand why libc6-compat might be needed.
-# RUN apk add --no-cache libc6-compat # Uncomment if you run into issues building native dependencies
-COPY package.json package-lock.json* ./
-RUN npm ci
+COPY package.json ./
+RUN npm install --omit=dev
 
 # 4. Rebuild the source code only when needed
 FROM base AS builder
@@ -22,9 +20,7 @@ COPY . .
 # Uncomment the following line in case you want to disable telemetry during the build.
 # ENV NEXT_TELEMETRY_DISABLED 1
 
-RUN npm run build \
-    && npm install \
-# 5. Production image, copy all the files and run next
+RUN npm run build
 FROM base AS runner
 WORKDIR /app
 

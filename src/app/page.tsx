@@ -1,20 +1,20 @@
 "use client";
 
 import React from "react";
-import { motion, useScroll, useSpring, useTransform } from "framer-motion";
-import { useAnimationFrame, useVelocity, Variants } from "framer-motion";
-import { wrap } from "framer-motion";
-import { useMotionValue } from "framer-motion";
+import {
+  motion,
+  useScroll,
+  useSpring,
+  useTransform,
+  Variants,
+} from "framer-motion";
 import { useRef } from "react";
-import Cursor from "@/component/landing/cursor";
-import DustySnow from "@/component/landing/dustySnow";
-import Github from "@/component/landing/github";
-import Horizontal from "@/component/landing/horizontal";
-
-interface ParallaxProps {
-  children: string;
-  baseVelocity: number;
-}
+import Cursor from "@/component/cursor";
+import DustySnow from "@/component/dustySnow";
+import Github from "@/component/github";
+import Horizontal from "@/component/horizontal";
+import ParallaxText from "@/lib/ParallaxText";
+import Earth from "@/component/earth";
 
 const Page: React.FC = () => {
   const ref = useRef(null);
@@ -36,46 +36,6 @@ const Page: React.FC = () => {
     ["#ff98a2", "#00f"]
   );
 
-  function ParallaxText({ children, baseVelocity = 100 }: ParallaxProps) {
-    const baseX = useMotionValue(0);
-    const x = useTransform(baseX, (v) => `${wrap(-20, -45, v)}%`);
-    const directionFactor = useRef<number>(1);
-    // Scroll to Swap
-    const { scrollY } = useScroll();
-    const scrollVelocity = useVelocity(scrollY);
-    const smoothVelocity = useSpring(scrollVelocity, {
-      damping: 50,
-      stiffness: 400,
-    });
-    const velocityFactor = useTransform(smoothVelocity, [0, 1000], [0, 5], {
-      clamp: false,
-    });
-
-    useAnimationFrame((t, delta) => {
-      let moveBy = directionFactor.current * baseVelocity * (delta / 1000);
-      // Scroll to Swap
-      if (velocityFactor.get() < 0) {
-        directionFactor.current = -1;
-      } else if (velocityFactor.get() > 0) {
-        directionFactor.current = 1;
-      }
-      moveBy += directionFactor.current * moveBy * velocityFactor.get();
-      // Scroll to Swap
-      baseX.set(baseX.get() + moveBy);
-    });
-
-    return (
-      <div className="parallax">
-        <motion.div className="scroller" style={{ x }}>
-          <span className="text-[white] text-[10vw]">{children} </span>
-          <span className="text-[white] text-[10vw]">{children} </span>
-          <span className="text-[white] text-[10vw]">{children} </span>
-          <span className="text-[white] text-[10vw]">{children} </span>
-        </motion.div>
-      </div>
-    );
-  }
-
   const cardVariants: Variants = {
     offscreen: {
       y: 200, // 300에서 200으로 변경하여 더 위쪽에서 시작하도록 함
@@ -94,10 +54,7 @@ const Page: React.FC = () => {
   return (
     <>
       {/* <Test /> */}
-      <motion.div
-        className="fixed top-0 left-0 right-0 h-[10px] bg-pink-500 origin-left"
-        style={{ scaleX: scaleX }}
-      />
+      <motion.div className="progress-bar" style={{ scaleX: scaleX }} />
       <figure className="progress">
         <svg width="100%" height="100%" viewBox="0 0 100 100">
           <circle cx="50" cy="50" r="30" pathLength="1" className="bg" />
@@ -119,41 +76,48 @@ const Page: React.FC = () => {
         <DustySnow />
         <Cursor />
         <article className="my-gradient fixed w-screen pointer-events-none" />
-        <section className="min-h-screen h-fit flex flex-col justify-between mb-[22vw]">
-          <div>
-            <div className="text-center">
-              <h1 className="text-[18vw] font-bold leading-[0.9]">Marmot</h1>
-            </div>
+        <section className="min-h-screen h-screen  mb-[22vw]">
+          <div className="flex justify-around">
+            <h1 className="text-5xl md:text-7xl lg:text-9xl font-bold leading-[0.9]">
+              EDMM
+            </h1>
             <span className="flex flex-col text-end grid-cols-[2/-1] mt-[2.1vw]">
               <motion.p
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
-                className="font-[900] uppercase leading-[100%] text-[5.3vw] tracking-[0.1em]"
+                className="font-[900] uppercase leading-[100%] text-xl sm:text-2xl md:text-3xl lg:text-4xl tracking-[0.1em]"
               >
-                Scroll animate
+                EDM Marmot
               </motion.p>
               <motion.p
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
-                className="text-[rgb(176,176,176)] text-[3.2vw] font-[600] uppercase"
+                className="text-[rgb(176,176,176)] text-lg sm:text-xl md:text-2xl lg:text-3xl font-[600] uppercase"
               >
-                © 2024 HappyMarmot
+                © 2025 HappyMarmot
               </motion.p>
             </span>
           </div>
+          <div className="w-full flex justify-center items-center">
+            <Earth width={500} height={500} />
+          </div>
           <div className="grid grid-cols-[1fr_2fr_4fr] items-center justify-between leading-[0.9] px-[2vw] h-[12vw]">
             <div className="text-left">
-              <p className="font-[900] text-[1.8vw]">scroll to</p>
-              <p className="font-[900] text-[1.8vw]">explore</p>
+              <p className="font-[900] text-[clamp(1rem,1.8vw,2.5rem)]">
+                scroll to
+              </p>
+              <p className="font-[900] text-[clamp(1rem,1.8vw,2.5rem)]">
+                explore
+              </p>
             </div>
             <div className="text-left">
-              <p className="font-[600] tracking-[-0.01em] uppercase text-[1.3vw]">
+              <p className="font-[600] tracking-[-0.01em] uppercase text-[clamp(0.8rem,1.3vw,1.8rem)]">
                 Smooth Scroll
               </p>
-              <p className="font-[600] tracking-[-0.01em] uppercase text-[1.3vw]">
+              <p className="font-[600] tracking-[-0.01em] uppercase text-[clamp(0.8rem,1.3vw,1.8rem)]">
                 Framer Motion Animate
               </p>
-              <p className="font-[600] tracking-[-0.01em] uppercase text-[1.3vw]">
+              <p className="font-[600] tracking-[-0.01em] uppercase text-[clamp(0.8rem,1.3vw,1.8rem)]">
                 Website designed by Happy marmot
               </p>
             </div>
@@ -163,11 +127,11 @@ const Page: React.FC = () => {
           </div>
         </section>
         <section className="min-[50vw] h-fit flex flex-col justify-between mb-[22vw]">
-          <ParallaxText baseVelocity={-2}>Framer Motion</ParallaxText>
-          <ParallaxText baseVelocity={2}>HappyMarmot123____</ParallaxText>
+          <ParallaxText baseVelocity={-2}>Electronic</ParallaxText>
+          <ParallaxText baseVelocity={2}>Dance Music</ParallaxText>
         </section>
         <section className="min-h-screen h-fit flex flex-col justify-between mb-[22vw]">
-          <div className="w-screen h-[200vh] grid grid-cols-12 gap-[1.6vw]">
+          <div className="w-full h-[200vh] grid grid-cols-12">
             <motion.div
               className="sticky top-[33%] self-start border-l-[4px] border-l-pink-300 col-[3/span_4] px-[2.2vw] py-[1.6vw]"
               initial="offscreen"
@@ -175,7 +139,7 @@ const Page: React.FC = () => {
               viewport={{ amount: 0.8 }}
             >
               <motion.p
-                className="text-[5vw] text-white uppercase font-bold leading-[0.9]"
+                className="text-[clamp(2rem,5vw,6rem)] text-white uppercase font-bold leading-[0.9]"
                 variants={cardVariants}
               >
                 why framer motion?
@@ -193,15 +157,15 @@ const Page: React.FC = () => {
         </section>
         <section className="min-h-screen h-fit flex flex-col justify-between mb-[22vw]">
           <div>
-            <p className="text-white text-[14vh] font-bold leading-[0.9] tracking-[-1vh] uppercase">
+            <p className="text-white text-[clamp(3rem,14vh,16rem)] font-bold leading-[0.9] tracking-[-1vh] uppercase">
               so we built{" "}
             </p>
-            <h1 className="text-[14vh] font-bold leading-[0.9] tracking-[-1vh] uppercase">
+            <h1 className="text-[clamp(3rem,14vh,16rem)] font-bold leading-[0.9] tracking-[-1vh] uppercase">
               web scrolling
             </h1>
             <br />
           </div>
-          <p className="text-white text-[14vh] font-bold leading-[0.9] tracking-[-1vh] uppercase">
+          <p className="text-white text-[clamp(3rem,14vh,16rem)] font-bold leading-[0.9] tracking-[-1vh] uppercase">
             as it should be
           </p>
         </section>

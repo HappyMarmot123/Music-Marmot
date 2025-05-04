@@ -75,7 +75,15 @@ div {
 }
 /* ===================================================== */
 /* ===================================================== */
-
+.progress-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 10px;
+  background: #ff98a2;
+  transform-origin: 0%;
+}
 .my-gradient::after {
   content: "";
   position: absolute;

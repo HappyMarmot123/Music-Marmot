@@ -94,7 +94,10 @@ const Page: React.FC = () => {
   return (
     <>
       {/* <Test /> */}
-      <motion.div className="progress-bar" style={{ scaleX: scaleX }} />
+      <motion.div
+        className="fixed top-0 left-0 right-0 h-[10px] bg-pink-500 origin-left"
+        style={{ scaleX: scaleX }}
+      />
       <figure className="progress">
         <svg width="100%" height="100%" viewBox="0 0 100 100">
           <circle cx="50" cy="50" r="30" pathLength="1" className="bg" />
@@ -179,22 +182,11 @@ const Page: React.FC = () => {
               </motion.p>
             </motion.div>
             <aside className="max-w-[40vw] col-[7/-1] mt-[14vw] flex flex-col justify-between py-[5vw]">
-              <p className="text-gray-900 uppercase">dskjhsfkhsdkfhksdhkf</p>
-              <p className="text-[black] uppercase">dskjhsfkhsdkfhksdhkf</p>
-              <div>
-                <div className="bg-sky-500/10 h-4 w-4"></div>
-                <div className="bg-sky-500/20 h-4 w-4"></div>
-                <div className="bg-sky-500/30 h-4 w-4"></div>
-                <div className="bg-sky-500/40 h-4 w-4"></div>
-                <div className="bg-sky-500/50 h-4 w-4"></div>
-                <div className="bg-sky-500/60 h-4 w-4"></div>
-                <div className="bg-sky-500/70 h-4 w-4"></div>
-                <div className="bg-sky-500/80 h-4 w-4"></div>
-                <div className="bg-sky-500/90 h-4 w-4"></div>
-                <div className="bg-sky-500/100"></div>
-              </div>
+              <p className="text-gray-500 uppercase">dskjhsfkhsdkfhksdhkf</p>
+              <p className="text-primary uppercase">dskjhsfkhsdkfhksdhkf</p>
             </aside>
           </div>
+          s
         </section>
         <section>
           <Horizontal />

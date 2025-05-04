@@ -10,6 +10,7 @@ build
 # misc
 .DS_Store
 *.pem
+README.txt
 
 # env files (can opt-in for committing if needed)
 .env*

@@ -7,11 +7,15 @@ import ParallaxText from "@/component/ParallaxText";
 import Earth from "@/component/earth";
 import MyArticle from "@/layout/myArticle";
 import MusicList from "@/layout/musicList";
+import AudioPlayer from "@/component/AudioPlayer";
 
 const Page: React.FC = () => {
+  const audioSrc = "/BEATPELLAHOUSE_CandyThief.mp3";
+
   return (
     <>
       {/* <Test /> */}
+      <AudioPlayer src={audioSrc} />
       <MyArticle>
         <article className="my-gradient fixed w-screen pointer-events-none" />
         <section className="min-h-screen h-screen">

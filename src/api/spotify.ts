@@ -4,6 +4,7 @@ import {
   SpotifyTokenResponse,
   TrackObjectFull,
   SearchResponse,
+  AlbumObjectFull,
 } from "@/type/dataType";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
@@ -80,5 +81,39 @@ export const useSearchPopularEdmTracks = (limit = 20) => {
     },
     enabled: !!tokenData?.accessToken,
     staleTime: 1000 * 60 * 30, // 30 minutes
+  });
+};
+
+const searchSpecificAlbum = async (
+  token: string,
+  trackId: string
+): Promise<AlbumObjectFull> => {
+  const response = await ClientAPICall.get<AlbumObjectFull>(
+    `/albums/${trackId}`,
+    {
+      headers: { Authorization: `Bearer ${token}` },
+      params: {
+        market: "KR",
+      },
+    }
+  );
+  return response.data;
+};
+
+export const useSearchSpecificAlbum = (trackId: string) => {
+  const { data: tokenData } = useGetSpotifyToken();
+  return useQuery<AlbumObjectFull, Error>({
+    queryKey: ["spotifySpecificAlbum", trackId],
+    queryFn: () => {
+      if (!tokenData?.accessToken) {
+        throw new Error("Spotify token not available");
+      }
+      if (!trackId) {
+        throw new Error("Track ID is required");
+      }
+      return searchSpecificAlbum(tokenData.accessToken, trackId);
+    },
+    enabled: !!tokenData?.accessToken && !!trackId,
+    staleTime: 1000 * 60 * 30,
   });
 };

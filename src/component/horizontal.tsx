@@ -3,14 +3,13 @@
 import { motion, useAnimationControls } from "framer-motion";
 import { useRef, useState, useEffect } from "react";
 import Card from "./card";
-import { TrackObjectFull } from "@/type/dataType";
+import { AlbumObjectFull, TrackObjectFull } from "@/type/dataType";
 
 interface HorizontalProps {
-  sectionTitle: string;
-  data: TrackObjectFull[];
+  data: TrackObjectFull[] | AlbumObjectFull[];
 }
 
-export default function Horizontal({ sectionTitle, data }: HorizontalProps) {
+export default function Horizontal({ data }: HorizontalProps) {
   const controls = useAnimationControls();
   const containerRef = useRef<HTMLDivElement | null>(null);
   const contentRef = useRef<HTMLDivElement | null>(null);
@@ -87,10 +86,7 @@ export default function Horizontal({ sectionTitle, data }: HorizontalProps) {
     };
 
   return (
-    <div className="w-full">
-      <h2 className="text-3xl md:text-4xl font-bold grid grid-cols-10">
-        <span className="col-start-2 w-max">{sectionTitle}</span>
-      </h2>
+    <div>
       <div
         ref={containerRef}
         className="relative w-full flex items-center overflow-hidden"

@@ -2,6 +2,9 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   /* config options here */
+  images: {
+    domains: ["singhimalaya.github.io"],
+  },
 };
 
-export default nextConfig;
+module.exports = nextConfig;

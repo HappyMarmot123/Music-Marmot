@@ -49,18 +49,14 @@ export default function ParallaxText({
   return (
     <div className="parallax">
       <motion.div className="scroller" style={{ x }}>
-        <span className="text-[white] text-[clamp(2rem,10vw,12rem)]">
-          {children}{" "}
-        </span>
-        <span className="text-[white] text-[clamp(2rem,10vw,12rem)]">
-          {children}{" "}
-        </span>
-        <span className="text-[white] text-[clamp(2rem,10vw,12rem)]">
-          {children}{" "}
-        </span>
-        <span className="text-[white] text-[clamp(2rem,10vw,12rem)]">
-          {children}{" "}
-        </span>
+        {Array.from({ length: 8 }).map((_, index) => (
+          <span
+            key={index}
+            className="text-[white] text-[clamp(1rem,5vw,6rem)]"
+          >
+            {children}
+          </span>
+        ))}
       </motion.div>
     </div>
   );

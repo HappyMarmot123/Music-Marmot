@@ -11,6 +11,7 @@ build
 .DS_Store
 *.pem
 README.txt
+spotify.http
 
 # env files (can opt-in for committing if needed)
 .env*

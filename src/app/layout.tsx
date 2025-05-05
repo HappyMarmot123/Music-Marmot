@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
-import "@/style/global.css";
+import "@/style/global.css?v=2";
 import { Providers } from "@/provider/QueryClientProvider";
-import { ThemeProvider } from "../provider/ThemeProvider";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -12,9 +11,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   return (
     <html lang="en">
       <body>
-        <ThemeProvider>
-          <Providers>{children}</Providers>
-        </ThemeProvider>
+        <Providers>{children}</Providers>
       </body>
     </html>
   );

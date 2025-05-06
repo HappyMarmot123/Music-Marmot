@@ -17,11 +17,6 @@ function formatTime(seconds: number): string {
   return `${minutesStr}:${secsStr}`;
 }
 
-const iconColor = "#b3bac2";
-const iconHoverColor = "white";
-const buttonBgColor = "#ffffff";
-const buttonHoverBgColor = "#d6d6de";
-
 export default function Album() {
   const {
     isPlaying,
@@ -247,68 +242,47 @@ export default function Album() {
           >
             <div className="control">
               <button
-                className={clsx(
-                  "button w-12 h-12 flex group m-auto rounded-[6px] cursor-pointer transition-all duration-200 ease-[ease]",
-                  `bg-[${buttonBgColor}] hover:bg-[${buttonHoverBgColor}]`
-                )}
+                className="button w-12 h-12 flex group m-auto rounded-[6px] cursor-pointer transition-all duration-200 ease-[ease] bg-[#ffffff] hover:bg-[#b3bac2]"
                 id="play-previous"
                 onClick={prevTrack}
                 aria-label="Previous track"
               >
                 <SkipBack
-                  className={clsx(
-                    "block m-auto text-[26px] text-center leading-none transition-colors duration-200 ease-[ease]",
-                    `text-[${iconColor}] group-hover:text-[${iconHoverColor}]`
-                  )}
-                  fill={iconColor}
+                  className="block m-auto text-[26px] text-center leading-none transition-colors duration-200 ease-[ease] text-[#b3bac2] group-hover:text-[#ffffff]"
+                  fill="#b3bac2"
                 />
               </button>
             </div>
             <div className="control">
               <button
-                className={clsx(
-                  "button w-12 h-12 flex group m-auto rounded-[6px] cursor-pointer transition-all duration-200 ease-[ease]",
-                  `bg-[${buttonBgColor}] hover:bg-[${buttonHoverBgColor}]`
-                )}
+                className="button w-12 h-12 flex group m-auto rounded-[6px] cursor-pointer transition-all duration-200 ease-[ease] bg-[#ffffff] hover:bg-[#b3bac2]"
                 id="play-pause"
                 onClick={togglePlayPause}
                 aria-label="Play/Pause"
               >
                 {isPlaying ? (
                   <Pause
-                    className={clsx(
-                      "block m-auto text-[26px] text-center leading-none transition-colors duration-200 ease-[ease]",
-                      `text-[${iconColor}] group-hover:text-[${iconHoverColor}]`
-                    )}
-                    fill={iconColor}
+                    className="block m-auto text-[26px] text-center leading-none transition-colors duration-200 ease-[ease] text-[#b3bac2] group-hover:text-[#ffffff]"
+                    fill="#b3bac2"
                   />
                 ) : (
                   <Play
-                    className={clsx(
-                      "block m-auto text-[26px] text-center leading-none transition-colors duration-200 ease-[ease]",
-                      `text-[${iconColor}] group-hover:text-[${iconHoverColor}]`
-                    )}
-                    fill={iconColor}
+                    className="block m-auto text-[26px] text-center leading-none transition-colors duration-200 ease-[ease] text-[#b3bac2] group-hover:text-[#ffffff]"
+                    fill="#b3bac2"
                   />
                 )}
               </button>
             </div>
             <div className="control">
               <button
-                className={clsx(
-                  "button w-12 h-12 flex group m-auto rounded-[6px] cursor-pointer transition-all duration-200 ease-[ease]",
-                  `bg-[${buttonBgColor}] hover:bg-[${buttonHoverBgColor}]`
-                )}
+                className="button w-12 h-12 flex group m-auto rounded-[6px] cursor-pointer transition-all duration-200 ease-[ease] bg-[#ffffff] hover:bg-[#b3bac2]"
                 id="play-next"
                 onClick={nextTrack}
                 aria-label="Next track"
               >
                 <SkipForward
-                  className={clsx(
-                    "block m-auto text-[26px] text-center leading-none transition-colors duration-200 ease-[ease]",
-                    `text-[${iconColor}] group-hover:text-[${iconHoverColor}]`
-                  )}
-                  fill={iconColor}
+                  className="block m-auto text-[26px] text-center leading-none transition-colors duration-200 ease-[ease] text-[#b3bac2] group-hover:text-[#ffffff]"
+                  fill="#b3bac2"
                 />
               </button>
             </div>

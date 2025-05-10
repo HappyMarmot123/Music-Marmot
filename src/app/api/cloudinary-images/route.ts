@@ -1,8 +1,14 @@
 import { v2 as cloudinary } from "cloudinary";
 import { NextResponse } from "next/server";
 
-// TODO: 체이닝메소드 공식문서
-// https://cloudinary.com/documentation/search_method
+/*
+TODO: 체이닝메소드 공식문서
+https://cloudinary.com/documentation/search_method
+
+csr에 임포트된 ssr에서 서버함수를 호출하면 cloudinary 관련 코드가 
+클라이언트 번들에 포함되려 하면서 fs모듈 에러가 발생함
+서버 측에서 실행되어야 하는 로직은 Next.js의 API 라우트 핸들러로 옮겨야 한다
+*/
 
 cloudinary.config({
   cloud_name: process.env.PUBLIC_CLOUDINARY_CLOUD_NAME,

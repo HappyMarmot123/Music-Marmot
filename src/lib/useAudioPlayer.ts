@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from "react";
+import { useQuery } from "@tanstack/react-query";
 
-// Constants can be moved outside or passed as props if needed
 const albums = [
   "Me & You",
   "Dawn",
@@ -15,7 +15,7 @@ const trackNames = [
   "Jordan Schor - Home",
   "Martin Garrix - Proxy",
 ];
-const albumArtworks = ["_1", "_2", "_3", "_4", "_5"]; // Corresponds to img IDs
+const albumArtworks = ["_1", "_2", "_3", "_4", "_5"];
 const trackUrl = [
   "https://singhimalaya.github.io/Codepen/assets/music/1.mp3",
   "https://singhimalaya.github.io/Codepen/assets/music/2.mp3",
@@ -27,9 +27,17 @@ const trackUrl = [
 interface TrackInfo {
   album: string;
   name: string;
-  artworkId: string; // HTML Element ID for the img
+  artworkId: string;
   url: string;
 }
+
+const fetchCloudinaryImages = async () => {
+  const response = await fetch("/api/cloudinary-images");
+  if (!response.ok) {
+    throw new Error("Network response was not ok");
+  }
+  return response.json();
+};
 
 export function useAudioPlayer() {
   const [audio, setAudio] = useState<HTMLAudioElement | null>(null);
@@ -41,16 +49,27 @@ export function useAudioPlayer() {
     null
   );
   const [isBuffering, setIsBuffering] = useState(false);
-
-  // Refs for elements that might need direct manipulation or observation, if any
-  // However, try to rely on state for UI updates as much as possible
-  // const playerTrackRef = useRef<HTMLDivElement>(null); // Removed as unused
-  // const albumArtRef = useRef<HTMLDivElement>(null);   // Removed as unused
-  // const seekBarRef = useRef<HTMLDivElement>(null);     // Removed as unused
-
-  // Interval ref for cleanup
   const buffIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const lastUpdateTimeRef = useRef<number>(0);
+
+  const {
+    data: cloudinaryImages,
+    error: cloudinaryError,
+    isLoading: isLoadingCloudinaryImages,
+  } = useQuery({
+    queryKey: ["cloudinaryImages"],
+    queryFn: fetchCloudinaryImages,
+  });
+
+  // 예시: 가져온 이미지 데이터 사용
+  useEffect(() => {
+    if (cloudinaryImages) {
+      console.log("Cloudinary Images:", cloudinaryImages);
+    }
+    if (cloudinaryError) {
+      console.error("Error fetching Cloudinary images:", cloudinaryError);
+    }
+  }, [cloudinaryImages, cloudinaryError]);
 
   // Initialize Audio element
   useEffect(() => {
@@ -58,17 +77,14 @@ export function useAudioPlayer() {
     audioInstance.loop = false;
     setAudio(audioInstance);
 
-    // Cleanup function
     return () => {
       audioInstance.pause(); // Stop playback
-      // Remove any event listeners attached directly to audioInstance if needed outside React lifecycle
       if (buffIntervalRef.current) {
         clearInterval(buffIntervalRef.current);
       }
     };
-  }, []); // Run only once on mount
+  }, []);
 
-  // Update track info and audio source when index changes
   useEffect(() => {
     if (audio && currentTrackIndex >= 0 && currentTrackIndex < albums.length) {
       const trackInfo: TrackInfo = {
@@ -89,7 +105,7 @@ export function useAudioPlayer() {
     } else {
       setCurrentTrackInfo(null); // Index out of bounds
     }
-  }, [audio, currentTrackIndex]);
+  }, [audio, currentTrackIndex, cloudinaryImages]); // cloudinaryImages를 의존성 배열에 추가
 
   // Audio Event Listeners Setup
   useEffect(() => {
@@ -260,12 +276,18 @@ export function useAudioPlayer() {
   );
 
   return {
+    audio,
     isPlaying,
-    isBuffering,
+    setIsPlaying,
+    currentTrackIndex,
+    setCurrentTrackIndex,
     currentTime,
+    setCurrentTime,
     duration,
+    setDuration,
     currentTrackInfo,
-    currentTrackIndex, // Expose index if needed
+    isBuffering,
+    setIsBuffering,
     togglePlayPause,
     play, // Expose individual controls if needed
     pause,

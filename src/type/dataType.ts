@@ -1,3 +1,5 @@
+import { RefObject, MouseEvent } from "react";
+
 export interface SpotifyTokenResponse {
   access_token: string;
   token_type: string;
@@ -139,4 +141,30 @@ export interface AlbumObjectFull {
   genres: string[];
   label: string;
   popularity: number;
+}
+
+export interface PlayerTrackDetailsProps {
+  isPlaying: boolean;
+  currentTime: number;
+  duration: number;
+  currentProgress: number;
+  seekBarContainerRef: RefObject<HTMLDivElement | null>;
+  handleSeek: (event: MouseEvent<HTMLDivElement>) => void;
+  handleSeekMouseMove: (event: MouseEvent<HTMLDivElement>) => void;
+  handleSeekMouseOut: () => void;
+  seekHoverTime: number | null;
+  seekHoverPosition: number;
+}
+export interface AlbumArtworkProps {
+  isPlaying: boolean;
+  isBuffering: boolean;
+  currentTrackInfo: any | null;
+}
+
+export interface PlayerControlsSectionProps {
+  currentTrackInfo: any | null;
+  prevTrack: () => void;
+  togglePlayPause: () => void;
+  nextTrack: () => void;
+  isPlaying: boolean;
 }

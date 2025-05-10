@@ -47,7 +47,7 @@ export default function MyArticle({ children }: { children: React.ReactNode }) {
         </figure>
         <DustySnow />
         <Cursor />
-        <Intro />
+        {/* <Intro /> */}
         {children}
       </div>
     </>

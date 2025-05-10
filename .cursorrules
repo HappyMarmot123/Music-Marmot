@@ -1,0 +1,63 @@
+// Next.js App Router .cursorrules
+
+// Next.js App Router best practices
+
+const nextjsAppRouterBestPractices = [
+"Use server components by default",
+"Implement client components only when necessary",
+"Utilize the new file-based routing system",
+"Use layout.js for shared layouts",
+"Implement loading.js for loading states",
+"Use error.js for error handling",
+"Utilize route handlers for API routes",
+];
+
+// Folder structure
+
+const folderStructure = `app/
+  layout.js
+  page.js
+  api/
+  component/
+  layout/
+  lib/
+  provider/
+  store/
+  style/
+  type/
+public/`;
+
+// Additional instructions
+
+const additionalInstructions = `
+
+1. Use TypeScript for type safety
+2. Implement proper metadata for SEO
+3. Utilize Next.js Image component for optimized images
+4. Use Tailwind CSS for styling
+5. Implement proper error boundaries
+6. Follow Next.js naming conventions for special files
+7. Use environment variables for configuration
+   `;
+
+// Project Overview
+const projectOverview = `This project is a music streaming website where users can listen to music.`;
+
+// Key Features
+const keyFeatures = [
+"Music playback",
+"Search for songs, artists, albums",
+"Visual site using animations",
+];
+
+// Technology Stack
+const techStack = [
+"Next.js (App Router)",
+"TypeScript",
+"Tailwind CSS",
+"Framer Motion (for animations)",
+"Zustand (for state management)",
+"Tanstack Query (React Query) (for data fetching and caching)",
+"Docker (for containerization)",
+"Cloudinary (for media management, e.g., album art)",
+];

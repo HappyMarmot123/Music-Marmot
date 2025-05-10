@@ -16,7 +16,8 @@ const ClientAPICall = axios.create({
 
 const fetchAccessToken = async (): Promise<SpotifyTokenResponse> => {
   try {
-    const response = await fetch("/api/spotify-token"); // Fetch from the new API route
+    // TODO: 앱 내부의 api/spotify-token 경로로 요청
+    const response = await fetch("/api/spotify-token");
     if (!response.ok) {
       const errorData = await response.json();
       throw new Error(

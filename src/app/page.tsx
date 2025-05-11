@@ -8,7 +8,6 @@ import Parallax from "@/component/parallax";
 import MyArticle from "@/layout/myArticle";
 import MusicList from "@/layout/musicList";
 import { SpotifyList } from "@/layout/spotifyList";
-import ParallaxText from "@/component/parallaxText";
 
 const Page: React.FC = () => {
   return (

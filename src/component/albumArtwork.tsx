@@ -1,0 +1,52 @@
+import React from "react";
+import { AlbumArtworkProps } from "@/type/dataType";
+import { CldImage } from "next-cloudinary";
+import clsx from "clsx";
+
+const AlbumArtwork: React.FC<AlbumArtworkProps> = ({
+  isPlaying,
+  isBuffering,
+  currentTrackInfo,
+}) => {
+  return (
+    <div
+      id="album-art"
+      className={clsx(
+        "absolute w-[92px] h-[92px] ml-[32px] bg-gray-300 transform top-[-22px] rotate-0 transition-all duration-300 ease-[ease] shadow-[0_0_0_10px_#fff] rounded-full overflow-hidden",
+        isPlaying &&
+          "active shadow-[0_0_0_4px_#fff7f7,_0_30px_50px_-15px_#afb7c1] top-[-32px]",
+        isBuffering &&
+          "buffering [&>img]:opacity-25 [&>img.active]:opacity-80 [&>img.active]:blur-sm [&_#buffer-box]:opacity-100"
+      )}
+    >
+      {currentTrackInfo?.artworkId ? (
+        <CldImage
+          key={currentTrackInfo.artworkId}
+          src={currentTrackInfo.artworkId}
+          className={clsx(
+            "block absolute top-0 left-0 w-full h-full opacity-100 z-[1] select-none",
+            isPlaying && "animate-rotate-album active"
+          )}
+          width={92}
+          height={92}
+          alt={currentTrackInfo.album || "Album Art"}
+          priority
+          draggable={false}
+        />
+      ) : (
+        <div
+          id="buffer-box"
+          className={clsx(
+            "absolute top-1/2 right-0 left-0 text-white text-sm font-medium text-center p-2 mt-[-16px] mx-auto backdrop-blur-sm rounded-lg z-[2] transition-all duration-300 animate-pulse pointer-events-none flex items-center justify-center gap-2"
+          )}
+        >
+          <div className="w-1.5 h-1.5 bg-white rounded-full animate-bounce" />
+          <div className="w-1.5 h-1.5 bg-white rounded-full animate-bounce [animation-delay:0.2s]" />
+          <div className="w-1.5 h-1.5 bg-white rounded-full animate-bounce [animation-delay:0.4s]" />
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default AlbumArtwork;

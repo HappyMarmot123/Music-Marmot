@@ -3,21 +3,17 @@
 import React from "react";
 import { motion } from "framer-motion";
 import Github from "@/component/github";
-import ParallaxText from "@/component/ParallaxText";
+import ParallaxText from "@/component/parallaxText";
 import Earth from "@/component/earth";
 import MyArticle from "@/layout/myArticle";
 import MusicList from "@/layout/musicList";
-import AudioPlayer from "@/component/AudioPlayer";
+import { SpotifyList } from "@/layout/spotifyList";
 
 const Page: React.FC = () => {
-  const audioSrc = "/BEATPELLAHOUSE_CandyThief.mp3";
-
   return (
     <>
       {/* <Test /> */}
-      <AudioPlayer src={audioSrc} />
       <MyArticle>
-        <article className="my-gradient fixed w-screen pointer-events-none" />
         <section className="min-h-screen h-screen">
           <div className="flex justify-around">
             <h1 className="text-5xl md:text-7xl lg:text-9xl font-bold leading-[0.9]">
@@ -74,8 +70,8 @@ const Page: React.FC = () => {
           <ParallaxText baseVelocity={2}>Dance Music</ParallaxText>
         </section>
         <section className="flex flex-col gap-16 !py-16">
-          <MusicList sectionTitle="Available Now" />
-          <MusicList sectionTitle="Spotify Trending" />
+          <MusicList />
+          <SpotifyList />
         </section>
       </MyArticle>
     </>

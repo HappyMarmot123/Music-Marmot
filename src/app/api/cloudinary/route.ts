@@ -1,6 +1,7 @@
 import { v2 as cloudinary } from "cloudinary";
 import { NextResponse } from "next/server";
 import { CloudinaryResource } from "@/type/dataType";
+import { replaceKeyName } from "@/lib/util";
 
 /*
 TODO: 체이닝메소드 공식문서
@@ -16,14 +17,6 @@ cloudinary.config({
   api_key: process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY,
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
-
-function replaceKeyName(resource: CloudinaryResource) {
-  return {
-    ...resource,
-    title: resource.context?.caption || null,
-    producer: resource.context?.alt || null,
-  };
-}
 
 export async function GET() {
   try {

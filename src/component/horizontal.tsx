@@ -3,13 +3,13 @@
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, A11y } from "swiper/modules";
 import Card from "./card";
-import { AlbumObjectFull, TrackObjectFull } from "@/type/dataType";
+import { CloudinaryResource, TrackObjectFull } from "@/type/dataType";
 import "swiper/css";
 import { ChevronRight } from "lucide-react";
 import { ChevronLeft } from "lucide-react";
 
 interface HorizontalProps {
-  data: TrackObjectFull[] | AlbumObjectFull[];
+  data: TrackObjectFull[] | CloudinaryResource[];
 }
 
 export default function Horizontal({ data }: HorizontalProps) {
@@ -30,7 +30,6 @@ export default function Horizontal({ data }: HorizontalProps) {
           data.length > 0 &&
           data.map((item) => (
             <SwiperSlide key={item.id} className="!w-auto !select-none">
-              {" "}
               <Card card={item} />
             </SwiperSlide>
           ))}

@@ -25,7 +25,7 @@ export default function Cursor() {
       positionRef.current.mouseX =
         mouseX - secondaryCursor.current.clientWidth / 2;
       positionRef.current.mouseY =
-        mouseY - secondaryCursor.current.clientHeight / 2 - 70;
+        mouseY - secondaryCursor.current.clientHeight / 2;
     });
 
     return () => {};

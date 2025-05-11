@@ -1,14 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from "react";
-import { useQuery } from "@tanstack/react-query";
-import type { CloudinaryResource, TrackInfo } from "@/type/dataType";
-
-const fetchCloudinary = async (): Promise<CloudinaryResource[]> => {
-  const response = await fetch("/api/cloudinary");
-  if (!response.ok) {
-    throw new Error("Network response was not ok");
-  }
-  return response.json();
-};
+import type { TrackInfo } from "@/type/dataType";
+import useStore from "@/store/zustandStore";
 
 export function useAudioPlayer() {
   const [audio, setAudio] = useState<HTMLAudioElement | null>(null);
@@ -24,24 +16,12 @@ export function useAudioPlayer() {
   const lastUpdateTimeRef = useRef<number>(0);
 
   const {
-    data: cloudinary,
-    error: cloudinaryError,
-    isLoading: isLoadingCloudinary, // @typescript-eslint/no-unused-vars (일단 유지)
-  } = useQuery<CloudinaryResource[], Error>({
-    queryKey: ["cloudinary"],
-    queryFn: fetchCloudinary,
-  });
+    cloudinaryData: cloudinary,
+    cloudinaryError,
+    isLoadingCloudinary,
+  } = useStore();
 
-  useEffect(() => {
-    if (cloudinary) {
-      console.log("Cloudinary :", cloudinary);
-    }
-    if (cloudinaryError) {
-      console.error("Error fetching Cloudinary :", cloudinaryError);
-    }
-  }, [cloudinary, cloudinaryError]);
-
-  // Initialize Audio element
+  /* Initialize Audio element */
   useEffect(() => {
     const audioInstance = new Audio();
     audioInstance.loop = false;
@@ -55,7 +35,18 @@ export function useAudioPlayer() {
     };
   }, []);
 
+  /* Cloudinary */
   useEffect(() => {
+    if (cloudinary) {
+      console.log("Cloudinary from Zustand store:", cloudinary);
+    }
+    if (cloudinaryError) {
+      console.error(
+        "Error fetching Cloudinary from Zustand store:",
+        cloudinaryError
+      );
+    }
+
     if (
       audio &&
       cloudinary &&
@@ -86,8 +77,15 @@ export function useAudioPlayer() {
       // 로딩이 끝났고, 이미지가 없거나 로드에 실패한 경우 (오류는 cloudinaryError로 처리)
       setCurrentTrackInfo(null);
     }
-  }, [audio, currentTrackIndex, cloudinary, isLoadingCloudinary]);
+  }, [
+    audio,
+    currentTrackIndex,
+    cloudinary,
+    cloudinaryError,
+    isLoadingCloudinary,
+  ]);
 
+  /* Handle Audio */
   useEffect(() => {
     if (!audio) return;
 
@@ -176,9 +174,9 @@ export function useAudioPlayer() {
       audio.removeEventListener("playing", handlePlaying);
       if (buffIntervalRef.current) clearInterval(buffIntervalRef.current);
     };
-  }, [audio, isPlaying, currentTrackIndex, cloudinary]); // cloudinary 추가
+  }, [audio, isPlaying, currentTrackIndex, cloudinary]);
 
-  // Auto-play next track after state update (triggered by 'ended' handler)
+  /* Play Audio */
   useEffect(() => {
     if (
       audio &&
@@ -186,24 +184,20 @@ export function useAudioPlayer() {
       audio.src === currentTrackInfo?.url &&
       audio.paused
     ) {
-      // If state isPlaying=true but audio paused (e.g., after track change from 'ended')
       audio.play().catch((e) => console.error("Autoplay failed:", e));
     }
   }, [audio, isPlaying, currentTrackInfo]);
 
   // --- Control Functions ---
-
   const play = useCallback(() => {
     if (audio && audio.paused) {
       audio.play().catch((e) => console.error("Error playing audio:", e));
-      // State update (isPlaying, isBuffering) is handled by event listeners
     }
   }, [audio]);
 
   const pause = useCallback(() => {
     if (audio && !audio.paused) {
       audio.pause();
-      // State update (isPlaying) is handled by event listeners
     }
   }, [audio]);
 

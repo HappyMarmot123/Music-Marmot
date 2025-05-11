@@ -121,28 +121,6 @@ export interface Copyright {
   type: string;
 }
 
-export interface AlbumObjectFull {
-  album_type: "album" | "single" | "compilation";
-  total_tracks: number;
-  is_playable: boolean;
-  external_urls: ExternalUrls;
-  href: string;
-  id: string;
-  images: ImageObject[];
-  name: string;
-  release_date: string;
-  release_date_precision: "year" | "month" | "day";
-  type: "album";
-  uri: string;
-  artists: ArtistObjectSimplified[];
-  tracks: AlbumTracks;
-  copyrights: Copyright[];
-  external_ids: { upc?: string; ean?: string; isrc?: string };
-  genres: string[];
-  label: string;
-  popularity: number;
-}
-
 export interface PlayerTrackDetailsProps {
   isPlaying: boolean;
   currentTime: number;
@@ -158,11 +136,11 @@ export interface PlayerTrackDetailsProps {
 export interface AlbumArtworkProps {
   isPlaying: boolean;
   isBuffering: boolean;
-  currentTrackInfo: any | null;
+  currentTrackInfo: TrackInfo | null;
 }
 
 export interface PlayerControlsSectionProps {
-  currentTrackInfo: any | null;
+  currentTrackInfo: TrackInfo | null;
   prevTrack: () => void;
   togglePlayPause: () => void;
   nextTrack: () => void;
@@ -178,7 +156,7 @@ export interface TrackInfo {
 }
 
 export interface CloudinaryResource {
-  asset_id: string;
+  id: string;
   created_at: string;
   status: string;
   public_id: string;

@@ -44,7 +44,7 @@ export default function AudioPlayer() {
   const seekBarContainerRef = useRef<HTMLDivElement>(null);
   const draggableRef = useRef<HTMLDivElement>(null);
   const [bounds, setBounds] = useState<DraggableBounds | undefined>(undefined);
-  const defaultPositionRef = useRef({ x: 700, y: 651 });
+  const defaultPositionRef = useRef({ x: 700, y: 640 });
 
   const currentProgress = duration > 0 ? (currentTime / duration) * 100 : 0;
 
@@ -57,12 +57,13 @@ export default function AudioPlayer() {
         const elHeight = playerElement.offsetHeight;
         const initialTopBound = 60;
         const initialRightBound = 30;
+        const initialBottomBound = 10;
 
         setBounds({
           left: 0,
           top: 0 + initialTopBound,
           right: window.innerWidth - elWidth - initialRightBound,
-          bottom: window.innerHeight - elHeight,
+          bottom: window.innerHeight - elHeight - initialBottomBound,
         });
       };
 

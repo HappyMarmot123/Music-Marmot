@@ -1,3 +1,5 @@
+"use client";
+
 import {
   motion,
   useMotionValue,
@@ -15,7 +17,7 @@ interface ParallaxProps {
   baseVelocity?: number;
 }
 
-export default function ParallaxText({
+export default function Parallax({
   children,
   baseVelocity = 100,
 }: ParallaxProps) {

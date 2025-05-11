@@ -3,8 +3,8 @@
 import React from "react";
 import { motion } from "framer-motion";
 import Github from "@/component/github";
-import ParallaxText from "@/component/parallaxText";
 import Earth from "@/component/earth";
+import Parallax from "@/component/parallax";
 import MyArticle from "@/layout/myArticle";
 import MusicList from "@/layout/musicList";
 import { SpotifyList } from "@/layout/spotifyList";
@@ -65,9 +65,9 @@ const Page: React.FC = () => {
           </div>
         </section>
         <section className="min-[50vw] h-fit flex flex-col justify-between py-24">
-          <ParallaxText baseVelocity={-2}>Electronic</ParallaxText>
+          <Parallax baseVelocity={-2}>Electronic</Parallax>
           <div className="py-4"></div>
-          <ParallaxText baseVelocity={2}>Dance Music</ParallaxText>
+          <Parallax baseVelocity={2}>Dance Music</Parallax>
         </section>
         <section className="flex flex-col gap-16 !py-16">
           <MusicList />

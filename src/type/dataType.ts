@@ -168,3 +168,30 @@ export interface PlayerControlsSectionProps {
   nextTrack: () => void;
   isPlaying: boolean;
 }
+
+export interface TrackInfo {
+  album: string;
+  name: string;
+  artworkId: string | null;
+  url: string;
+  producer: string | null;
+}
+
+export interface CloudinaryResource {
+  asset_id: string;
+  created_at: string;
+  status: string;
+  public_id: string;
+  type: string;
+  resource_type: string;
+  asset_folder: string;
+  secure_url: string;
+  context: {
+    alt: string;
+    caption: string;
+  };
+  // 가공된 추가 필드
+  title: string | null;
+  producer: string | null;
+  album_secure_url: string | null;
+}

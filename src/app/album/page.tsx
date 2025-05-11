@@ -4,7 +4,7 @@ import { useState, useRef, MouseEvent } from "react";
 import { SkipBack, Play, Pause, SkipForward } from "lucide-react";
 import clsx from "clsx";
 import { useAudioPlayer } from "@/lib/useAudioPlayer";
-import Image from "next/image";
+import { CldImage } from "next-cloudinary";
 import {
   AlbumArtworkProps,
   PlayerControlsSectionProps,
@@ -117,7 +117,7 @@ const PlayerTrackDetails: React.FC<PlayerTrackDetailsProps> = ({
       id="player-track"
       className={clsx(
         "absolute right-[15px] left-[15px] pt-[6px] pr-[22px] pb-[16px] pl-[147px] bg-white rounded-t-[15px] transition-all duration-300 ease-[ease] z-[1]",
-        isPlaying || currentTime > 0 ? "top-[-45px]" : "top-0"
+        isPlaying ? "top-[-45px]" : "top-0"
       )}
     >
       <section
@@ -178,46 +178,42 @@ const AlbumArtwork: React.FC<AlbumArtworkProps> = ({
   isBuffering,
   currentTrackInfo,
 }) => {
-  const albumArtBaseUrl =
-    "https://singhimalaya.github.io/Codepen/assets/img/album-arts/";
-  const artWorks = ["1.jpg", "2.jpg", "3.jpg", "4.jpg", "5.jpg"];
-
   return (
     <div
       id="album-art"
       className={clsx(
-        "absolute w-[92px] h-[92px] ml-[32px] bg-gray-300 transform top-[-32px] rotate-0 transition-all duration-300 ease-[ease] shadow-[0_0_0_10px_#fff] rounded-full overflow-hidden",
+        "absolute w-[92px] h-[92px] ml-[32px] bg-gray-300 transform top-[-22px] rotate-0 transition-all duration-300 ease-[ease] shadow-[0_0_0_10px_#fff] rounded-full overflow-hidden",
         isPlaying &&
-          "active shadow-[0_0_0_4px_#fff7f7,_0_30px_50px_-15px_#afb7c1]",
+          "active shadow-[0_0_0_4px_#fff7f7,_0_30px_50px_-15px_#afb7c1] top-[-32px]",
         isBuffering &&
           "buffering [&>img]:opacity-25 [&>img.active]:opacity-80 [&>img.active]:blur-sm [&_#buffer-box]:opacity-100"
       )}
     >
-      {artWorks.map((art, index) => (
-        <Image
-          key={index}
-          src={`${albumArtBaseUrl}${art}`}
+      {currentTrackInfo?.artworkId ? (
+        <CldImage
+          key={currentTrackInfo.artworkId}
+          src={currentTrackInfo.artworkId}
           className={clsx(
-            "block absolute top-0 left-0 w-full h-full opacity-0 z-[-1] transition-opacity duration-100 linear",
-            currentTrackInfo?.artworkId === `_${index + 1}` &&
-              "active opacity-100 z-[1]",
-            isPlaying &&
-              currentTrackInfo?.artworkId === `_${index + 1}` &&
-              "animate-rotate-album"
+            "block absolute top-0 left-0 w-full h-full opacity-100 z-[1]",
+            isPlaying && "animate-rotate-album active"
           )}
           width={92}
           height={92}
-          id={`_${index + 1}`}
-          alt="Album Art"
-          priority={index === 0}
+          alt={currentTrackInfo.album || "Album Art"}
+          priority
         />
-      ))}
-      <div
-        id="buffer-box"
-        className="absolute top-1/2 right-0 left-0 h-[13px] text-[#1f1f1f] text-[13px] font-['Helvetica'] text-center font-bold leading-none p-[6px] mt-[-12px] mx-auto bg-[rgba(255,255,255,0.19)] opacity-0 z-[2] transition-opacity duration-100 linear pointer-events-none"
-      >
-        Buffering ...
-      </div>
+      ) : (
+        <div
+          id="buffer-box"
+          className={clsx(
+            "absolute top-1/2 right-0 left-0 text-white text-sm font-medium text-center p-2 mt-[-16px] mx-auto backdrop-blur-sm rounded-lg z-[2] transition-all duration-300 animate-pulse pointer-events-none flex items-center justify-center gap-2"
+          )}
+        >
+          <div className="w-1.5 h-1.5 bg-white rounded-full animate-bounce" />
+          <div className="w-1.5 h-1.5 bg-white rounded-full animate-bounce [animation-delay:0.2s]" />
+          <div className="w-1.5 h-1.5 bg-white rounded-full animate-bounce [animation-delay:0.4s]" />
+        </div>
+      )}
     </div>
   );
 };

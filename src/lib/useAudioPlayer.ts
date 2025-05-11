@@ -1,38 +1,9 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useQuery } from "@tanstack/react-query";
+import type { CloudinaryResource, TrackInfo } from "@/type/dataType";
 
-const albums = [
-  "Me & You",
-  "Dawn",
-  "Electro Boy",
-  "Home",
-  "Proxy (Original Mix)",
-];
-const trackNames = [
-  "Alex Skrindo - Me & You",
-  "Skylike - Dawn",
-  "Kaaze - Electro Boy",
-  "Jordan Schor - Home",
-  "Martin Garrix - Proxy",
-];
-const albumArtworks = ["_1", "_2", "_3", "_4", "_5"];
-const trackUrl = [
-  "https://singhimalaya.github.io/Codepen/assets/music/1.mp3",
-  "https://singhimalaya.github.io/Codepen/assets/music/2.mp3",
-  "https://singhimalaya.github.io/Codepen/assets/music/3.mp3",
-  "https://singhimalaya.github.io/Codepen/assets/music/4.mp3",
-  "https://singhimalaya.github.io/Codepen/assets/music/5.mp3",
-];
-
-interface TrackInfo {
-  album: string;
-  name: string;
-  artworkId: string;
-  url: string;
-}
-
-const fetchCloudinaryImages = async () => {
-  const response = await fetch("/api/cloudinary-images");
+const fetchCloudinary = async (): Promise<CloudinaryResource[]> => {
+  const response = await fetch("/api/cloudinary");
   if (!response.ok) {
     throw new Error("Network response was not ok");
   }
@@ -42,7 +13,7 @@ const fetchCloudinaryImages = async () => {
 export function useAudioPlayer() {
   const [audio, setAudio] = useState<HTMLAudioElement | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [currentTrackIndex, setCurrentTrackIndex] = useState(0); // Start with the first track
+  const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [currentTrackInfo, setCurrentTrackInfo] = useState<TrackInfo | null>(
@@ -53,23 +24,22 @@ export function useAudioPlayer() {
   const lastUpdateTimeRef = useRef<number>(0);
 
   const {
-    data: cloudinaryImages,
+    data: cloudinary,
     error: cloudinaryError,
-    isLoading: isLoadingCloudinaryImages,
-  } = useQuery({
-    queryKey: ["cloudinaryImages"],
-    queryFn: fetchCloudinaryImages,
+    isLoading: isLoadingCloudinary, // @typescript-eslint/no-unused-vars (일단 유지)
+  } = useQuery<CloudinaryResource[], Error>({
+    queryKey: ["cloudinary"],
+    queryFn: fetchCloudinary,
   });
 
-  // 예시: 가져온 이미지 데이터 사용
   useEffect(() => {
-    if (cloudinaryImages) {
-      console.log("Cloudinary Images:", cloudinaryImages);
+    if (cloudinary) {
+      console.log("Cloudinary :", cloudinary);
     }
     if (cloudinaryError) {
-      console.error("Error fetching Cloudinary images:", cloudinaryError);
+      console.error("Error fetching Cloudinary :", cloudinaryError);
     }
-  }, [cloudinaryImages, cloudinaryError]);
+  }, [cloudinary, cloudinaryError]);
 
   // Initialize Audio element
   useEffect(() => {
@@ -78,7 +48,7 @@ export function useAudioPlayer() {
     setAudio(audioInstance);
 
     return () => {
-      audioInstance.pause(); // Stop playback
+      audioInstance.pause();
       if (buffIntervalRef.current) {
         clearInterval(buffIntervalRef.current);
       }
@@ -86,34 +56,43 @@ export function useAudioPlayer() {
   }, []);
 
   useEffect(() => {
-    if (audio && currentTrackIndex >= 0 && currentTrackIndex < albums.length) {
+    if (
+      audio &&
+      cloudinary &&
+      cloudinary.length > 0 &&
+      currentTrackIndex >= 0 &&
+      currentTrackIndex < cloudinary.length
+    ) {
+      const currentResource = cloudinary[currentTrackIndex];
       const trackInfo: TrackInfo = {
-        album: albums[currentTrackIndex],
-        name: trackNames[currentTrackIndex],
-        artworkId: albumArtworks[currentTrackIndex],
-        url: trackUrl[currentTrackIndex],
+        album: currentResource.context?.caption || "Unknown Album",
+        name: currentResource.title || "Unknown Track",
+        artworkId: currentResource.album_secure_url,
+        url: currentResource.secure_url,
+        producer: currentResource.producer || "Unknown Artist",
       };
       setCurrentTrackInfo(trackInfo);
       if (audio.src !== trackInfo.url) {
         audio.src = trackInfo.url;
-        // Reset time/duration for new track
         setCurrentTime(0);
         setDuration(0);
-        // Decide if it should autoplay when track changes (e.g., after 'next')
-        // For now, it requires explicit play
       }
-    } else {
-      setCurrentTrackInfo(null); // Index out of bounds
+    } else if (cloudinary && cloudinary.length === 0) {
+      setCurrentTrackInfo(null); // 데이터는 로드되었지만 트랙이 없는 경우
+    } else if (
+      !isLoadingCloudinary &&
+      (!cloudinary || cloudinary.length === 0)
+    ) {
+      // 로딩이 끝났고, 이미지가 없거나 로드에 실패한 경우 (오류는 cloudinaryError로 처리)
+      setCurrentTrackInfo(null);
     }
-  }, [audio, currentTrackIndex, cloudinaryImages]); // cloudinaryImages를 의존성 배열에 추가
+  }, [audio, currentTrackIndex, cloudinary, isLoadingCloudinary]);
 
-  // Audio Event Listeners Setup
   useEffect(() => {
     if (!audio) return;
 
     const handleTimeUpdate = () => {
       setCurrentTime(audio.currentTime);
-      // Basic buffering check
       const now = Date.now();
       if (isPlaying && now - lastUpdateTimeRef.current > 1000) {
         setIsBuffering(true);
@@ -124,7 +103,6 @@ export function useAudioPlayer() {
     };
 
     const handleDurationChange = () => {
-      // Duration might be NaN initially or Infinity for streams
       if (!isNaN(audio.duration) && isFinite(audio.duration)) {
         setDuration(audio.duration);
       } else {
@@ -134,26 +112,23 @@ export function useAudioPlayer() {
 
     const handlePlay = () => {
       setIsPlaying(true);
-      setIsBuffering(false); // Assume not buffering when play starts
-      lastUpdateTimeRef.current = Date.now(); // Reset buffering check timer
+      setIsBuffering(false);
+      lastUpdateTimeRef.current = Date.now();
     };
 
     const handlePause = () => {
       setIsPlaying(false);
       setIsBuffering(false);
-      if (buffIntervalRef.current) clearInterval(buffIntervalRef.current); // Clear interval on pause
+      if (buffIntervalRef.current) clearInterval(buffIntervalRef.current);
     };
 
     const handleEnded = () => {
-      // Simple auto-play next track
-      if (currentTrackIndex < albums.length - 1) {
+      if (cloudinary && currentTrackIndex < cloudinary.length - 1) {
         setCurrentTrackIndex((prevIndex) => prevIndex + 1);
-        // Need to explicitly call play for the next track after state update
-        // This might require another useEffect or adjustment
       } else {
-        setIsPlaying(false); // Stop at the end of the playlist
-        setCurrentTrackIndex(0); // Optionally loop back to start or stay
-        audio.currentTime = 0; // Reset time
+        setIsPlaying(false);
+        setCurrentTrackIndex(0);
+        if (audio) audio.currentTime = 0;
       }
     };
 
@@ -201,7 +176,7 @@ export function useAudioPlayer() {
       audio.removeEventListener("playing", handlePlaying);
       if (buffIntervalRef.current) clearInterval(buffIntervalRef.current);
     };
-  }, [audio, isPlaying, currentTrackIndex]); // Dependencies
+  }, [audio, isPlaying, currentTrackIndex, cloudinary]); // cloudinary 추가
 
   // Auto-play next track after state update (triggered by 'ended' handler)
   useEffect(() => {
@@ -243,33 +218,27 @@ export function useAudioPlayer() {
   }, [audio, play, pause]);
 
   const nextTrack = useCallback(() => {
-    setCurrentTrackIndex((prevIndex) => (prevIndex + 1) % albums.length); // Loop back
-    // Should it auto-play? If yes, need to handle async state update and play()
-    // Current setup: state update triggers useEffect -> changes src -> needs explicit play()
-    // We might need to set a flag or call play() conditionally after index change.
-    // For now, rely on the 'ended' handler's logic or require manual play.
-    // Or, ensure play() is called if it was playing before.
-    // For manual next/prev, let's reset to paused unless we add explicit logic
-    // pause(); // Pause when manually changing track
-  }, [isPlaying /*pause*/]);
+    if (!cloudinary || cloudinary.length === 0) return;
+    setCurrentTrackIndex((prevIndex) => (prevIndex + 1) % cloudinary.length);
+    // 자동 재생 로직은 현재 'ended' 핸들러 및 isPlaying 상태에 의존.
+    // 수동으로 다음/이전 트랙 시 재생 상태를 유지하고 싶다면 추가 로직 필요
+    // 예: if (isPlaying) audio?.play();
+  }, [cloudinary]);
 
   const prevTrack = useCallback(() => {
+    if (!cloudinary || cloudinary.length === 0) return;
     setCurrentTrackIndex(
-      (prevIndex) => (prevIndex - 1 + albums.length) % albums.length
-    ); // Loop back
-    // Similar auto-play consideration as nextTrack
-    // if (isPlaying) {
-    //    pause();
-    // }
-  }, [isPlaying /*pause*/]);
+      (prevIndex) => (prevIndex - 1 + cloudinary.length) % cloudinary.length
+    );
+    // 예: if (isPlaying) audio?.play();
+  }, [cloudinary]);
 
   const seek = useCallback(
     (time: number) => {
       if (audio && !isNaN(time) && isFinite(time)) {
-        // Ensure seek time is within bounds
         const newTime = Math.max(0, Math.min(time, duration));
         audio.currentTime = newTime;
-        setCurrentTime(newTime); // Optimistically update state
+        setCurrentTime(newTime);
       }
     },
     [audio, duration]
@@ -289,15 +258,11 @@ export function useAudioPlayer() {
     isBuffering,
     setIsBuffering,
     togglePlayPause,
-    play, // Expose individual controls if needed
+    play,
     pause,
     nextTrack,
     prevTrack,
     seek,
-    // Expose refs if the component needs direct access (less ideal)
-    // playerTrackRef,
-    // albumArtRef,
-    // seekBarRef,
-    audioElement: audio, // Expose audio element itself (use carefully)
+    audioElement: audio,
   };
 }

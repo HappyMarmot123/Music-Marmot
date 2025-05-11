@@ -157,6 +157,7 @@ export interface TrackInfo {
 
 export interface CloudinaryResource {
   id: string;
+  asset_id: string;
   created_at: string;
   status: string;
   public_id: string;

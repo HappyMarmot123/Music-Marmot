@@ -3,11 +3,11 @@
 import React from "react";
 import { motion } from "framer-motion";
 import Github from "@/component/github";
-import ParallaxText from "@/component/parallaxText";
 import Earth from "@/component/earth";
 import MyArticle from "@/layout/myArticle";
 import MusicList from "@/layout/musicList";
 import { SpotifyList } from "@/layout/spotifyList";
+import ParallaxText from "@/component/parallaxText";
 
 const Page: React.FC = () => {
   return (

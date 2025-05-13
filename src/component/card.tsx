@@ -28,7 +28,8 @@ const Card = ({ card }: { card: TrackObjectFull | CloudinaryResource }) => {
 
   return (
     <button
-      onClick={() => {
+      onClick={(e) => {
+        e.preventDefault();
         if (!isTrack) {
           handleOnClickCard(card.asset_id);
         }

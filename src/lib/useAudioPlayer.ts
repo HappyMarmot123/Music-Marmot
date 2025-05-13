@@ -19,6 +19,8 @@ export function useAudioPlayer() {
     cloudinaryData: cloudinary,
     cloudinaryError,
     isLoadingCloudinary,
+    currentTrackAssetId,
+    handleOnClickCard,
   } = useStore();
 
   /* Initialize Audio element */
@@ -104,7 +106,7 @@ export function useAudioPlayer() {
       if (!isNaN(audio.duration) && isFinite(audio.duration)) {
         setDuration(audio.duration);
       } else {
-        setDuration(0); // Reset or handle invalid duration
+        setDuration(0);
       }
     };
 
@@ -140,12 +142,12 @@ export function useAudioPlayer() {
 
     audio.addEventListener("timeupdate", handleTimeUpdate);
     audio.addEventListener("durationchange", handleDurationChange);
-    audio.addEventListener("loadedmetadata", handleDurationChange); // Also useful
+    audio.addEventListener("loadedmetadata", handleDurationChange);
     audio.addEventListener("play", handlePlay);
     audio.addEventListener("pause", handlePause);
     audio.addEventListener("ended", handleEnded);
-    audio.addEventListener("waiting", handleWaiting); // Buffering started
-    audio.addEventListener("playing", handlePlaying); // Buffering ended
+    audio.addEventListener("waiting", handleWaiting);
+    audio.addEventListener("playing", handlePlaying);
 
     // Buffering check interval (more robust) - might be redundant with 'waiting'/'playing'
     // Consider if this specific interval logic is still needed from the original code
@@ -162,7 +164,6 @@ export function useAudioPlayer() {
     }, 500); // Check every 500ms
     */
 
-    // Cleanup listeners when audio object changes or component unmounts
     return () => {
       audio.removeEventListener("timeupdate", handleTimeUpdate);
       audio.removeEventListener("durationchange", handleDurationChange);
@@ -187,6 +188,18 @@ export function useAudioPlayer() {
       audio.play().catch((e) => console.error("Autoplay failed:", e));
     }
   }, [audio, isPlaying, currentTrackInfo]);
+
+  /* handle track by assetId *handleOnClickCard()* function */
+  useEffect(() => {
+    if (currentTrackAssetId) {
+      cloudinary?.forEach((asset, idx) => {
+        if (asset.asset_id === currentTrackAssetId) {
+          setCurrentTrackIndex(idx);
+        }
+      });
+      handleOnClickCard(null); // reset currentTrackAssetId
+    }
+  }, [currentTrackAssetId]);
 
   // --- Control Functions ---
   const play = useCallback(() => {

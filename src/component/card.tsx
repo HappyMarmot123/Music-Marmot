@@ -2,7 +2,10 @@
 
 import { CloudinaryResource, TrackObjectFull } from "@/type/dataType";
 import Image from "next/image";
+import useStore from "@/store/zustandStore";
+
 const Card = ({ card }: { card: TrackObjectFull | CloudinaryResource }) => {
+  const { handleOnClickCard } = useStore();
   const isTrack = "album" in card;
 
   const artistName = isTrack
@@ -25,7 +28,12 @@ const Card = ({ card }: { card: TrackObjectFull | CloudinaryResource }) => {
 
   return (
     <button
-      onClick={() => {}}
+      onClick={(e) => {
+        e.preventDefault();
+        if (!isTrack) {
+          handleOnClickCard(card.asset_id);
+        }
+      }}
       rel="noopener noreferrer"
       className="group relative h-48 w-48 md:h-64 md:w-64 lg:h-72 lg:w-72 p-3 md:p-4 overflow-hidden bg-neutral-800/50 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 flex flex-col justify-between flex-shrink-0"
     >

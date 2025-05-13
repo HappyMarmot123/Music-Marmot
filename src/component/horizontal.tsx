@@ -17,9 +17,8 @@ export default function Horizontal({ data }: HorizontalProps) {
     <div className="relative">
       <Swiper
         modules={[Navigation, A11y]}
-        spaceBetween={16}
+        // spaceBetween={16}  마진값으로 들어가는데 가끔 공백 스크롤 슬라이드가 잘 안됨됨
         slidesPerView="auto"
-        slidesPerGroup={2}
         navigation={{
           nextEl: ".swiper-button-next",
           prevEl: ".swiper-button-prev",
@@ -29,7 +28,7 @@ export default function Horizontal({ data }: HorizontalProps) {
         {data &&
           data.length > 0 &&
           data.map((item) => (
-            <SwiperSlide key={item.id} className="!w-auto !select-none">
+            <SwiperSlide key={item.id} className="!select-none !w-auto !pr-8">
               <Card card={item} />
             </SwiperSlide>
           ))}

@@ -94,8 +94,7 @@ export default function ListModal() {
 
   return (
     <div className="fixed inset-0 m-auto w-[90%] h-[90%] grid grid-cols-5 bg-[#483544aa] backdrop-blur-[10px] border border-white/50 rounded-2xl shadow-[0_0.5px_0_1px_rgba(255,255,255,0.2)_inset,0_1px_0_0_rgba(255,255,255,0.6)_inset,0_4px_16px_rgba(0,0,0,0.1)] z-30 text-white overflow-hidden">
-      {/* 왼쪽 영역 - 현재 재생 중인 음악 정보 (2/5) */}
-      <div className="col-span-2 p-8 flex flex-col items-center border-r border-white/10">
+      <aside className="col-span-2 p-8 flex flex-col items-center border-r border-white/10">
         <div
           className="w-64 h-64 mt-4 relative"
           style={{
@@ -106,15 +105,13 @@ export default function ListModal() {
           <div className="w-full h-full bg-gray-700/50 animate-pulse rounded-xl"></div>
         </div>
 
-        <div className="mt-8 mb-4 flex justify-center space-x-8 w-full"></div>
+        <div className="mt-8 mb-4 flex justify-center space-x-8 w-full" />
 
-        {/* 음악 정보 */}
         <div className="w-full max-w-md">
           <h2 className="text-3xl font-bold mb-2">{currentTrack.title}</h2>
           <h3 className="text-xl text-gray-300 mb-4">{currentTrack.artist}</h3>
 
-          {/* 재생 진행 막대 */}
-          <div className="mt-6 mb-2">
+          <section aria-label="재생 진행 막대" className="mt-6 mb-2">
             <div className="w-full h-2 bg-white/20 rounded-full overflow-hidden">
               <div
                 className="h-full bg-white/70 rounded-full"
@@ -125,10 +122,12 @@ export default function ListModal() {
               <span>2:45</span>
               <span>4:17</span>
             </div>
-          </div>
+          </section>
 
-          {/* 재생 컨트롤 */}
-          <div className="mt-6 flex items-center justify-center space-x-4">
+          <section
+            aria-label="재생 컨트롤"
+            className="mt-6 flex items-center justify-center space-x-4"
+          >
             <button className="w-10 h-10 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 transition">
               <span className="text-xl">◀</span>
             </button>
@@ -138,11 +137,14 @@ export default function ListModal() {
             <button className="w-10 h-10 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 transition">
               <span className="text-xl">▶</span>
             </button>
-          </div>
+          </section>
 
-          <div className="mt-8 mb-4 flex justify-center space-x-8 w-full">
+          <section
+            aria-label="공유하기"
+            className="mt-8 mb-4 flex justify-center space-x-8 w-full"
+          >
             <button
-              className="flex items-center space-x-1 text-gray-300 hover:text-pink-500 transition"
+              className="flex items-center space-x-1 text-gray-300 hover:text-pink-500 p-2 rounded-xl transition bg-white/10"
               onClick={() => setIsLiked(!isLiked)}
             >
               <span className={`text-xl ${isLiked ? "text-pink-500" : ""}`}>
@@ -152,20 +154,21 @@ export default function ListModal() {
             </button>
 
             <button
-              className="flex items-center space-x-1 text-gray-300 hover:text-blue-500 transition"
+              className="flex items-center space-x-1 text-gray-300 hover:text-blue-500 p-2 rounded-xl transition bg-white/10"
               onClick={() => setShowShareModal(true)}
             >
               <span className="text-xl">↗</span>
               <span>공유하기</span>
             </button>
-          </div>
+          </section>
         </div>
-      </div>
+      </aside>
 
-      {/* 오른쪽 영역 - 음악 리스트 (3/5) */}
-      <div className="col-span-3 p-8 overflow-auto">
-        {/* 검색 영역 */}
-        <div className="flex items-center justify-between mb-6">
+      <aside className="col-span-3 p-8 overflow-auto">
+        <section
+          aria-label="검색하기"
+          className="flex items-center justify-between mb-6"
+        >
           <h2 className="text-2xl font-bold">재생 가능한 음악</h2>
 
           <div className="relative">
@@ -180,15 +183,14 @@ export default function ListModal() {
               🔍
             </span>
           </div>
-        </div>
+        </section>
 
-        <div className="space-y-3">
+        <section aria-label="음악 리스트" className="space-y-3">
           {trackList.map((track) => (
             <div
               key={track.id}
               className="flex items-center p-3 rounded-lg hover:bg-white/10 transition cursor-pointer"
             >
-              {/* 작은 스켈레톤 앨범 아트 */}
               <div className="w-12 h-12 bg-gray-700/50 animate-pulse rounded-md mr-4"></div>
 
               <div className="flex-1">
@@ -199,26 +201,27 @@ export default function ListModal() {
               <div className="text-gray-400 text-sm">{track.duration}</div>
             </div>
           ))}
-        </div>
-      </div>
+        </section>
+      </aside>
 
-      {/* 공유하기 모달 */}
       {showShareModal && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
+        <div
+          aria-label="공유하기 모달"
+          className="fixed inset-0 flex items-center justify-center bg-black/50 z-50"
+        >
           <div className="w-[400px] bg-[#483544] backdrop-blur-[10px] border border-white/50 rounded-xl p-6">
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-xl font-semibold">공유하기</h3>
               <button
                 className="w-8 h-8 rounded-xl bg-white/10 hover:bg-white/20 text-gray-300 hover:text-white transition-all grid place-items-center"
                 onClick={() => setShowShareModal(false)}
-                aria-label="닫기"
+                title="Close"
               >
                 <X size={18} strokeWidth={2.5} />
               </button>
             </div>
 
-            {/* URL 복사 필드 */}
-            <div className="flex mb-6">
+            <section aria-label="URL 복사" className="flex mb-6">
               <input
                 type="text"
                 value={window.location.href}
@@ -231,17 +234,16 @@ export default function ListModal() {
               >
                 복사
               </button>
-            </div>
+            </section>
 
-            {/* SNS 공유 버튼 */}
-            <div>
+            <section aria-label="SNS 공유 버튼" className="flex mb-6">
               <p className="mb-3 text-sm text-gray-300">SNS로 공유하기</p>
               <div className="flex space-x-4">
                 <button
                   className="relative w-10 h-10 rounded-xl flex items-center justify-center overflow-hidden bg-black hover:opacity-80 transition-opacity shadow-md hover:shadow-lg"
                   onClick={shareTwitter}
                   title="Share on X"
-                  aria-label="Share on X"
+                  aria-label="트위터 공유"
                 >
                   <Image
                     src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b7/X_logo.jpg/1200px-X_logo.jpg"
@@ -254,8 +256,8 @@ export default function ListModal() {
                   <button
                     className="relative w-10 h-10 rounded-xl flex items-center justify-center overflow-hidden bg-[#FEE500] hover:opacity-80 transition-opacity shadow-md hover:shadow-lg"
                     onClick={shareKakao}
-                    title="카카오톡으로 공유하기"
-                    aria-label="카카오톡으로 공유하기"
+                    title="Share on KakaoTalk"
+                    aria-label="카카오톡 공유"
                   >
                     <Image
                       src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/KakaoTalk_logo.svg/1024px-KakaoTalk_logo.svg.png"
@@ -266,7 +268,7 @@ export default function ListModal() {
                   </button>
                 )}
               </div>
-            </div>
+            </section>
           </div>
         </div>
       )}

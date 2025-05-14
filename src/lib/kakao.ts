@@ -6,7 +6,7 @@ https://developers.kakao.com/docs/latest/ko/javascript/getting-started
 - 윈도우 카카오객체 초기화를 단 한번만 진행합니다
 */
 
-let isInitialized = false;
+let isInitialized: boolean = false;
 
 interface KakaoShareOptions {
   objectType: string;

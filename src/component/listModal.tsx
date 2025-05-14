@@ -1,5 +1,7 @@
 import { useState } from "react";
-import { initKakao } from "kakao-js-sdk";
+import { shareWithKakao } from "@/lib/kakao";
+import Image from "next/image";
+import { X } from "lucide-react";
 
 export default function ListModal() {
   // 더미 데이터 - 현재 재생 중인 음악
@@ -67,33 +69,27 @@ export default function ListModal() {
   };
 
   const shareKakao = () => {
-    initKakao(process.env.NEXT_PUBLIC_KAKAO_JAVASCRIPT_KEY as string).then(
-      (isloaded) => {
-        if (!isloaded) return;
-
-        window.Kakao.Share.sendDefault({
-          objectType: "feed",
-          content: {
-            title: "Latin by Trending Music",
-            description: "지금 음악을 들어보세요!",
-            imageUrl: "앨범_이미지_URL",
-            link: {
-              mobileWebUrl: window.location.href,
-              webUrl: window.location.href,
-            },
+    shareWithKakao({
+      objectType: "feed",
+      content: {
+        title: "Latin by Trending Music",
+        description: "지금 음악을 들어보세요!",
+        imageUrl: "앨범_이미지_URL",
+        link: {
+          mobileWebUrl: window.location.href,
+          webUrl: window.location.href,
+        },
+      },
+      buttons: [
+        {
+          title: "웹으로 보기",
+          link: {
+            mobileWebUrl: window.location.href,
+            webUrl: window.location.href,
           },
-          buttons: [
-            {
-              title: "웹으로 보기",
-              link: {
-                mobileWebUrl: window.location.href,
-                webUrl: window.location.href,
-              },
-            },
-          ],
-        });
-      }
-    );
+        },
+      ],
+    });
   };
 
   return (
@@ -156,7 +152,7 @@ export default function ListModal() {
             </button>
 
             <button
-              className="flex items-center space-x-1 text-gray-300 hover:text-blue-400 transition"
+              className="flex items-center space-x-1 text-gray-300 hover:text-blue-500 transition"
               onClick={() => setShowShareModal(true)}
             >
               <span className="text-xl">↗</span>
@@ -213,10 +209,11 @@ export default function ListModal() {
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-xl font-semibold">공유하기</h3>
               <button
-                className="text-gray-400 hover:text-white"
+                className="w-8 h-8 rounded-xl bg-white/10 hover:bg-white/20 text-gray-300 hover:text-white transition-all grid place-items-center"
                 onClick={() => setShowShareModal(false)}
+                aria-label="닫기"
               >
-                ✕
+                <X size={18} strokeWidth={2.5} />
               </button>
             </div>
 
@@ -241,17 +238,33 @@ export default function ListModal() {
               <p className="mb-3 text-sm text-gray-300">SNS로 공유하기</p>
               <div className="flex space-x-4">
                 <button
-                  className="w-12 h-12 bg-[#1DA1F2] hover:bg-[#1DA1F2]/80 rounded-full flex items-center justify-center transition"
+                  className="relative w-10 h-10 rounded-xl flex items-center justify-center overflow-hidden bg-black hover:opacity-80 transition-opacity shadow-md hover:shadow-lg"
                   onClick={shareTwitter}
+                  title="Share on X"
+                  aria-label="Share on X"
                 >
-                  <span className="text-lg font-bold">X</span>
+                  <Image
+                    src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b7/X_logo.jpg/1200px-X_logo.jpg"
+                    alt="X.com logo"
+                    fill
+                    className="object-cover"
+                  />
                 </button>
-                <button
-                  className="w-12 h-12 bg-[#FEE500] hover:bg-[#FEE500]/80 rounded-full flex items-center justify-center transition text-black"
-                  onClick={shareKakao}
-                >
-                  <span className="text-lg">K</span>
-                </button>
+                {window?.Kakao && (
+                  <button
+                    className="relative w-10 h-10 rounded-xl flex items-center justify-center overflow-hidden bg-[#FEE500] hover:opacity-80 transition-opacity shadow-md hover:shadow-lg"
+                    onClick={shareKakao}
+                    title="카카오톡으로 공유하기"
+                    aria-label="카카오톡으로 공유하기"
+                  >
+                    <Image
+                      src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/KakaoTalk_logo.svg/1024px-KakaoTalk_logo.svg.png"
+                      alt="카카오톡 로고"
+                      fill
+                      className="object-cover"
+                    />
+                  </button>
+                )}
               </div>
             </div>
           </div>

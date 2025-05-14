@@ -108,7 +108,7 @@ export default function AudioPlayer() {
       <div
         ref={draggableRef}
         id="player-container"
-        className="fixed w-[344px] h-[80px] mx-auto mt-[-4px] z-50 cursor-grab active:cursor-grabbing select-none"
+        className="fixed w-[344px] h-[80px] mx-auto mt-[-4px] z-20 cursor-grab active:cursor-grabbing select-none"
       >
         <div id="player" className="relative h-full z-[3]">
           <PlayerTrackDetails

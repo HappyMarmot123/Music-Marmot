@@ -236,7 +236,7 @@ export default function ListModal() {
               </button>
             </section>
 
-            <section aria-label="SNS 공유 버튼" className="flex mb-6">
+            <section aria-label="SNS 공유 버튼">
               <p className="mb-3 text-sm text-gray-300">SNS로 공유하기</p>
               <div className="flex space-x-4">
                 <button

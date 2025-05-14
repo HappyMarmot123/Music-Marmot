@@ -125,6 +125,7 @@ export function useAudioPlayer() {
     const handleEnded = () => {
       if (cloudinary && currentTrackIndex < cloudinary.length - 1) {
         setCurrentTrackIndex((prevIndex) => prevIndex + 1);
+        handlePlay();
       } else {
         setIsPlaying(false);
         setCurrentTrackIndex(0);

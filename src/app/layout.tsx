@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "@/style/global.css?v=2";
 import { Providers } from "@/provider/QueryClientProvider";
 import ClientLayout from "@/layout/ClientLayout";
+import Script from "next/script";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -11,6 +12,10 @@ export const metadata: Metadata = {
 const RootLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   return (
     <html lang="en" suppressHydrationWarning={true}>
+      <Script
+        src="https://developers.kakao.com/sdk/js/kakao.js"
+        strategy="afterInteractive"
+      />
       <body>
         <Providers>
           <ClientLayout>{children}</ClientLayout>

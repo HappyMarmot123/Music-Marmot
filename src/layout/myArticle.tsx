@@ -2,6 +2,7 @@ import Cursor from "@/component/cursor";
 import DustySnow from "@/component/dustySnow";
 import Intro from "@/component/intro";
 import AudioPlayer from "@/layout/audioPlayer";
+import ListModal from "@/component/listModal";
 import { motion, useScroll, useSpring, useTransform } from "framer-motion";
 import { useRef } from "react";
 
@@ -49,6 +50,7 @@ export default function MyArticle({ children }: { children: React.ReactNode }) {
         <DustySnow />
         <Cursor />
         <AudioPlayer />
+        <ListModal />
         {/* <Intro /> */}
         <article className="my-gradient fixed w-screen pointer-events-none" />
         {children}

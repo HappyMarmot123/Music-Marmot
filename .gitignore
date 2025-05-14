@@ -12,6 +12,7 @@ build
 *.pem
 README.txt
 spotify.http
+middleware.ts
 
 # env files (can opt-in for committing if needed)
 .env*

@@ -1,15 +1,15 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { X } from "lucide-react";
 import useStore from "@/store/zustandStore";
 import { CloudinaryResource } from "@/type/dataType";
 import ShareModal from "@/component/shareModal";
 import Image from "next/image";
 import ModalMusicList from "@/component/modalMusicList";
-import Share from "@/component/share";
-export default function ListModal() {
-  const { cloudinaryData, cloudinaryError, isLoadingCloudinary } = useStore();
+import { likeType } from "@/type/dataType";
 
-  // 더미 데이터 - 현재 재생 중인 음악
+export default function ListModal() {
+  const { cloudinaryData: data, isLoadingCloudinary: loading } = useStore();
+
   const [currentTrack] = useState({
     id: "1",
     title: "Dreams",
@@ -18,15 +18,36 @@ export default function ListModal() {
     progress: 65, // 현재 재생 진행률(%)
   });
 
-  // 더미 데이터 - 재생 가능한 음악 리스트
-  const [trackList] = useState<CloudinaryResource[]>(cloudinaryData || []);
+  const [trackList, setTrackList] = useState<CloudinaryResource[]>([]);
+  const [isCursorHidden, setIsCursorHidden] = useState(true);
 
   const [searchTerm, setSearchTerm] = useState("");
-  const [isLiked, setIsLiked] = useState(false);
+  const [isLiked, setIsLiked] = useState<likeType[]>([]);
   const [showShareModal, setShowShareModal] = useState(false);
 
+  useEffect(() => {
+    if (data) {
+      setTrackList(data);
+    }
+  }, [data]);
+
+  useEffect(() => {
+    const secondaryCursor = document.querySelector(".secondary-cursor");
+    if (secondaryCursor) {
+      if (isCursorHidden) {
+        secondaryCursor.classList.add("hidden");
+      } else {
+        secondaryCursor.classList.remove("hidden");
+      }
+    }
+  }, [isCursorHidden]);
+
   return (
-    <div className="fixed inset-0 m-auto w-[90%] h-[90%] grid grid-cols-5 bg-[#483544aa] backdrop-blur-[10px] border border-white/50 rounded-2xl shadow-[0_0.5px_0_1px_rgba(255,255,255,0.2)_inset,0_1px_0_0_rgba(255,255,255,0.6)_inset,0_4px_16px_rgba(0,0,0,0.1)] z-30 text-white overflow-hidden">
+    <div
+      className="grid grid-cols-4 fixed inset-0 m-auto w-[90%] h-[90%]  
+              bg-[#483544aa] backdrop-blur-[10px] border border-white/50 rounded-2xl text-white z-40 
+              shadow-[0_0.5px_0_1px_rgba(255,255,255,0.2)_inset,0_1px_0_0_rgba(255,255,255,0.6)_inset,0_4px_16px_rgba(0,0,0,0.1)]   overflow-hidden"
+    >
       {showShareModal && <ShareModal setShowShareModal={setShowShareModal} />}
 
       <aside className="col-span-2 p-8 flex flex-col items-center border-r border-white/10">
@@ -76,16 +97,28 @@ export default function ListModal() {
             aria-label="공유하기"
             className="mt-8 mb-4 flex justify-center space-x-8 w-full"
           >
-            <Share
-              isLiked={isLiked}
-              setIsLiked={setIsLiked}
-              setShowShareModal={setShowShareModal}
-            />
+            <button
+              className="flex items-center space-x-1 text-gray-300 hover:text-pink-500 p-2 rounded-xl transition bg-white/10"
+              // onClick={() => setIsLiked(!isLiked)}
+            >
+              <span className={`text-xl ${isLiked ? "text-pink-500" : ""}`}>
+                {isLiked ? "♥" : "♡"}
+              </span>
+              <span>좋아요</span>
+            </button>
+
+            <button
+              className="flex items-center space-x-1 text-gray-300 hover:text-blue-500 p-2 rounded-xl transition bg-white/10"
+              onClick={() => setShowShareModal(true)}
+            >
+              <span className="text-xl">↗</span>
+              <span>공유하기</span>
+            </button>
           </section>
         </div>
       </aside>
 
-      <aside className="col-span-3 p-8 overflow-auto">
+      <aside className="col-span-2 p-8 overflow-auto">
         <section
           aria-label="검색하기"
           className="flex items-center justify-between mb-6"
@@ -108,8 +141,10 @@ export default function ListModal() {
 
         <section aria-label="음악 리스트" className="space-y-3">
           <ModalMusicList
-            isLoadingCloudinary={isLoadingCloudinary}
+            loading={loading}
             trackList={trackList}
+            isLiked={isLiked}
+            setIsLiked={setIsLiked}
           />
         </section>
       </aside>

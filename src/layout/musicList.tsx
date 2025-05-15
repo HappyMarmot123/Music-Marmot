@@ -2,14 +2,12 @@
 
 import React, { useEffect } from "react";
 import Horizontal from "@/component/horizontal";
-import useStore from "@/store/zustandStore";
+import useStore from "@/store/cloudinaryStore";
 
 export default function MusicList() {
-  const {
-    cloudinaryData: data,
-    cloudinaryError: error,
-    isLoadingCloudinary: loading,
-  } = useStore();
+  const data = useStore((state) => state.cloudinaryData);
+  const error = useStore((state) => state.cloudinaryError);
+  const loading = useStore((state) => state.isLoadingCloudinary);
 
   useEffect(() => {
     if (error) {

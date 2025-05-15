@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { X } from "lucide-react";
-import useStore from "@/store/zustandStore";
+import useStore from "@/store/cloudinaryStore";
 import { CloudinaryResource } from "@/type/dataType";
 import ShareModal from "@/component/shareModal";
 import Image from "next/image";
@@ -8,7 +8,8 @@ import ModalMusicList from "@/component/modalMusicList";
 import { likeType } from "@/type/dataType";
 
 export default function ListModal() {
-  const { cloudinaryData: data, isLoadingCloudinary: loading } = useStore();
+  const data = useStore((state) => state.cloudinaryData);
+  const loading = useStore((state) => state.isLoadingCloudinary);
 
   const [currentTrack] = useState({
     id: "1",

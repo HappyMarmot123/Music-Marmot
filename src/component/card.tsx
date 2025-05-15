@@ -2,10 +2,10 @@
 
 import { CloudinaryResource, TrackObjectFull } from "@/type/dataType";
 import Image from "next/image";
-import useStore from "@/store/zustandStore";
+import useTrackStore from "@/store/trackStore";
 
 const Card = ({ card }: { card: TrackObjectFull | CloudinaryResource }) => {
-  const { handleOnClickCard } = useStore();
+  const { handleOnClickCard } = useTrackStore();
   const isTrack = "album" in card;
 
   const artistName = isTrack

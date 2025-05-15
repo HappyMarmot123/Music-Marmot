@@ -2,16 +2,18 @@
 
 import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
-import useStore from "@/store/zustandStore";
+import useStore from "@/store/cloudinaryStore";
 import type { CloudinaryResource } from "@/type/dataType";
 import { fetchCloudinary } from "@/lib/util";
 
 const ClientLayout: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const { setCloudinaryData, setCloudinaryError, setIsLoadingCloudinary } =
-    useStore();
-
+  const setCloudinaryData = useStore((state) => state.setCloudinaryData);
+  const setCloudinaryError = useStore((state) => state.setCloudinaryError);
+  const setIsLoadingCloudinary = useStore(
+    (state) => state.setIsLoadingCloudinary
+  );
   const { data, error, isLoading } = useQuery<CloudinaryResource[], Error>({
     queryKey: ["cloudinary"],
     queryFn: fetchCloudinary,
@@ -20,24 +22,21 @@ const ClientLayout: React.FC<{ children: React.ReactNode }> = ({
 
   useEffect(() => {
     setIsLoadingCloudinary(isLoading);
+  }, [isLoading, setIsLoadingCloudinary]);
 
+  useEffect(() => {
     if (data) {
       console.log("Cloudinary data loaded in layout:", data.length);
       setCloudinaryData(data);
     }
+  }, [data, setCloudinaryData]);
 
+  useEffect(() => {
     if (error) {
       console.error("Error fetching Cloudinary in layout:", error);
       setCloudinaryError(error);
     }
-  }, [
-    data,
-    error,
-    isLoading,
-    setCloudinaryData,
-    setCloudinaryError,
-    setIsLoadingCloudinary,
-  ]);
+  }, [error, setCloudinaryError]);
 
   return <>{children}</>;
 };

@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import type { TrackInfo } from "@/type/dataType";
-import useStore from "@/store/zustandStore";
+import useStore from "@/store/cloudinaryStore";
+import useTrackStore from "@/store/trackStore";
 
 export function useAudioPlayer() {
   const [audio, setAudio] = useState<HTMLAudioElement | null>(null);
@@ -15,14 +16,14 @@ export function useAudioPlayer() {
   const buffIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const lastUpdateTimeRef = useRef<number>(0);
 
-  const {
-    cloudinaryData: cloudinary,
-    cloudinaryError,
-    isLoadingCloudinary,
-    currentTrackAssetId,
-    handleOnClickCard,
-  } = useStore();
+  const cloudinary = useStore((state) => state.cloudinaryData);
+  const cloudinaryError = useStore((state) => state.cloudinaryError);
+  const isLoadingCloudinary = useStore((state) => state.isLoadingCloudinary);
 
+  const currentTrackAssetId = useTrackStore(
+    (state) => state.currentTrackAssetId
+  );
+  const handleOnClickCard = useTrackStore((state) => state.handleOnClickCard);
   /* Initialize Audio element */
   useEffect(() => {
     const audioInstance = new Audio();

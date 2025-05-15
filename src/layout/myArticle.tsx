@@ -2,7 +2,7 @@ import Cursor from "@/component/cursor";
 import DustySnow from "@/component/dustySnow";
 import Intro from "@/component/intro";
 import AudioPlayer from "@/layout/audioPlayer";
-import ListModal from "@/component/listModal";
+import ListModal from "@/layout/listModal";
 import { motion, useScroll, useSpring, useTransform } from "framer-motion";
 import { useRef } from "react";
 

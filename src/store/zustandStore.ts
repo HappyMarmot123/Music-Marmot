@@ -4,10 +4,10 @@ import type { CloudinaryResource } from "@/type/dataType";
 interface AppState {
   cloudinaryData: CloudinaryResource[] | null;
   cloudinaryError: Error | null;
-  isLoadingCloudinary: boolean;
+  isLoadingCloudinary: boolean | null;
   setCloudinaryData: (data: CloudinaryResource[] | null) => void;
   setCloudinaryError: (error: Error | null) => void;
-  setIsLoadingCloudinary: (isLoading: boolean) => void;
+  setIsLoadingCloudinary: (isLoading: boolean | null) => void;
 
   currentTrackAssetId: string | null;
   handleOnClickCard: (paramAssetId: string | null) => void;
@@ -16,7 +16,7 @@ interface AppState {
 const useStore = create<AppState>((set) => ({
   cloudinaryData: null,
   cloudinaryError: null,
-  isLoadingCloudinary: false,
+  isLoadingCloudinary: null,
 
   setCloudinaryData: (data) => set({ cloudinaryData: data }),
   setCloudinaryError: (error) => set({ cloudinaryError: error }),

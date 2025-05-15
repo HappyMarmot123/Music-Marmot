@@ -1,16 +1,43 @@
-import { CloudinaryResource } from "@/type/dataType";
+import {
+  CloudinaryResource,
+  ModalMusicListProps,
+  likeType,
+} from "@/type/dataType";
+import { Heart } from "lucide-react";
 import Image from "next/image";
+import clsx from "clsx";
+import { SetStateAction } from "react";
 
 export default function ModalMusicList({
-  isLoadingCloudinary,
+  loading,
   trackList,
-}: {
-  isLoadingCloudinary: boolean;
-  trackList: CloudinaryResource[];
-}) {
+  isLiked,
+  setIsLiked,
+}: ModalMusicListProps) {
+  function handleOnLike(trackId: string): SetStateAction<unknown> {
+    if (isLiked.length === 0) {
+      return setIsLiked([{ id: trackId, isLike: true }]);
+    }
+
+    const dummy = [...isLiked];
+    const clickIdx = dummy.findIndex((item) => item.id === trackId);
+    const exist = dummy[clickIdx];
+
+    if (clickIdx !== -1) {
+      dummy[clickIdx] = { ...exist, isLike: !exist.isLike };
+    } else {
+      dummy.push({ id: trackId, isLike: true });
+    }
+    return setIsLiked(dummy);
+  }
+
+  const showLoading = loading !== false;
+  const showTrackList = loading === false && trackList.length > 0;
+  const showEmptyResult = loading === false && trackList.length === 0;
+
   return (
     <>
-      {isLoadingCloudinary && (
+      {showLoading && (
         <div className="animate-pulse space-y-3">
           {[...Array(5)].map((_, index) => (
             <div
@@ -27,29 +54,44 @@ export default function ModalMusicList({
           ))}
         </div>
       )}
-      {trackList.length > 0 &&
-        trackList.map((track) => (
-          <div
-            key={track.id}
-            className="flex items-center p-3 rounded-lg hover:bg-white/10 transition cursor-pointer"
-          >
-            <Image
-              src={track.album_secure_url as string}
-              alt={track.title as string}
-              width={48}
-              height={48}
-              className="rounded-md mr-4"
-            />
+      {showTrackList && (
+        <>
+          {trackList.map((track) => (
+            <div
+              key={track.id}
+              className="flex items-center p-3 rounded-lg hover:bg-white/10 transition cursor-pointer"
+            >
+              <Image
+                src={track.album_secure_url as string}
+                alt={track.title as string}
+                width={48}
+                height={48}
+                className="rounded-md mr-4"
+              />
 
-            <div className="flex-1">
-              <h3 className="font-medium">{track.title}</h3>
-              <p className="text-sm text-gray-400">{track.title}</p>
+              <div className="flex-1">
+                <h3 className="font-medium">{track.title}</h3>
+                <p className="text-sm text-gray-400">{track.producer}</p>
+              </div>
+
+              <div className="flex items-center space-x-2">
+                <button className="p-1" onClick={() => handleOnLike(track.id)}>
+                  <Heart
+                    className={clsx(
+                      "w-4 h-4 text-gray-400 hover:text-pink-500 transition-colors",
+                      isLiked.some(
+                        (item) => item.id === track.id && item.isLike
+                      ) && "text-pink-500 fill-pink-500/30"
+                    )}
+                  />
+                </button>
+                <span className="text-gray-400 text-sm">128</span>
+              </div>
             </div>
-
-            <div className="text-gray-400 text-sm">{track.producer}</div>
-          </div>
-        ))}
-      {trackList.length === 0 && (
+          ))}
+        </>
+      )}
+      {showEmptyResult && (
         <div className="flex items-center justify-center h-full">
           <p className="text-gray-400 text-sm">검색 결과가 없습니다.</p>
         </div>

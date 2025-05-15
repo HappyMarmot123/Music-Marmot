@@ -174,3 +174,15 @@ export interface CloudinaryResource {
   producer: string | null;
   album_secure_url: string | null;
 }
+
+export interface likeType {
+  id: string;
+  isLike: boolean;
+}
+
+export interface ModalMusicListProps {
+  loading: unknown;
+  trackList: CloudinaryResource[];
+  isLiked: likeType[];
+  setIsLiked: (isLiked: likeType[]) => void;
+}

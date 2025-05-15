@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import type { TrackInfo } from "@/type/dataType";
 import useStore from "@/store/cloudinaryStore";
 import useTrackStore from "@/store/trackStore";
+import isEmpty from "lodash/isEmpty";
 
 export function useAudioPlayer() {
   const [audio, setAudio] = useState<HTMLAudioElement | null>(null);
@@ -71,7 +72,7 @@ export function useAudioPlayer() {
         setCurrentTime(0);
         setDuration(0);
       }
-    } else if (cloudinary && cloudinary.length === 0) {
+    } else if (isEmpty(cloudinary)) {
       setCurrentTrackInfo(null); // 데이터는 로드되었지만 트랙이 없는 경우
     } else if (
       !isLoadingCloudinary &&

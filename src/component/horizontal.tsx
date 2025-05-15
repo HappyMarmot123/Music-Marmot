@@ -7,6 +7,7 @@ import { CloudinaryResource, TrackObjectFull } from "@/type/dataType";
 import "swiper/css";
 import { ChevronRight } from "lucide-react";
 import { ChevronLeft } from "lucide-react";
+import { isEmpty } from "lodash";
 
 interface HorizontalProps {
   data: TrackObjectFull[] | CloudinaryResource[];
@@ -25,8 +26,7 @@ export default function Horizontal({ data }: HorizontalProps) {
         }}
         className="!p-8"
       >
-        {data &&
-          data.length > 0 &&
+        {!isEmpty(data) &&
           data.map((item) => (
             <SwiperSlide key={item.id} className="!select-none !w-auto !pr-8">
               <Card card={item} />

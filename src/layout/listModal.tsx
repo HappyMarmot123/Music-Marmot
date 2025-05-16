@@ -6,10 +6,25 @@ import ShareModal from "@/component/shareModal";
 import Image from "next/image";
 import ModalMusicList from "@/component/modalMusicList";
 import { likeType } from "@/type/dataType";
-
+import { useAudioPlayer } from "@/lib/useAudioPlayer";
+import clsx from "clsx";
+import { CldImage } from "next-cloudinary";
+import OnclickEffect from "@/component/onclickEffect";
 export default function ListModal() {
   const data = useStore((state) => state.cloudinaryData);
   const loading = useStore((state) => state.isLoadingCloudinary);
+
+  const {
+    isPlaying,
+    isBuffering,
+    currentTime,
+    duration,
+    currentTrackInfo,
+    togglePlayPause,
+    nextTrack,
+    prevTrack,
+    seek,
+  } = useAudioPlayer();
 
   const [currentTrack] = useState({
     id: "1",
@@ -52,15 +67,35 @@ export default function ListModal() {
       {showShareModal && <ShareModal setShowShareModal={setShowShareModal} />}
 
       <aside className="col-span-2 p-8 flex flex-col items-center border-r border-white/10">
-        <div
+        <section
+          aria-label="현재 재생트랙"
           className="w-64 h-64 mt-4 relative mb-12"
           style={{
             WebkitBoxReflect:
               "below -5px linear-gradient(transparent, transparent 80%, rgba(0, 0, 0, 0.8))",
           }}
         >
-          <div className="w-full h-full bg-gray-700/50 animate-pulse rounded-xl"></div>
-        </div>
+          {isBuffering ? (
+            <div className="grid place-items-center w-full h-full bg-gray-700/50 animate-pulse rounded-xl">
+              <div className="w-8 h-8 border-4 border-white border-t-transparent rounded-full animate-spin" />
+            </div>
+          ) : (
+            currentTrackInfo?.artworkId && (
+              <div className="relative w-full h-full  perspective-1000">
+                <CldImage
+                  key={currentTrackInfo.artworkId}
+                  src={currentTrackInfo.artworkId}
+                  className="select-none w-full h-full object-cover rounded-xl shadow-[0_-5px_25px_rgba(255,255,255,0.3)]"
+                  width={256}
+                  height={256}
+                  alt={currentTrackInfo.album || "Album Art"}
+                  priority
+                  draggable={false}
+                />
+              </div>
+            )
+          )}
+        </section>
 
         <div className="w-full max-w-md">
           <h2 className="text-3xl font-bold mb-2">{currentTrack.title}</h2>
@@ -99,21 +134,29 @@ export default function ListModal() {
             className="mt-8 mb-4 flex justify-center space-x-8 w-full"
           >
             <button
-              className="flex items-center space-x-1 text-gray-300 hover:text-pink-500 p-2 rounded-xl transition bg-white/10"
+              className="glow-button flex items-center space-x-1 text-gray-300 hover:text-pink-500 p-2 rounded-xl transition bg-white/10" // 여기에 클래스 추가
               // onClick={() => setIsLiked(!isLiked)}
             >
-              <span className={`text-xl ${isLiked ? "text-pink-500" : ""}`}>
-                {isLiked ? "♥" : "♡"}
+              <span className="relative z-10 flex items-center space-x-1">
+                <span className={`text-xl ${isLiked ? "text-pink-500" : ""}`}>
+                  {isLiked ? "♥" : "♡"}
+                </span>
+                <span>좋아요</span>
+                {/* <OnclickEffect
+                  play={isLiked.isLike}
+                  onComplete={!isLiked}
+                /> */}
               </span>
-              <span>좋아요</span>
             </button>
 
             <button
               className="flex items-center space-x-1 text-gray-300 hover:text-blue-500 p-2 rounded-xl transition bg-white/10"
               onClick={() => setShowShareModal(true)}
             >
-              <span className="text-xl">↗</span>
-              <span>공유하기</span>
+              <span className="relative z-10 flex items-center space-x-1">
+                <span className="text-xl">↗</span>
+                <span>공유하기</span>
+              </span>
             </button>
           </section>
         </div>

@@ -25,6 +25,7 @@ export function useAudioPlayer() {
     (state) => state.currentTrackAssetId
   );
   const handleOnClickCard = useTrackStore((state) => state.handleOnClickCard);
+
   /* Initialize Audio element */
   useEffect(() => {
     const audioInstance = new Audio();

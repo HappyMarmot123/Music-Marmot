@@ -6,7 +6,8 @@ import {
 import { Heart } from "lucide-react";
 import Image from "next/image";
 import clsx from "clsx";
-import { SetStateAction } from "react";
+import { SetStateAction, useState } from "react";
+import OnclickEffect from "./onclickEffect";
 
 export default function ModalMusicList({
   loading,
@@ -14,6 +15,10 @@ export default function ModalMusicList({
   isLiked,
   setIsLiked,
 }: ModalMusicListProps) {
+  const [playingLottieTrackId, setPlayingLottieTrackId] = useState<
+    string | null
+  >(null);
+
   function handleOnLike(trackId: string): SetStateAction<unknown> {
     if (isLiked.length === 0) {
       return setIsLiked([{ id: trackId, isLike: true }]);
@@ -74,8 +79,14 @@ export default function ModalMusicList({
                 <p className="text-sm text-gray-400">{track.producer}</p>
               </div>
 
-              <div className="flex items-center space-x-2">
-                <button className="p-1" onClick={() => handleOnLike(track.id)}>
+              <div className="relative flex items-center space-x-2">
+                <button
+                  className="p-1"
+                  onClick={() => {
+                    handleOnLike(track.id);
+                    setPlayingLottieTrackId(track.id);
+                  }}
+                >
                   <Heart
                     className={clsx(
                       "w-4 h-4 text-gray-400 hover:text-pink-500 transition-colors",
@@ -85,6 +96,10 @@ export default function ModalMusicList({
                     )}
                   />
                 </button>
+                <OnclickEffect
+                  play={playingLottieTrackId === track.id}
+                  onComplete={() => setPlayingLottieTrackId(null)}
+                />
                 <span className="text-gray-400 text-sm">128</span>
               </div>
             </div>

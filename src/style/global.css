@@ -7,7 +7,7 @@
 @theme {
   --color-primary: #ff98a2;
   --color-primary-shadow-1: #ff98a2;
-  --color-primary-shadow-2: #ff98a2;
+  --color-primary-shadow-2: #ff98a280;
   --color-audio-player-button: #c2c2c9;
   --animate-rotate-album: rotateAlbumArt 3s linear infinite;
 
@@ -31,6 +31,7 @@
   --pink-main: #ff98a2;
   --pink-shadow-1: #ff98a2b3;
   --pink-shadow-2: #ff98a280;
+  --bubble-button-bg: #ff98a2;
 }
 
 *,
@@ -2860,4 +2861,18 @@ circle {
   border-radius: 50%;
   box-shadow: inset 0 0 0 2px #fff;
   z-index: 2;
+}
+
+/* 빛 번짐(Glow) 효과 버튼 */
+.glow-button {
+  position: relative; /* 자식 pseudo-element의 positioning context 및 z-index 기준 */
+  overflow: hidden; /* pseudo-element가 버튼 경계를 넘지 않도록 */
+  transition: transform 0.1s ease-out, box-shadow 0.3s ease-out;
+  cursor: pointer;
+  user-select: none;
+  z-index: 0; /* z-index 추가 */
+}
+
+.glow-button:active {
+  transform: scale(0.97); /* 클릭 시 살짝 작아지는 효과 */
 }

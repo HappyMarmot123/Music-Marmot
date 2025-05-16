@@ -1,4 +1,5 @@
-import { CloudinaryResource } from "@/type/dataType";
+import { CloudinaryResource, likeType } from "@/type/dataType";
+import { SetStateAction } from "react";
 
 export function formatTime(seconds: number): string {
   if (isNaN(seconds) || seconds < 0) {
@@ -27,3 +28,24 @@ export const fetchCloudinary = async (): Promise<CloudinaryResource[]> => {
   }
   return response.json();
 };
+
+export function handleOnLike(
+  isLiked: likeType[],
+  trackId: string,
+  setIsLiked: (isLiked: likeType[]) => void
+): SetStateAction<unknown> {
+  if (isLiked.length === 0) {
+    return setIsLiked([{ id: trackId, isLike: true }]);
+  }
+
+  const dummy = [...isLiked];
+  const clickIdx = dummy.findIndex((item) => item.id === trackId);
+  const exist = dummy[clickIdx];
+
+  if (clickIdx !== -1) {
+    dummy[clickIdx] = { ...exist, isLike: !exist.isLike };
+  } else {
+    dummy.push({ id: trackId, isLike: true });
+  }
+  return setIsLiked(dummy);
+}

@@ -61,6 +61,7 @@ export function useAudioPlayer() {
     ) {
       const currentResource = cloudinary[currentTrackIndex];
       const trackInfo: TrackInfo = {
+        id: currentResource.id,
         album: currentResource.context?.caption || "Unknown Album",
         name: currentResource.title || "Unknown Track",
         artworkId: currentResource.album_secure_url,

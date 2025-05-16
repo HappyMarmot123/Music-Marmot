@@ -8,6 +8,7 @@ import Image from "next/image";
 import clsx from "clsx";
 import { SetStateAction, useState } from "react";
 import OnclickEffect from "./onclickEffect";
+import { handleOnLike } from "@/lib/util";
 
 export default function ModalMusicList({
   loading,
@@ -18,23 +19,6 @@ export default function ModalMusicList({
   const [playingLottieTrackId, setPlayingLottieTrackId] = useState<
     string | null
   >(null);
-
-  function handleOnLike(trackId: string): SetStateAction<unknown> {
-    if (isLiked.length === 0) {
-      return setIsLiked([{ id: trackId, isLike: true }]);
-    }
-
-    const dummy = [...isLiked];
-    const clickIdx = dummy.findIndex((item) => item.id === trackId);
-    const exist = dummy[clickIdx];
-
-    if (clickIdx !== -1) {
-      dummy[clickIdx] = { ...exist, isLike: !exist.isLike };
-    } else {
-      dummy.push({ id: trackId, isLike: true });
-    }
-    return setIsLiked(dummy);
-  }
 
   const showLoading = loading !== false;
   const showTrackList = loading === false && trackList.length > 0;
@@ -83,7 +67,7 @@ export default function ModalMusicList({
                 <button
                   className="p-1"
                   onClick={() => {
-                    handleOnLike(track.id);
+                    handleOnLike(isLiked, track.id, setIsLiked);
                     setPlayingLottieTrackId(track.id);
                   }}
                 >

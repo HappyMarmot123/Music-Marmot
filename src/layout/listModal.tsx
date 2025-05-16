@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { X } from "lucide-react";
+import { SetStateAction, useEffect, useState } from "react";
+import { Heart, X } from "lucide-react";
 import useStore from "@/store/cloudinaryStore";
 import { CloudinaryResource } from "@/type/dataType";
 import ShareModal from "@/component/shareModal";
@@ -10,6 +10,7 @@ import { useAudioPlayer } from "@/lib/useAudioPlayer";
 import clsx from "clsx";
 import { CldImage } from "next-cloudinary";
 import OnclickEffect from "@/component/onclickEffect";
+import { handleOnLike } from "@/lib/util";
 export default function ListModal() {
   const data = useStore((state) => state.cloudinaryData);
   const loading = useStore((state) => state.isLoadingCloudinary);
@@ -69,31 +70,29 @@ export default function ListModal() {
       <aside className="col-span-2 p-8 flex flex-col items-center border-r border-white/10">
         <section
           aria-label="현재 재생트랙"
-          className="w-64 h-64 mt-4 relative mb-12"
+          className="w-56 h-56 mt-4 relative mb-12"
           style={{
             WebkitBoxReflect:
               "below -5px linear-gradient(transparent, transparent 80%, rgba(0, 0, 0, 0.8))",
           }}
         >
-          {isBuffering ? (
-            <div className="grid place-items-center w-full h-full bg-gray-700/50 animate-pulse rounded-xl">
+          {isBuffering || !currentTrackInfo?.artworkId ? (
+            <div className="grid place-items-center w-full h-full bg-white/5 animate-pulse rounded-xl">
               <div className="w-8 h-8 border-4 border-white border-t-transparent rounded-full animate-spin" />
             </div>
           ) : (
-            currentTrackInfo?.artworkId && (
-              <div className="relative w-full h-full  perspective-1000">
-                <CldImage
-                  key={currentTrackInfo.artworkId}
-                  src={currentTrackInfo.artworkId}
-                  className="select-none w-full h-full object-cover rounded-xl shadow-[0_-5px_25px_rgba(255,255,255,0.3)]"
-                  width={256}
-                  height={256}
-                  alt={currentTrackInfo.album || "Album Art"}
-                  priority
-                  draggable={false}
-                />
-              </div>
-            )
+            <div className="relative w-full h-full  perspective-1000">
+              <CldImage
+                key={currentTrackInfo.artworkId}
+                src={currentTrackInfo.artworkId}
+                className="select-none w-full h-full object-cover rounded-xl shadow-[0_-5px_25px_rgba(255,255,255,0.3)]"
+                width={256}
+                height={256}
+                alt={currentTrackInfo.album || "Album Art"}
+                priority
+                draggable={false}
+              />
+            </div>
           )}
         </section>
 
@@ -134,18 +133,34 @@ export default function ListModal() {
             className="mt-8 mb-4 flex justify-center space-x-8 w-full"
           >
             <button
-              className="glow-button flex items-center space-x-1 text-gray-300 hover:text-pink-500 p-2 rounded-xl transition bg-white/10" // 여기에 클래스 추가
-              // onClick={() => setIsLiked(!isLiked)}
+              className="flex items-center space-x-1 text-gray-300 hover:text-pink-500 p-2 rounded-xl transition bg-white/10" // 여기에 클래스 추가
+              onClick={() =>
+                handleOnLike(
+                  isLiked,
+                  currentTrackInfo?.id as string,
+                  setIsLiked
+                )
+              }
             >
               <span className="relative z-10 flex items-center space-x-1">
-                <span className={`text-xl ${isLiked ? "text-pink-500" : ""}`}>
-                  {isLiked ? "♥" : "♡"}
-                </span>
+                <Heart
+                  className={clsx(
+                    "w-4 h-4 text-gray-400 hover:text-pink-500 transition-colors",
+                    isLiked.find(
+                      (item) => item.id === currentTrackInfo?.id && item.isLike
+                    ) && "text-pink-500 fill-pink-500/30"
+                  )}
+                />
                 <span>좋아요</span>
-                {/* <OnclickEffect
-                  play={isLiked.isLike}
-                  onComplete={!isLiked}
-                /> */}
+                <OnclickEffect
+                  play={
+                    isLiked.find((item) => item.id === currentTrackInfo?.id)
+                      ?.isLike || false
+                  }
+                  onComplete={() => {
+                    console.log("complete");
+                  }}
+                />
               </span>
             </button>
 

@@ -51,7 +51,7 @@ export function handleOnLike(
   return setIsLiked(dummy);
 }
 
-export const handleSeekUtil = (
+export const handleSeek = (
   event: MouseEvent<HTMLDivElement>,
   seekBarContainerRef: RefObject<HTMLDivElement | null>,
   duration: number | undefined,
@@ -64,7 +64,7 @@ export const handleSeekUtil = (
   seek(seekTime);
 };
 
-export const handleSeekMouseMoveUtil = (
+export const handleSeekMouseMove = (
   event: MouseEvent<HTMLDivElement>,
   seekBarContainerRef: RefObject<HTMLDivElement | null>,
   duration: number | undefined,
@@ -83,10 +83,36 @@ export const handleSeekMouseMoveUtil = (
   setSeekHoverPosition(hoverPosition);
 };
 
-export const handleSeekMouseOutUtil = (
+export const handleSeekMouseOut = (
   setSeekHoverTime: Dispatch<SetStateAction<number | null>>,
   setSeekHoverPosition: Dispatch<SetStateAction<number>>
 ) => {
   setSeekHoverTime(null);
   setSeekHoverPosition(0);
+};
+
+export const handleSeekInteraction = (
+  event: MouseEvent<HTMLDivElement>,
+  seekBarContainerRef: RefObject<HTMLDivElement | null>,
+  duration: number | undefined,
+  seek: (time: number) => void,
+  setSeekHoverTime: Dispatch<SetStateAction<number | null>>,
+  setSeekHoverPosition: Dispatch<SetStateAction<number>>
+) => {
+  if (!seekBarContainerRef.current || duration === 0) return;
+
+  const rect = seekBarContainerRef.current.getBoundingClientRect();
+  const offsetX = event.clientX - rect.left;
+  const percentage = Math.min(Math.max(offsetX / rect.width, 0), 1);
+  const time = percentage * (duration as number);
+
+  const isClick = event.type === "click";
+  const isMouseMove = event.type === "mousemove";
+
+  if (isClick) {
+    seek(time);
+  } else {
+    setSeekHoverTime(time);
+    setSeekHoverPosition(offsetX);
+  }
 };

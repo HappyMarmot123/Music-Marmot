@@ -1,6 +1,6 @@
-import { SetStateAction, useEffect, useRef, useState } from "react";
+import { SetStateAction, useEffect, useState } from "react";
 import { Heart, Pause, Play, SkipBack, SkipForward, X } from "lucide-react";
-import useStore from "@/store/cloudinaryStore";
+import useCloudinaryStore from "@/store/cloudinaryStore";
 import { CloudinaryResource } from "@/type/dataType";
 import ShareModal from "@/component/shareModal";
 import Image from "next/image";
@@ -11,22 +11,25 @@ import clsx from "clsx";
 import { CldImage } from "next-cloudinary";
 import OnclickEffect from "@/component/onclickEffect";
 import { handleOnLike } from "@/lib/util";
-import PlayerTrackDetails from "@/component/playerTrackDetails";
+import ModalPlayerTrackDetails from "@/component/modalPlayerTrackDetails";
 
 export default function ListModal() {
-  const data = useStore((state) => state.cloudinaryData);
-  const loading = useStore((state) => state.isLoadingCloudinary);
+  const cloudinaryData = useCloudinaryStore((state) => state.cloudinaryData);
+  const isLoadingCloudinary = useCloudinaryStore(
+    (state) => state.isLoadingCloudinary
+  );
 
   const {
+    currentTrack,
     isPlaying,
-    isBuffering,
     currentTime,
     duration,
-    currentTrackInfo,
+    isBuffering,
     togglePlayPause,
     nextTrack,
     prevTrack,
     seek,
+    handleSelectTrack,
   } = useAudioPlayer();
 
   const [trackList, setTrackList] = useState<CloudinaryResource[]>([]);
@@ -36,17 +39,11 @@ export default function ListModal() {
   const [isLiked, setIsLiked] = useState<likeType[]>([]);
   const [showShareModal, setShowShareModal] = useState(false);
 
-  const [seekHoverTime, setSeekHoverTime] = useState<number | null>(null);
-  const [seekHoverPosition, setSeekHoverPosition] = useState(0);
-  const seekBarContainerRef = useRef<HTMLDivElement>(null);
-
-  const currentProgress = duration > 0 ? (currentTime / duration) * 100 : 0;
-
   useEffect(() => {
-    if (data) {
-      setTrackList(data);
+    if (cloudinaryData) {
+      setTrackList(cloudinaryData);
     }
-  }, [data]);
+  }, [cloudinaryData]);
 
   useEffect(() => {
     const secondaryCursor = document.querySelector(".secondary-cursor");
@@ -76,19 +73,19 @@ export default function ListModal() {
               "below -5px linear-gradient(transparent, transparent 80%, rgba(0, 0, 0, 0.8))",
           }}
         >
-          {isBuffering || !currentTrackInfo?.artworkId ? (
+          {isBuffering || !currentTrack?.artworkId ? (
             <div className="grid place-items-center w-full h-full animate-pulse">
               <div className="w-8 h-8 border-4 border-white border-t-transparent rounded-full animate-spin" />
             </div>
           ) : (
             <div className="relative w-full h-full perspective-1000">
               <CldImage
-                key={currentTrackInfo.artworkId}
-                src={currentTrackInfo.artworkId}
+                key={currentTrack.id}
+                src={currentTrack.artworkId}
                 className="select-none w-full h-full object-cover rounded-xl shadow-[0_-5px_25px_rgba(255,255,255,0.3)]"
                 width={256}
                 height={256}
-                alt={currentTrackInfo.album || "Album Art"}
+                alt={currentTrack.album || "Album Art"}
                 priority
                 draggable={false}
               />
@@ -97,32 +94,16 @@ export default function ListModal() {
         </section>
 
         <div className="w-full max-w-md">
-          <h2 className="text-3xl font-bold mb-2">{currentTrackInfo?.name}</h2>
+          <h2 className="text-3xl font-bold mb-2">{currentTrack?.name}</h2>
           <h3 className="text-xl text-gray-300 mb-4">
-            {currentTrackInfo?.producer}
+            {currentTrack?.producer}
           </h3>
 
-          <section aria-label="재생 진행 막대" className="mt-6 mb-2">
-            <div className="w-full h-2 bg-white/20 rounded-full overflow-hidden">
-              {/* className="h-full bg-white/70 rounded-full" */}
-              {/* <PlayerTrackDetails
-                isPlaying={isPlaying}
-                currentTime={currentTime}
-                duration={duration}
-                currentProgress={currentProgress}
-                seekBarContainerRef={seekBarContainerRef}
-                handleSeek={handleSeek}
-                handleSeekMouseMove={handleSeekMouseMove}
-                handleSeekMouseOut={handleSeekMouseOut}
-                seekHoverTime={seekHoverTime}
-                seekHoverPosition={seekHoverPosition}
-              /> */}
-            </div>
-            <div className="flex justify-between text-xs text-gray-400 mt-1">
-              <span>2:45</span>
-              <span>4:17</span>
-            </div>
-          </section>
+          <ModalPlayerTrackDetails
+            currentTime={currentTime}
+            duration={duration}
+            seek={seek}
+          />
 
           <section
             aria-label="재생 컨트롤"
@@ -157,13 +138,9 @@ export default function ListModal() {
             className="mt-8 mb-4 flex justify-center space-x-8 w-full"
           >
             <button
-              className="flex items-center space-x-1 text-gray-300 hover:text-pink-500 p-2 rounded-xl transition bg-white/10" // 여기에 클래스 추가
+              className="flex items-center space-x-1 text-gray-300 hover:text-pink-500 p-2 rounded-xl transition bg-white/10"
               onClick={() =>
-                handleOnLike(
-                  isLiked,
-                  currentTrackInfo?.id as string,
-                  setIsLiked
-                )
+                handleOnLike(isLiked, currentTrack?.id as string, setIsLiked)
               }
             >
               <span className="relative z-10 flex items-center space-x-1">
@@ -171,14 +148,14 @@ export default function ListModal() {
                   className={clsx(
                     "w-4 h-4 text-gray-400 hover:text-pink-500 transition-colors",
                     isLiked.find(
-                      (item) => item.id === currentTrackInfo?.id && item.isLike
+                      (item) => item.id === currentTrack?.id && item.isLike
                     ) && "text-pink-500 fill-pink-500/30"
                   )}
                 />
                 <span>좋아요</span>
                 <OnclickEffect
                   play={
-                    isLiked.find((item) => item.id === currentTrackInfo?.id)
+                    isLiked.find((item) => item.id === currentTrack?.id)
                       ?.isLike || false
                   }
                   onComplete={() => {
@@ -224,10 +201,15 @@ export default function ListModal() {
 
         <section aria-label="음악 리스트" className="space-y-3">
           <ModalMusicList
-            loading={loading}
-            trackList={trackList}
+            loading={isLoadingCloudinary}
+            trackList={trackList.filter(
+              (track) =>
+                track.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                track.producer?.toLowerCase().includes(searchTerm.toLowerCase())
+            )}
             isLiked={isLiked}
             setIsLiked={setIsLiked}
+            onTrackSelect={(assetId) => handleSelectTrack(assetId)}
           />
         </section>
       </aside>

@@ -1,5 +1,6 @@
 import { CloudinaryResource, likeType } from "@/type/dataType";
 import { SetStateAction } from "react";
+import { Dispatch, MouseEvent, RefObject } from "react";
 
 export function formatTime(seconds: number): string {
   if (isNaN(seconds) || seconds < 0) {
@@ -49,3 +50,43 @@ export function handleOnLike(
   }
   return setIsLiked(dummy);
 }
+
+export const handleSeekUtil = (
+  event: MouseEvent<HTMLDivElement>,
+  seekBarContainerRef: RefObject<HTMLDivElement | null>,
+  duration: number | undefined,
+  seek: (time: number) => void
+) => {
+  if (!seekBarContainerRef.current || !duration) return;
+  const seekBarRect = seekBarContainerRef.current.getBoundingClientRect();
+  const seekRatio = (event.clientX - seekBarRect.left) / seekBarRect.width;
+  const seekTime = duration * seekRatio;
+  seek(seekTime);
+};
+
+export const handleSeekMouseMoveUtil = (
+  event: MouseEvent<HTMLDivElement>,
+  seekBarContainerRef: RefObject<HTMLDivElement | null>,
+  duration: number | undefined,
+  setSeekHoverTime: Dispatch<SetStateAction<number | null>>,
+  setSeekHoverPosition: Dispatch<SetStateAction<number>>
+) => {
+  if (!seekBarContainerRef.current || !duration) return;
+  const seekBarRect = seekBarContainerRef.current.getBoundingClientRect();
+  const hoverRatio = Math.max(
+    0,
+    Math.min(1, (event.clientX - seekBarRect.left) / seekBarRect.width)
+  );
+  const hoverTime = duration * hoverRatio;
+  const hoverPosition = hoverRatio * seekBarRect.width;
+  setSeekHoverTime(hoverTime);
+  setSeekHoverPosition(hoverPosition);
+};
+
+export const handleSeekMouseOutUtil = (
+  setSeekHoverTime: Dispatch<SetStateAction<number | null>>,
+  setSeekHoverPosition: Dispatch<SetStateAction<number>>
+) => {
+  setSeekHoverTime(null);
+  setSeekHoverPosition(0);
+};

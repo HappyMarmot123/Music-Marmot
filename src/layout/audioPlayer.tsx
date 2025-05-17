@@ -6,6 +6,11 @@ import PlayerTrackDetails from "@/component/playerTrackDetails";
 import PlayerControlsSection from "@/component/playerControlsSection";
 import AlbumArtwork from "@/component/albumArtwork";
 import Draggable, { type DraggableBounds } from "react-draggable";
+import {
+  handleSeekUtil,
+  handleSeekMouseMoveUtil,
+  handleSeekMouseOutUtil,
+} from "@/lib/util";
 
 /* 
   TODO: 
@@ -74,29 +79,21 @@ export default function AudioPlayer() {
   }, []);
 
   const handleSeek = (event: MouseEvent<HTMLDivElement>) => {
-    if (!seekBarContainerRef.current || !duration) return;
-    const seekBarRect = seekBarContainerRef.current.getBoundingClientRect();
-    const seekRatio = (event.clientX - seekBarRect.left) / seekBarRect.width;
-    const seekTime = duration * seekRatio;
-    seek(seekTime);
+    handleSeekUtil(event, seekBarContainerRef, duration, seek);
   };
 
   const handleSeekMouseMove = (event: MouseEvent<HTMLDivElement>) => {
-    if (!seekBarContainerRef.current || !duration) return;
-    const seekBarRect = seekBarContainerRef.current.getBoundingClientRect();
-    const hoverRatio = Math.max(
-      0,
-      Math.min(1, (event.clientX - seekBarRect.left) / seekBarRect.width)
+    handleSeekMouseMoveUtil(
+      event,
+      seekBarContainerRef,
+      duration,
+      setSeekHoverTime,
+      setSeekHoverPosition
     );
-    const hoverTime = duration * hoverRatio;
-    const hoverPosition = hoverRatio * seekBarRect.width;
-    setSeekHoverTime(hoverTime);
-    setSeekHoverPosition(hoverPosition);
   };
 
   const handleSeekMouseOut = () => {
-    setSeekHoverTime(null);
-    setSeekHoverPosition(0);
+    handleSeekMouseOutUtil(setSeekHoverTime, setSeekHoverPosition);
   };
 
   return (

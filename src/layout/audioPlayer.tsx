@@ -6,11 +6,8 @@ import PlayerTrackDetails from "@/component/playerTrackDetails";
 import PlayerControlsSection from "@/component/playerControlsSection";
 import AlbumArtwork from "@/component/albumArtwork";
 import Draggable, { type DraggableBounds } from "react-draggable";
-import {
-  handleSeekUtil,
-  handleSeekMouseMoveUtil,
-  handleSeekMouseOutUtil,
-} from "@/lib/util";
+import "@/lib/util";
+import { handleSeekInteraction } from "@/lib/util";
 
 /* 
   TODO: 
@@ -33,27 +30,42 @@ import {
 // Root here
 export default function AudioPlayer() {
   const {
+    currentTrack,
     isPlaying,
     isBuffering,
     currentTime,
     duration,
-    currentTrackInfo,
     togglePlayPause,
     nextTrack,
     prevTrack,
     seek,
+    isLoadingCloudinary,
   } = useAudioPlayer();
 
+  // PlayerTrackDetails에 필요한 로컬 UI 상태 (seek hover 관련)
   const [seekHoverTime, setSeekHoverTime] = useState<number | null>(null);
   const [seekHoverPosition, setSeekHoverPosition] = useState(0);
   const seekBarContainerRef = useRef<HTMLDivElement>(null);
+
   const draggableRef = useRef<HTMLDivElement>(null);
   const [bounds, setBounds] = useState<DraggableBounds | undefined>(undefined);
   const defaultPositionRef = useRef({ x: 700, y: 640 });
+  // const defaultPositionRef = useRef({ x: 0, y: 0 });
+  // useEffect(() => {
+  //   const playerWidth = 344;
+  //   const playerHeight = 80;
+  //   const margin = 20;
+  //   defaultPositionRef.current = {
+  //     x: window.innerWidth - playerWidth - margin,
+  //     y: window.innerHeight - playerHeight - margin,
+  //   };
+
+  //   setDraggableKey(Date.now());
+  // }, []);
+  const [draggableKey, setDraggableKey] = useState(Date.now());
 
   const currentProgress = duration > 0 ? (currentTime / duration) * 100 : 0;
 
-  // useEffect를 사용하여 드래그 경계 계산
   useEffect(() => {
     const playerElement = draggableRef.current;
     if (playerElement) {
@@ -63,60 +75,62 @@ export default function AudioPlayer() {
         const initialTopBound = 60;
         const initialRightBound = 30;
         const initialBottomBound = 10;
+        const initialLeftBound = 0;
 
         setBounds({
-          left: 0,
-          top: 0 + initialTopBound,
+          left: initialLeftBound,
+          top: initialTopBound,
           right: window.innerWidth - elWidth - initialRightBound,
           bottom: window.innerHeight - elHeight - initialBottomBound,
         });
       };
 
       updateBounds();
-      window.addEventListener("resize", updateBounds); // 윈도우 크기 변경 시 경계 업데이트
+      window.addEventListener("resize", updateBounds);
       return () => window.removeEventListener("resize", updateBounds);
     }
   }, []);
 
-  const handleSeek = (event: MouseEvent<HTMLDivElement>) => {
-    handleSeekUtil(event, seekBarContainerRef, duration, seek);
-  };
-
-  const handleSeekMouseMove = (event: MouseEvent<HTMLDivElement>) => {
-    handleSeekMouseMoveUtil(
+  const handleLocalSeek = (event: MouseEvent<HTMLDivElement>) => {
+    handleSeekInteraction(
       event,
       seekBarContainerRef,
       duration,
+      seek,
       setSeekHoverTime,
       setSeekHoverPosition
     );
   };
 
-  const handleSeekMouseOut = () => {
-    handleSeekMouseOutUtil(setSeekHoverTime, setSeekHoverPosition);
+  const handleLocalSeekMouseOut = () => {
+    setSeekHoverTime(null);
   };
 
   return (
     <Draggable
+      key={draggableKey}
       bounds={bounds}
       defaultPosition={defaultPositionRef.current}
       nodeRef={draggableRef as React.RefObject<HTMLElement>}
+      handle=".draggable-handle"
     >
       <div
         ref={draggableRef}
         id="player-container"
-        className="fixed w-[344px] h-[80px] mx-auto mt-[-4px] z-20 cursor-grab active:cursor-grabbing select-none"
+        className="fixed w-[344px] h-[80px] mx-auto mt-[-4px] z-50 select-none"
       >
-        <div id="player" className="relative h-full z-[3]">
+        <div
+          id="player"
+          className="relative h-full z-[3] draggable-handle cursor-grab active:cursor-grabbing"
+        >
           <PlayerTrackDetails
             isPlaying={isPlaying}
             currentTime={currentTime}
             duration={duration}
             currentProgress={currentProgress}
             seekBarContainerRef={seekBarContainerRef}
-            handleSeek={handleSeek}
-            handleSeekMouseMove={handleSeekMouseMove}
-            handleSeekMouseOut={handleSeekMouseOut}
+            handleSeek={handleLocalSeek}
+            handleSeekMouseOut={handleLocalSeekMouseOut}
             seekHoverTime={seekHoverTime}
             seekHoverPosition={seekHoverPosition}
           />
@@ -127,10 +141,10 @@ export default function AudioPlayer() {
             <AlbumArtwork
               isPlaying={isPlaying}
               isBuffering={isBuffering}
-              currentTrackInfo={currentTrackInfo}
+              currentTrackInfo={currentTrack}
             />
             <PlayerControlsSection
-              currentTrackInfo={currentTrackInfo}
+              currentTrackInfo={currentTrack}
               prevTrack={prevTrack}
               togglePlayPause={togglePlayPause}
               nextTrack={nextTrack}

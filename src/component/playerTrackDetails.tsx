@@ -10,7 +10,6 @@ const PlayerTrackDetails: React.FC<PlayerTrackDetailsProps> = ({
   currentProgress,
   seekBarContainerRef,
   handleSeek,
-  handleSeekMouseMove,
   handleSeekMouseOut,
   seekHoverTime,
   seekHoverPosition,
@@ -49,7 +48,7 @@ const PlayerTrackDetails: React.FC<PlayerTrackDetailsProps> = ({
         ref={seekBarContainerRef}
         className="relative h-[6px] rounded-[4px] bg-[#ffe8ee] cursor-pointer group"
         onClick={handleSeek}
-        onMouseMove={handleSeekMouseMove}
+        onMouseMove={handleSeek}
         onMouseOut={handleSeekMouseOut}
       >
         {seekHoverTime !== null && (

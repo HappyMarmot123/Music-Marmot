@@ -128,7 +128,6 @@ export interface PlayerTrackDetailsProps {
   currentProgress: number;
   seekBarContainerRef: RefObject<HTMLDivElement | null>;
   handleSeek: (event: MouseEvent<HTMLDivElement>) => void;
-  handleSeekMouseMove: (event: MouseEvent<HTMLDivElement>) => void;
   handleSeekMouseOut: () => void;
   seekHoverTime: number | null;
   seekHoverPosition: number;
@@ -182,8 +181,9 @@ export interface likeType {
 }
 
 export interface ModalMusicListProps {
-  loading: unknown;
+  loading: boolean | null;
   trackList: CloudinaryResource[];
   isLiked: likeType[];
-  setIsLiked: (isLiked: likeType[]) => void;
+  setIsLiked: React.Dispatch<React.SetStateAction<likeType[]>>;
+  onTrackSelect?: (assetId: string) => void;
 }

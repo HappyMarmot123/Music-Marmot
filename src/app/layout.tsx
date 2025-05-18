@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import "@/style/global.css?v=2";
-import { Providers } from "@/provider/QueryClientProvider";
-import ClientLayout from "@/layout/ClientLayout";
+import ClientLayout from "@/layout/clientLayout";
+import { TanstackProvider } from "@/provider/tanstackProvider";
 import Script from "next/script";
+import { AuthProvider } from "@/provider/authProvider";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -17,9 +18,11 @@ const RootLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
         strategy="afterInteractive"
       />
       <body>
-        <Providers>
-          <ClientLayout>{children}</ClientLayout>
-        </Providers>
+        <AuthProvider>
+          <TanstackProvider>
+            <ClientLayout>{children}</ClientLayout>
+          </TanstackProvider>
+        </AuthProvider>
       </body>
     </html>
   );

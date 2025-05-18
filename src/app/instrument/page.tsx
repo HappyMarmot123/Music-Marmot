@@ -1,4 +1,4 @@
-import { getAllInstruments } from "@/db/instrumentQueries";
+import { getAllInstruments } from "@/db/instrumentQuery";
 
 export default async function InstrumentsPage() {
   const instruments = await getAllInstruments();

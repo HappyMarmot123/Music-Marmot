@@ -12,6 +12,7 @@ import { CldImage } from "next-cloudinary";
 import OnclickEffect from "@/component/onclickEffect";
 import { handleOnLike } from "@/lib/util";
 import ModalPlayerTrackDetails from "@/component/modalPlayerTrackDetails";
+import LoginSection from "@/component/loginSection";
 
 export default function ListModal() {
   const cloudinaryData = useCloudinaryStore((state) => state.cloudinaryData);
@@ -37,7 +38,6 @@ export default function ListModal() {
 
   const [searchTerm, setSearchTerm] = useState("");
   const [isLiked, setIsLiked] = useState<likeType[]>([]);
-  const [showShareModal, setShowShareModal] = useState(false);
 
   useEffect(() => {
     if (cloudinaryData) {
@@ -62,9 +62,9 @@ export default function ListModal() {
               bg-[#483544aa] backdrop-blur-[10px] border border-white/50 rounded-2xl text-white z-40 
               shadow-[0_0.5px_0_1px_rgba(255,255,255,0.2)_inset,0_1px_0_0_rgba(255,255,255,0.6)_inset,0_4px_16px_rgba(0,0,0,0.1)]   overflow-hidden"
     >
-      {showShareModal && <ShareModal setShowShareModal={setShowShareModal} />}
-
       <aside className="col-span-2 p-8 flex flex-col items-center border-r border-white/10">
+        <LoginSection />
+
         <section
           aria-label="현재 재생트랙"
           className="w-56 h-56 mt-4 relative mb-12 bg-white/5 rounded-xl"
@@ -162,16 +162,6 @@ export default function ListModal() {
                     console.log("complete");
                   }}
                 />
-              </span>
-            </button>
-
-            <button
-              className="flex items-center space-x-1 text-gray-300 hover:text-blue-500 p-2 rounded-xl transition bg-white/10"
-              onClick={() => setShowShareModal(true)}
-            >
-              <span className="relative z-10 flex items-center space-x-1">
-                <span className="text-xl">↗</span>
-                <span>공유하기</span>
               </span>
             </button>
           </section>

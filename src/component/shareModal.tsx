@@ -23,9 +23,10 @@ export default function ShareModal({
     shareWithKakao({
       objectType: "feed",
       content: {
-        title: "Latin by Trending Music",
-        description: "지금 음악을 들어보세요!",
-        imageUrl: "앨범_이미지_URL",
+        title: "EDMM | Playing EDM Music",
+        description: "지금 음악을 들어보세요! Made by HappyMarmot123",
+        imageUrl:
+          "https://res.cloudinary.com/db5yvwr1y/image/upload/v1747570611/2025-05-18_211614_cl3ncz.png",
         link: {
           mobileWebUrl: window.location.href,
           webUrl: window.location.href,

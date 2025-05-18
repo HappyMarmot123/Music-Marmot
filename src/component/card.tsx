@@ -31,7 +31,7 @@ const Card = ({ card }: { card: TrackObjectFull | CloudinaryResource }) => {
       onClick={(e) => {
         e.preventDefault();
         if (!isTrack) {
-          handleOnClickCard(card.asset_id);
+          // handleOnClickCard(card.asset_id);
         }
       }}
       rel="noopener noreferrer"

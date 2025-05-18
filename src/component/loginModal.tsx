@@ -60,7 +60,7 @@ export default function LoginModal({ setShowLoginModal }: LoginModalProps) {
               className="flex items-center justify-center w-full px-4 py-3 font-semibold text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50"
             >
               <Image
-                src="/google-logo.svg"
+                src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/2048px-Google_%22G%22_logo.svg.png"
                 alt="Google logo"
                 width={20}
                 height={20}
@@ -74,7 +74,7 @@ export default function LoginModal({ setShowLoginModal }: LoginModalProps) {
               className="flex items-center justify-center w-full px-4 py-3 font-semibold text-black bg-[#FEE500] rounded-lg hover:bg-[#F0D900] transition-colors disabled:opacity-50"
             >
               <Image
-                src="/kakao-logo.svg"
+                src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/KakaoTalk_logo.svg/1024px-KakaoTalk_logo.svg.png"
                 alt="Kakao logo"
                 width={20}
                 height={20}

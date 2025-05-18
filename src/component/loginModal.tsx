@@ -1,0 +1,101 @@
+// src/component/LoginModal.tsx
+"use client";
+
+import { X } from "lucide-react";
+import Image from "next/image";
+import { useAuth } from "@/provider/authProvider";
+
+interface LoginModalProps {
+  setShowLoginModal: (show: boolean) => void;
+}
+
+export default function LoginModal({ setShowLoginModal }: LoginModalProps) {
+  const { signInWithGoogle, signInWithKakao, isLoading } = useAuth();
+
+  const handleGoogleLogin = async () => {
+    try {
+      await signInWithGoogle();
+    } catch (error) {
+      console.error("Google login failed:", error);
+    }
+  };
+
+  const handleKakaoLogin = async () => {
+    try {
+      await signInWithKakao();
+    } catch (error) {
+      console.error("Kakao login failed in modal:", error);
+    }
+  };
+
+  return (
+    <div
+      aria-label="로그인 모달"
+      className="fixed inset-0 flex items-center justify-center bg-black/50 z-50"
+      onClick={() => setShowLoginModal(false)}
+    >
+      <div
+        className="w-[400px] bg-[#483544] backdrop-blur-[10px] border border-white/50 rounded-xl p-6"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="flex justify-between items-center mb-6">
+          <h3 className="text-xl font-semibold">로그인</h3>
+          <button
+            className="w-8 h-8 rounded-xl bg-white/10 hover:bg-white/20 text-gray-300 hover:text-white transition-all grid place-items-center"
+            onClick={() => setShowLoginModal(false)}
+            title="Close"
+          >
+            <X size={18} strokeWidth={2.5} />
+          </button>
+        </div>
+
+        <section aria-label="로그인 옵션">
+          <p className="mb-4 text-sm text-gray-300 text-center">
+            소셜 계정으로 간편하게 로그인하세요.
+          </p>
+          <div className="flex flex-col space-y-3">
+            <button
+              onClick={handleGoogleLogin}
+              disabled={isLoading}
+              className="flex items-center justify-center w-full px-4 py-3 font-semibold text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50"
+            >
+              <Image
+                src="/google-logo.svg"
+                alt="Google logo"
+                width={20}
+                height={20}
+                className="mr-3"
+              />
+              Google 계정으로 로그인
+            </button>
+            <button
+              onClick={handleKakaoLogin}
+              disabled={isLoading}
+              className="flex items-center justify-center w-full px-4 py-3 font-semibold text-black bg-[#FEE500] rounded-lg hover:bg-[#F0D900] transition-colors disabled:opacity-50"
+            >
+              <Image
+                src="/kakao-logo.svg"
+                alt="Kakao logo"
+                width={20}
+                height={20}
+                className="mr-3"
+              />
+              카카오 계정으로 로그인
+            </button>
+            {/* 다른 로그인 옵션 추가 예정 */}
+            {/* <button
+              className="flex items-center justify-center w-full px-4 py-3 font-semibold text-white bg-gray-700 rounded-lg hover:bg-gray-800 transition-colors"
+            >
+              다른 로그인 옵션 (예: Kakao)
+            </button> */}
+          </div>
+          {isLoading && (
+            <p className="mt-4 text-sm text-center text-gray-400">
+              로그인 중...
+            </p>
+          )}
+        </section>
+      </div>
+    </div>
+  );
+}

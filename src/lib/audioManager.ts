@@ -3,6 +3,7 @@ let audioInstance: HTMLAudioElement | null = null;
 export const getAudioInstance = (): HTMLAudioElement => {
   if (!audioInstance) {
     audioInstance = new Audio();
+    audioInstance.src = "";
     audioInstance.loop = false;
     console.log("Global Audio instance created");
   }

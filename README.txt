@@ -6,5 +6,7 @@ docker build -t project-marmot .
 
 git reset HEAD~1 --soft   // 푸시 되돌리기
 git reveert HEAD~1 --soft   // 커밋 되돌리기
-git push origin branch -f  // 강제 푸시
+git push origin branch -f  // 강제 푸시a
 git stash                   // push, pop
+
+트랙 플레이시 오디오 플레이어 드래그 프레임 드랍

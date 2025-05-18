@@ -50,7 +50,7 @@ export default function MyArticle({ children }: { children: React.ReactNode }) {
         <DustySnow />
         <Cursor />
         <AudioPlayer />
-        <ListModal />
+        {/* <ListModal /> */}
         {/* <Intro /> */}
         <article className="my-gradient fixed w-screen pointer-events-none" />
         {children}

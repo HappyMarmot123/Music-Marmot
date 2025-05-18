@@ -75,7 +75,6 @@ export function useAudioPlayer() {
 
     if (isPlaying) {
       audio.play().catch((e) => {
-        console.error("Error playing audio:", e);
         storeSetIsPlaying(false);
       });
     } else {

@@ -9,6 +9,7 @@ import clsx from "clsx";
 import { SetStateAction, useState } from "react";
 import OnclickEffect from "./onclickEffect";
 import { handleOnLike } from "@/lib/util";
+import useTrackStore from "@/store/trackStore";
 
 export default function ModalMusicList({
   loading,
@@ -16,6 +17,8 @@ export default function ModalMusicList({
   isLiked,
   setIsLiked,
 }: ModalMusicListProps) {
+  const { handleOnClickCard } = useTrackStore();
+
   const [playingLottieTrackId, setPlayingLottieTrackId] = useState<
     string | null
   >(null);
@@ -47,6 +50,10 @@ export default function ModalMusicList({
         <>
           {trackList.map((track) => (
             <div
+              onClick={(e) => {
+                e.preventDefault();
+                handleOnClickCard(track.asset_id);
+              }}
               key={track.id}
               className="flex items-center p-3 rounded-lg hover:bg-white/10 transition cursor-pointer"
             >
@@ -66,7 +73,8 @@ export default function ModalMusicList({
               <div className="relative flex items-center space-x-2">
                 <button
                   className="p-1"
-                  onClick={() => {
+                  onClick={(e) => {
+                    e.stopPropagation();
                     handleOnLike(isLiked, track.id, setIsLiked);
                     setPlayingLottieTrackId(track.id);
                   }}

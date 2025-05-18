@@ -49,19 +49,19 @@ export default function AudioPlayer() {
 
   const draggableRef = useRef<HTMLDivElement>(null);
   const [bounds, setBounds] = useState<DraggableBounds | undefined>(undefined);
-  // const defaultPositionRef = useRef({ x: 700, y: 640 });
-  const defaultPositionRef = useRef({ x: 0, y: 0 });
-  useEffect(() => {
-    const playerWidth = 344;
-    const playerHeight = 80;
-    const margin = 20;
-    defaultPositionRef.current = {
-      x: window.innerWidth - playerWidth - margin,
-      y: window.innerHeight - playerHeight - margin,
-    };
+  const defaultPositionRef = useRef({ x: 700, y: 640 });
+  // const defaultPositionRef = useRef({ x: 0, y: 0 });
+  // useEffect(() => {
+  //   const playerWidth = 344;
+  //   const playerHeight = 80;
+  //   const margin = 20;
+  //   defaultPositionRef.current = {
+  //     x: window.innerWidth - playerWidth - margin,
+  //     y: window.innerHeight - playerHeight - margin,
+  //   };
 
-    setDraggableKey(Date.now());
-  }, []);
+  //   setDraggableKey(Date.now());
+  // }, []);
   const [draggableKey, setDraggableKey] = useState(Date.now());
 
   const currentProgress = duration > 0 ? (currentTime / duration) * 100 : 0;

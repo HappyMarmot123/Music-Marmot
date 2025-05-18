@@ -1,4 +1,4 @@
-import { useSearchPopularEdmTracks } from "@/api/spotify";
+import { useSearchPopularEdmTracks } from "@/api/spotifyClient";
 import { useEffect } from "react";
 import Horizontal from "@/component/horizontal";
 

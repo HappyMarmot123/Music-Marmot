@@ -8,7 +8,6 @@ import Parallax from "@/component/parallax";
 import MyArticle from "@/layout/myArticle";
 import MusicList from "@/layout/musicList";
 import { SpotifyList } from "@/layout/spotifyList";
-import AuthButtons from "@/component/authButtons";
 
 const Page: React.FC = () => {
   return (
@@ -74,7 +73,6 @@ const Page: React.FC = () => {
           <MusicList />
           <SpotifyList />
         </section>
-        <AuthButtons />
       </MyArticle>
     </>
   );

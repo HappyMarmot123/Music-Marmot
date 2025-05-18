@@ -20,7 +20,7 @@ export function useAudioPlayer() {
     currentTrackAssetId,
     setTrack,
     togglePlayPause: storeTogglePlayPause,
-    setIsPlaying: storeSetIsPlaying,
+    // setIsPlaying: storeSetIsPlaying,
     setCurrentTime: storeSetCurrentTime,
     setDuration: storeSetDuration,
     setIsBuffering: storeSetIsBuffering,
@@ -33,6 +33,7 @@ export function useAudioPlayer() {
     (state) => state.isLoadingCloudinary
   );
 
+  // 오디오 인스턴스 생성
   useEffect(() => {
     const audioInstance = getAudioInstance();
     setAudio(audioInstance);
@@ -42,12 +43,12 @@ export function useAudioPlayer() {
     };
   }, []);
 
+  // 오디오 및 플레이타임 업데이트
   useEffect(() => {
     if (audio && currentTrack) {
       if (audio.src !== currentTrack.url) {
         audio.src = currentTrack.url;
         storeSetCurrentTime(0);
-        storeSetDuration(0);
         storeSetIsBuffering(true);
       }
       audio.volume = isMuted ? 0 : volume;
@@ -55,34 +56,34 @@ export function useAudioPlayer() {
       audio.pause();
       audio.src = "";
       storeSetCurrentTime(0);
-      storeSetDuration(0);
-      storeSetIsPlaying(false);
       storeSetIsBuffering(false);
     }
   }, [
     audio,
     currentTrack,
     storeSetCurrentTime,
-    storeSetDuration,
-    storeSetIsPlaying,
     storeSetIsBuffering,
     volume,
     isMuted,
   ]);
 
+  // 하나의 인스턴스 트랙만 플레이이
   useEffect(() => {
     if (!audio || !currentTrack) return;
 
     if (isPlaying) {
-      audio.play().catch((e) => {
-        storeSetIsPlaying(false);
-      });
+      audio.play().catch((e) => {});
     } else {
       audio.pause();
     }
-  }, [audio, isPlaying, currentTrack, storeSetIsPlaying]);
+  }, [audio, isPlaying, currentTrack]);
 
+  // 선택된 트랙 변경시 트랙 정보 업데이트
   useEffect(() => {
+    if (currentTrack && currentTrack.id === currentTrackAssetId) {
+      return;
+    }
+
     if (currentTrackAssetId && cloudinaryData && cloudinaryData.length > 0) {
       const trackToLoad = cloudinaryData.find(
         (asset) => asset.asset_id === currentTrackAssetId
@@ -96,7 +97,7 @@ export function useAudioPlayer() {
           url: trackToLoad.secure_url,
           producer: trackToLoad.producer || "Unknown Artist",
         };
-        setTrack(newTrackInfo, useTrackStore.getState().isPlaying);
+        setTrack(newTrackInfo, false);
       } else {
         console.warn(`Track with assetId ${currentTrackAssetId} not found.`);
         setTrack(null);
@@ -137,15 +138,7 @@ export function useAudioPlayer() {
         storeSetDuration(0);
       }
     };
-    const handlePlay = () => {
-      storeSetIsPlaying(true);
-      storeSetIsBuffering(false);
-    };
-    const handlePause = () => {
-      storeSetIsPlaying(false);
-    };
     const handleEnded = () => {
-      storeSetIsPlaying(false);
       const currentIdx = cloudinaryData?.findIndex(
         (track) => track.id === currentTrack?.id
       );
@@ -165,47 +158,47 @@ export function useAudioPlayer() {
           producer: nextTrackData.producer || "Unknown Artist",
         };
         setTrack(nextTrackInfo, true);
-      } else {
-        storeSetIsPlaying(false);
       }
     };
-    const handleVolumeChange = () => {
-      // Zustand 스토어의 volume/isMuted와 audio.volume/muted를 동기화할 필요가 있다면 여기에 로직 추가
-      // 예: useTrackStore.getState().setVolume(audio.volume);
-      // 예: useTrackStore.getState().toggleMute(audio.muted);
-      // 현재는 setVolume, toggleMute 액션이 스토어 상태만 변경하고, 그 상태가 audio.volume/muted에 반영됨.
-    };
+    const handleVolumeChange = () => {};
     const handleError = (e: Event) => {
-      console.error("Audio Error:", audio.error, e);
-      storeSetIsPlaying(false);
       storeSetIsBuffering(false);
-      // 필요시 사용자에게 오류 메시지 표시
+    };
+    const handleWaiting = () => {
+      storeSetIsBuffering(true);
+    };
+    const handlePlaying = () => {
+      storeSetIsBuffering(false);
+    };
+    const handleCanPlayThrough = () => {
+      storeSetIsBuffering(false);
     };
 
     audio.addEventListener("timeupdate", handleTimeUpdate);
     audio.addEventListener("durationchange", handleDurationChange);
     audio.addEventListener("loadedmetadata", handleDurationChange);
-    audio.addEventListener("play", handlePlay);
-    audio.addEventListener("pause", handlePause);
     audio.addEventListener("ended", handleEnded);
     audio.addEventListener("volumechange", handleVolumeChange);
     audio.addEventListener("error", handleError);
+    audio.addEventListener("waiting", handleWaiting);
+    audio.addEventListener("playing", handlePlaying);
+    audio.addEventListener("canplaythrough", handleCanPlayThrough);
 
     return () => {
       audio.removeEventListener("timeupdate", handleTimeUpdate);
       audio.removeEventListener("durationchange", handleDurationChange);
       audio.removeEventListener("loadedmetadata", handleDurationChange);
-      audio.removeEventListener("play", handlePlay);
-      audio.removeEventListener("pause", handlePause);
       audio.removeEventListener("ended", handleEnded);
       audio.removeEventListener("volumechange", handleVolumeChange);
       audio.removeEventListener("error", handleError);
+      audio.removeEventListener("waiting", handleWaiting);
+      audio.removeEventListener("playing", handlePlaying);
+      audio.removeEventListener("canplaythrough", handleCanPlayThrough);
     };
   }, [
     audio,
     storeSetCurrentTime,
     storeSetDuration,
-    storeSetIsPlaying,
     storeSetIsBuffering,
     setTrack,
     currentTrack,

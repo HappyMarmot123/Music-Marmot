@@ -4,6 +4,7 @@ import ClientLayout from "@/layout/clientLayout";
 import { TanstackProvider } from "@/provider/tanstackProvider";
 import Script from "next/script";
 import { AuthProvider } from "@/provider/authProvider";
+import { ToggleProvider } from "@/store/toggleStore";
 
 export const metadata: Metadata = {
   title: "EDMM",
@@ -54,7 +55,9 @@ const RootLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
       <body>
         <AuthProvider>
           <TanstackProvider>
-            <ClientLayout>{children}</ClientLayout>
+            <ClientLayout>
+              <ToggleProvider>{children}</ToggleProvider>
+            </ClientLayout>
           </TanstackProvider>
         </AuthProvider>
       </body>

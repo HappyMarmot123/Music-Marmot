@@ -16,10 +16,8 @@ import LoginSection from "@/component/loginSection";
 import { useToggle } from "@/store/toggleStore";
 
 export default function ListModal({
-  isOpen,
   closeToggle,
 }: {
-  isOpen: boolean;
   closeToggle: () => void;
 }) {
   const cloudinaryData = useCloudinaryStore((state) => state.cloudinaryData);
@@ -62,8 +60,6 @@ export default function ListModal({
       }
     }
   }, [isCursorHidden]);
-
-  if (!isOpen) return null;
 
   return (
     <div

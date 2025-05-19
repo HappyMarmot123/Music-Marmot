@@ -53,7 +53,7 @@ export default function MyArticle({ children }: { children: React.ReactNode }) {
         <DustySnow />
         <Cursor />
         {!isOpen && <AudioPlayer />}
-        <ListModal isOpen={isOpen} closeToggle={closeToggle} />
+        {isOpen && <ListModal closeToggle={closeToggle} />}
         {/* <Intro /> */}
         <article className="my-gradient fixed w-screen pointer-events-none" />
         {children}

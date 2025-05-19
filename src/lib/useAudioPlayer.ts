@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useCallback, useState } from "react";
+import { useEffect, useCallback, useState, useMemo } from "react";
 import type { TrackInfo } from "@/type/dataType";
 import useCloudinaryStore from "@/store/cloudinaryStore";
 import useTrackStore from "@/store/trackStore";
@@ -9,24 +9,26 @@ import { cleanupAudioInstance, getAudioInstance } from "./audioManager";
 export function useAudioPlayer() {
   const [audio, setAudio] = useState<HTMLAudioElement | null>(null);
 
-  const {
-    currentTrack,
-    isPlaying,
-    currentTime,
-    duration,
-    isBuffering,
-    volume,
-    isMuted,
-    currentTrackAssetId,
-    setTrack,
-    togglePlayPause: storeTogglePlayPause,
-    // setIsPlaying: storeSetIsPlaying,
-    setCurrentTime: storeSetCurrentTime,
-    setDuration: storeSetDuration,
-    setIsBuffering: storeSetIsBuffering,
-    handleOnClickCard: storeHandleOnClickCard,
-    seekTo: storeSeekTo,
-  } = useTrackStore();
+  const currentTrack = useTrackStore((state) => state.currentTrack);
+  const isPlaying = useTrackStore((state) => state.isPlaying);
+  const currentTime = useTrackStore((state) => state.currentTime);
+  const duration = useTrackStore((state) => state.duration);
+  const isBuffering = useTrackStore((state) => state.isBuffering);
+  const volume = useTrackStore((state) => state.volume);
+  const isMuted = useTrackStore((state) => state.isMuted);
+  const currentTrackAssetId = useTrackStore(
+    (state) => state.currentTrackAssetId
+  );
+  const setTrack = useTrackStore((state) => state.setTrack);
+  const storeTogglePlayPause = useTrackStore((state) => state.togglePlayPause);
+  // const storeSetIsPlaying = useTrackStore((state) => state.setIsPlaying);
+  const storeSetCurrentTime = useTrackStore((state) => state.setCurrentTime);
+  const storeSetDuration = useTrackStore((state) => state.setDuration);
+  const storeSetIsBuffering = useTrackStore((state) => state.setIsBuffering);
+  const storeHandleOnClickCard = useTrackStore(
+    (state) => state.handleOnClickCard
+  );
+  const storeSeekTo = useTrackStore((state) => state.seekTo);
 
   const cloudinaryData = useCloudinaryStore((state) => state.cloudinaryData);
   const isLoadingCloudinary = useCloudinaryStore(
@@ -228,6 +230,7 @@ export function useAudioPlayer() {
     if (currentIndex !== -1) {
       const nextIndex = (currentIndex + 1) % cloudinaryData.length;
       const nextTrackData = cloudinaryData[nextIndex];
+
       const nextTrackInfo: TrackInfo = {
         id: nextTrackData.id,
         album: nextTrackData.context?.caption || "Unknown Album",
@@ -236,21 +239,9 @@ export function useAudioPlayer() {
         url: nextTrackData.secure_url,
         producer: nextTrackData.producer || "Unknown Artist",
       };
-      setTrack(nextTrackInfo, true);
+      setTrack(nextTrackInfo, isPlaying);
     }
-    // else if (cloudinaryData.length > 0) {
-    //   const firstTrackData = cloudinaryData[0];
-    //   const firstTrackInfo: TrackInfo = {
-    //     id: firstTrackData.id,
-    //     album: firstTrackData.context?.caption || "Unknown Album",
-    //     name: firstTrackData.title || "Unknown Track",
-    //     artworkId: firstTrackData.album_secure_url,
-    //     url: firstTrackData.secure_url,
-    //     producer: firstTrackData.producer || "Unknown Artist",
-    //   };
-    //   setTrack(firstTrackInfo, true);
-    // }
-  }, [cloudinaryData, currentTrack, setTrack]);
+  }, [cloudinaryData, currentTrack, setTrack, isPlaying]);
 
   const playPrevTrack = useCallback(() => {
     if (!cloudinaryData || cloudinaryData.length === 0) return;
@@ -261,6 +252,7 @@ export function useAudioPlayer() {
       const prevIndex =
         (currentIndex - 1 + cloudinaryData.length) % cloudinaryData.length;
       const prevTrackData = cloudinaryData[prevIndex];
+
       const prevTrackInfo: TrackInfo = {
         id: prevTrackData.id,
         album: prevTrackData.context?.caption || "Unknown Album",
@@ -269,21 +261,9 @@ export function useAudioPlayer() {
         url: prevTrackData.secure_url,
         producer: prevTrackData.producer || "Unknown Artist",
       };
-      setTrack(prevTrackInfo, true);
+      setTrack(prevTrackInfo, isPlaying);
     }
-    // else if (cloudinaryData.length > 0) {
-    //   const lastTrackData = cloudinaryData[cloudinaryData.length - 1];
-    //   const lastTrackInfo: TrackInfo = {
-    //     id: lastTrackData.id,
-    //     album: lastTrackData.context?.caption || "Unknown Album",
-    //     name: lastTrackData.title || "Unknown Track",
-    //     artworkId: lastTrackData.album_secure_url,
-    //     url: lastTrackData.secure_url,
-    //     producer: lastTrackData.producer || "Unknown Artist",
-    //   };
-    //   setTrack(lastTrackInfo, true);
-    // }
-  }, [cloudinaryData, currentTrack, setTrack]);
+  }, [cloudinaryData, currentTrack, setTrack, isPlaying]);
 
   return {
     currentTrack,

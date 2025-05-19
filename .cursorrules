@@ -3,13 +3,13 @@
 // Next.js App Router best practices
 
 const nextjsAppRouterBestPractices = [
-"Use server components by default",
-"Implement client components only when necessary",
-"Utilize the new file-based routing system",
-"Use layout.js for shared layouts",
-"Implement loading.js for loading states",
-"Use error.js for error handling",
-"Utilize route handlers for API routes",
+  "Use server components by default",
+  "Implement client components only when necessary",
+  "Utilize the new file-based routing system",
+  "Use layout.js for shared layouts",
+  "Implement loading.js for loading states",
+  "Use error.js for error handling",
+  "Utilize route handlers for API routes",
 ];
 
 // Folder structure
@@ -38,6 +38,7 @@ const additionalInstructions = `
 5. Implement proper error boundaries
 6. Follow Next.js naming conventions for special files
 7. Use environment variables for configuration
+8. When creating a file, the first character must be lowercase, not uppercase.
    `;
 
 // Project Overview
@@ -45,19 +46,19 @@ const projectOverview = `This project is a music streaming website where users c
 
 // Key Features
 const keyFeatures = [
-"Music playback",
-"Search for songs, artists, albums",
-"Visual site using animations",
+  "Music playback",
+  "Search for songs, artists, albums",
+  "Visual site using animations",
 ];
 
 // Technology Stack
 const techStack = [
-"Next.js (App Router)",
-"TypeScript",
-"Tailwind CSS",
-"Framer Motion (for animations)",
-"Zustand (for state management)",
-"Tanstack Query (React Query) (for data fetching and caching)",
-"Docker (for containerization)",
-"Cloudinary (for media management, e.g., album art)",
+  "Next.js (App Router)",
+  "TypeScript",
+  "Tailwind CSS",
+  "Framer Motion (for animations)",
+  "Zustand (for state management)",
+  "Tanstack Query (React Query) (for data fetching and caching)",
+  "Docker (for containerization)",
+  "Cloudinary (for media management, e.g., album art)",
 ];

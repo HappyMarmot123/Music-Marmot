@@ -6,7 +6,7 @@ import {
 import { Heart } from "lucide-react";
 import Image from "next/image";
 import clsx from "clsx";
-import { SetStateAction, useState } from "react";
+import { SetStateAction, useState, useCallback } from "react";
 import OnclickEffect from "./onclickEffect";
 import { handleOnLike } from "@/lib/util";
 import useTrackStore from "@/store/trackStore";
@@ -17,19 +17,25 @@ export default function ModalMusicList({
   isLiked,
   setIsLiked,
 }: ModalMusicListProps) {
-  const { handleOnClickCard } = useTrackStore();
+  const { handleOnClickCard, currentTrackAssetId: currentId } = useTrackStore();
 
   const [playingLottieTrackId, setPlayingLottieTrackId] = useState<
     string | null
   >(null);
 
-  const showLoading = loading !== false;
-  const showTrackList = loading === false && trackList.length > 0;
-  const showEmptyResult = loading === false && trackList.length === 0;
+  const showLoading = useCallback(() => loading !== false, [loading]);
+  const showTrackList = useCallback(
+    () => loading === false && trackList.length > 0,
+    [loading, trackList.length]
+  );
+  const showEmptyResult = useCallback(
+    () => loading === false && trackList.length === 0,
+    [loading, trackList.length]
+  );
 
   return (
     <>
-      {showLoading && (
+      {showLoading() && (
         <div className="animate-pulse space-y-3">
           {[...Array(5)].map((_, index) => (
             <div
@@ -46,7 +52,7 @@ export default function ModalMusicList({
           ))}
         </div>
       )}
-      {showTrackList && (
+      {showTrackList() && (
         <>
           {trackList.map((track) => (
             <div
@@ -55,7 +61,10 @@ export default function ModalMusicList({
                 handleOnClickCard(track.asset_id);
               }}
               key={track.id}
-              className="flex items-center p-3 rounded-lg hover:bg-white/10 transition cursor-pointer"
+              className={clsx(
+                "flex items-center p-3 rounded-lg hover:bg-white/10 transition cursor-pointer",
+                currentId === track.asset_id && "bg-white/10"
+              )}
             >
               <Image
                 src={track.album_secure_url as string}
@@ -98,7 +107,7 @@ export default function ModalMusicList({
           ))}
         </>
       )}
-      {showEmptyResult && (
+      {showEmptyResult() && (
         <div className="flex items-center justify-center h-full">
           <p className="text-gray-400 text-sm">검색 결과가 없습니다.</p>
         </div>

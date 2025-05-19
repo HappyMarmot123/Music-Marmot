@@ -3,10 +3,13 @@ import DustySnow from "@/component/dustySnow";
 import Intro from "@/component/intro";
 import AudioPlayer from "@/layout/audioPlayer";
 import ListModal from "@/layout/listModal";
+import { useToggle } from "@/store/toggleStore";
 import { motion, useScroll, useSpring, useTransform } from "framer-motion";
 import { useRef } from "react";
 
 export default function MyArticle({ children }: { children: React.ReactNode }) {
+  const { isOpen, closeToggle } = useToggle();
+
   const ref = useRef(null);
   const { scrollYProgress } = useScroll();
   const { scrollYProgress: scrollYProgress2 } = useScroll({
@@ -49,8 +52,8 @@ export default function MyArticle({ children }: { children: React.ReactNode }) {
         </figure>
         <DustySnow />
         <Cursor />
-        <AudioPlayer />
-        {/* <ListModal /> */}
+        {!isOpen && <AudioPlayer />}
+        <ListModal isOpen={isOpen} closeToggle={closeToggle} />
         {/* <Intro /> */}
         <article className="my-gradient fixed w-screen pointer-events-none" />
         {children}

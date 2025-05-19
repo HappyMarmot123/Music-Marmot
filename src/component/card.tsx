@@ -3,9 +3,11 @@
 import { CloudinaryResource, TrackObjectFull } from "@/type/dataType";
 import Image from "next/image";
 import useTrackStore from "@/store/trackStore";
+import { useToggle } from "@/store/toggleStore";
 
 const Card = ({ card }: { card: TrackObjectFull | CloudinaryResource }) => {
-  const { handleOnClickCard } = useTrackStore();
+  const { handleOnClickCard, currentTrackAssetId } = useTrackStore();
+  const { openToggle } = useToggle();
   const isTrack = "album" in card;
 
   const artistName = isTrack
@@ -31,7 +33,13 @@ const Card = ({ card }: { card: TrackObjectFull | CloudinaryResource }) => {
       onClick={(e) => {
         e.preventDefault();
         if (!isTrack) {
-          handleOnClickCard(card.asset_id);
+          const newAssetId = card.asset_id;
+          if (newAssetId === currentTrackAssetId) {
+            openToggle();
+          } else {
+            handleOnClickCard(newAssetId);
+            openToggle();
+          }
         }
       }}
       rel="noopener noreferrer"

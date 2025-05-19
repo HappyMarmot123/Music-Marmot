@@ -40,16 +40,15 @@ const useTrackStore = create<AudioPlayerState>()(
       setTrack: (track, playImmediately = false) => {
         set({
           currentTrack: track,
-          duration: 0,
           currentTime: 0,
           isPlaying: track ? playImmediately : false,
-          isBuffering: track ? playImmediately : false,
+          isBuffering: track ? true : false,
         });
       },
       togglePlayPause: () => {
         set((state) => ({ isPlaying: !state.isPlaying }));
       },
-      setIsPlaying: (playing) => set({ isPlaying: playing }),
+      setIsPlaying: (playing) => {},
       setCurrentTime: (time) => set({ currentTime: time }),
       setDuration: (duration) => set({ duration: duration }),
       setIsBuffering: (buffering) => set({ isBuffering: buffering }),
@@ -61,7 +60,7 @@ const useTrackStore = create<AudioPlayerState>()(
         set((state) => ({ isMuted: !state.isMuted }));
       },
       handleOnClickCard: (paramAssetId) => {
-        set({ currentTrackAssetId: paramAssetId, isPlaying: !!paramAssetId });
+        set({ currentTrackAssetId: paramAssetId });
       },
       seekTo: (time) => {
         set((state) => {

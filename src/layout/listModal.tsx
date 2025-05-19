@@ -25,6 +25,7 @@ import LoginSection from "@/component/loginSection";
 import { useToggle } from "@/store/toggleStore";
 import { useAuth } from "@/provider/authProvider";
 import { motion } from "framer-motion";
+import AudioVisualizer from "@/component/audioVisualizer";
 
 export default function ListModal({
   closeToggle,
@@ -47,6 +48,7 @@ export default function ListModal({
     prevTrack,
     seek,
     handleSelectTrack,
+    analyserNode,
   } = useAudioPlayer();
 
   const { user } = useAuth();
@@ -86,37 +88,53 @@ export default function ListModal({
     >
       <aside className="col-span-2 p-8 flex flex-col items-center border-r border-white/10">
         <div className="flex flex-col items-center flex-grow w-full">
-          <section
-            aria-label="현재 재생트랙"
-            className="w-56 h-56 mt-4 relative mb-16 bg-white/5 rounded-xl"
-            style={{
-              WebkitBoxReflect:
-                "below -5px linear-gradient(transparent, transparent 80%, rgba(0, 0, 0, 0.8))",
-            }}
-          >
-            {isBuffering || !currentTrack?.artworkId ? (
-              <div className="grid place-items-center w-full h-full animate-pulse">
-                <div className="w-8 h-8 border-4 border-white border-t-transparent rounded-full animate-spin" />
-              </div>
-            ) : (
-              <motion.div
-                key={currentTrack.id}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.75 }}
-                className="relative w-full h-full perspective-1000"
-              >
-                <CldImage
-                  src={currentTrack.artworkId}
-                  className="select-none w-full h-full object-cover rounded-xl shadow-[0_-5px_25px_rgba(255,255,255,0.3)]"
-                  width={256}
-                  height={256}
-                  alt={currentTrack.album || "Album Art"}
-                  priority
-                  draggable={false}
-                />
-              </motion.div>
-            )}
+          <section aria-label="현재 재생트랙" className="w-full mb-16">
+            <div
+              className="relative flex flex-col items-center justify-center pt-8 overflow-hidden"
+              style={{
+                WebkitBoxReflect:
+                  "below -5px linear-gradient(transparent, transparent 80%, rgba(0, 0, 0, 0.8))",
+              }}
+            >
+              {analyserNode && (
+                <div className="absolute z-0">
+                  <AudioVisualizer
+                    analyserNode={analyserNode}
+                    isPlaying={isPlaying}
+                    width={600}
+                    height={300}
+                  />
+                </div>
+              )}
+              {(isBuffering || !currentTrack?.artworkId) && (
+                <div className="grid place-items-center w-full h-full animate-pulse rounded-xl">
+                  <div className="w-8 h-8 border-4 border-white border-t-transparent rounded-full animate-spin" />
+                </div>
+              )}
+              {!(isBuffering || !currentTrack?.artworkId) && (
+                <>
+                  {currentTrack?.artworkId && (
+                    <motion.div
+                      key={currentTrack.id}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ duration: 0.75 }}
+                      className="w-56 h-56 rounded-xl perspective-1000 z-10 overflow-hidden shadow-[0_-5px_25px_rgba(255,255,255,0.3)]"
+                    >
+                      <CldImage
+                        src={currentTrack.artworkId}
+                        className="select-none w-full h-full object-cover"
+                        width={224}
+                        height={224}
+                        alt={currentTrack.album || "Album Art"}
+                        priority
+                        draggable={false}
+                      />
+                    </motion.div>
+                  )}
+                </>
+              )}
+            </div>
           </section>
 
           <div className="w-full max-w-md">

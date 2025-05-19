@@ -6,8 +6,12 @@ import useTrackStore from "@/store/trackStore";
 import { useToggle } from "@/store/toggleStore";
 
 const Card = ({ card }: { card: TrackObjectFull | CloudinaryResource }) => {
-  const { handleOnClickCard, currentTrackAssetId } = useTrackStore();
   const { openToggle } = useToggle();
+  const handleOnClickCard = useTrackStore((state) => state.handleOnClickCard);
+  const currentTrackAssetId = useTrackStore(
+    (state) => state.currentTrackAssetId
+  );
+
   const isTrack = "album" in card;
 
   const artistName = isTrack

@@ -8,6 +8,7 @@ import AlbumArtwork from "@/component/albumArtwork";
 import Draggable, { type DraggableBounds } from "react-draggable";
 import "@/lib/util";
 import { handleSeekInteraction } from "@/lib/util";
+import { useToggle } from "@/store/toggleStore";
 
 /* 
   TODO: 
@@ -63,6 +64,8 @@ export default function AudioPlayer() {
   //   setDraggableKey(Date.now());
   // }, []);
   const [draggableKey, setDraggableKey] = useState(Date.now());
+
+  const { openToggle } = useToggle();
 
   const currentProgress = duration > 0 ? (currentTime / duration) * 100 : 0;
 
@@ -142,6 +145,7 @@ export default function AudioPlayer() {
               isPlaying={isPlaying}
               isBuffering={isBuffering}
               currentTrackInfo={currentTrack}
+              onClick={openToggle}
             />
             <PlayerControlsSection
               currentTrackInfo={currentTrack}

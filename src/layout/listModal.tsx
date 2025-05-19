@@ -1,5 +1,14 @@
 import { SetStateAction, useEffect, useState } from "react";
-import { Heart, Pause, Play, SkipBack, SkipForward, X } from "lucide-react";
+import {
+  Heart,
+  Pause,
+  Play,
+  SkipBack,
+  SkipForward,
+  X,
+  ListMusic,
+  LayoutList,
+} from "lucide-react";
 import useCloudinaryStore from "@/store/cloudinaryStore";
 import { CloudinaryResource } from "@/type/dataType";
 import ShareModal from "@/component/shareModal";
@@ -14,6 +23,8 @@ import { handleOnLike } from "@/lib/util";
 import ModalPlayerTrackDetails from "@/component/modalPlayerTrackDetails";
 import LoginSection from "@/component/loginSection";
 import { useToggle } from "@/store/toggleStore";
+import { useAuth } from "@/provider/authProvider";
+import { motion } from "framer-motion";
 
 export default function ListModal({
   closeToggle,
@@ -37,6 +48,8 @@ export default function ListModal({
     seek,
     handleSelectTrack,
   } = useAudioPlayer();
+
+  const { user } = useAuth();
 
   const [trackList, setTrackList] = useState<CloudinaryResource[]>([]);
   const [isCursorHidden, setIsCursorHidden] = useState(true);
@@ -62,129 +75,167 @@ export default function ListModal({
   }, [isCursorHidden]);
 
   return (
-    <div
+    <motion.div
+      initial={{ opacity: 0, scale: 0.95 }}
+      animate={{ opacity: 1, scale: 1 }}
+      exit={{ opacity: 0, scale: 0.95 }}
+      transition={{ duration: 0.3, ease: "easeInOut" }}
       className="grid grid-cols-4 fixed inset-0 m-auto w-[90%] h-[90%]  
               bg-[#483544aa] backdrop-blur-[10px] border border-white/50 rounded-2xl text-white z-40 
               shadow-[0_0.5px_0_1px_rgba(255,255,255,0.2)_inset,0_1px_0_0_rgba(255,255,255,0.6)_inset,0_4px_16px_rgba(0,0,0,0.1)]   overflow-hidden"
     >
       <aside className="col-span-2 p-8 flex flex-col items-center border-r border-white/10">
-        <LoginSection />
-
-        <section
-          aria-label="현재 재생트랙"
-          className="w-56 h-56 mt-4 relative mb-12 bg-white/5 rounded-xl"
-          style={{
-            WebkitBoxReflect:
-              "below -5px linear-gradient(transparent, transparent 80%, rgba(0, 0, 0, 0.8))",
-          }}
-        >
-          {isBuffering || !currentTrack?.artworkId ? (
-            <div className="grid place-items-center w-full h-full animate-pulse">
-              <div className="w-8 h-8 border-4 border-white border-t-transparent rounded-full animate-spin" />
-            </div>
-          ) : (
-            <div className="relative w-full h-full perspective-1000">
-              <CldImage
+        <div className="flex flex-col items-center flex-grow w-full">
+          <section
+            aria-label="현재 재생트랙"
+            className="w-56 h-56 mt-4 relative mb-16 bg-white/5 rounded-xl"
+            style={{
+              WebkitBoxReflect:
+                "below -5px linear-gradient(transparent, transparent 80%, rgba(0, 0, 0, 0.8))",
+            }}
+          >
+            {isBuffering || !currentTrack?.artworkId ? (
+              <div className="grid place-items-center w-full h-full animate-pulse">
+                <div className="w-8 h-8 border-4 border-white border-t-transparent rounded-full animate-spin" />
+              </div>
+            ) : (
+              <motion.div
                 key={currentTrack.id}
-                src={currentTrack.artworkId}
-                className="select-none w-full h-full object-cover rounded-xl shadow-[0_-5px_25px_rgba(255,255,255,0.3)]"
-                width={256}
-                height={256}
-                alt={currentTrack.album || "Album Art"}
-                priority
-                draggable={false}
-              />
-            </div>
-          )}
-        </section>
-
-        <div className="w-full max-w-md">
-          <h2 className="text-3xl font-bold mb-2">{currentTrack?.name}</h2>
-          <h3 className="text-xl text-gray-300 mb-4">
-            {currentTrack?.producer}
-          </h3>
-
-          <ModalPlayerTrackDetails
-            currentTime={currentTime}
-            duration={duration}
-            seek={seek}
-          />
-
-          <section
-            aria-label="재생 컨트롤"
-            className="mt-6 flex items-center justify-center space-x-4"
-          >
-            <button
-              onClick={prevTrack}
-              className="w-10 h-10 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 transition"
-            >
-              <SkipBack width={20} fill="white" />
-            </button>
-            <button
-              onClick={togglePlayPause}
-              className="w-12 h-12 flex items-center justify-center rounded-full bg-white/20 hover:bg-white/30 transition"
-            >
-              {isPlaying ? (
-                <Pause width={20} fill="white" />
-              ) : (
-                <Play width={20} fill="white" />
-              )}
-            </button>
-            <button
-              onClick={nextTrack}
-              className="w-10 h-10 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 transition"
-            >
-              <SkipForward width={20} fill="white" />
-            </button>
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.75 }}
+                className="relative w-full h-full perspective-1000"
+              >
+                <CldImage
+                  src={currentTrack.artworkId}
+                  className="select-none w-full h-full object-cover rounded-xl shadow-[0_-5px_25px_rgba(255,255,255,0.3)]"
+                  width={256}
+                  height={256}
+                  alt={currentTrack.album || "Album Art"}
+                  priority
+                  draggable={false}
+                />
+              </motion.div>
+            )}
           </section>
 
-          <section
-            aria-label="공유하기"
-            className="mt-8 mb-4 flex justify-center space-x-8 w-full"
-          >
-            <button
-              className="flex items-center space-x-1 text-gray-300 hover:text-pink-500 p-2 rounded-xl transition bg-white/10"
-              onClick={() =>
-                handleOnLike(isLiked, currentTrack?.id as string, setIsLiked)
-              }
+          <div className="w-full max-w-md">
+            <motion.h2
+              key={`${currentTrack?.id}-name`}
+              animate={{ y: isPlaying ? [0, -2, 0] : 0 }}
+              transition={{
+                duration: 1.5,
+                repeat: isPlaying ? Infinity : 0,
+                ease: "easeInOut",
+              }}
+              className="text-3xl font-bold mb-2 truncate"
             >
-              <span className="relative z-10 flex items-center space-x-1">
-                <Heart
-                  className={clsx(
-                    "w-4 h-4 text-gray-400 hover:text-pink-500 transition-colors",
-                    isLiked.find(
-                      (item) => item.id === currentTrack?.id && item.isLike
-                    ) && "text-pink-500 fill-pink-500/30"
-                  )}
-                />
-                <span>좋아요</span>
-                <OnclickEffect
-                  play={
-                    isLiked.find((item) => item.id === currentTrack?.id)
-                      ?.isLike || false
-                  }
-                  onComplete={() => {
-                    console.log("complete");
-                  }}
-                />
-              </span>
-            </button>
-          </section>
+              {currentTrack?.name}
+            </motion.h2>
+            <motion.h3
+              key={`${currentTrack?.id}-producer`}
+              animate={{ y: isPlaying ? [0, 2, 0] : 0 }}
+              transition={{
+                duration: 1.5,
+                repeat: isPlaying ? Infinity : 0,
+                ease: "easeInOut",
+                delay: 0.2,
+              }}
+              className="text-xl text-gray-300 mb-4 truncate"
+            >
+              {currentTrack?.producer}
+            </motion.h3>
+
+            <ModalPlayerTrackDetails
+              currentTime={currentTime}
+              duration={duration}
+              seek={seek}
+            />
+
+            <section
+              aria-label="재생 컨트롤"
+              className="mt-6 flex items-center justify-center space-x-4"
+            >
+              <motion.button
+                whileTap={{ scale: 0.95 }}
+                transition={{ duration: 0.1 }}
+                onClick={prevTrack}
+                className="w-10 h-10 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 transition"
+              >
+                <SkipBack width={20} fill="white" />
+              </motion.button>
+              <motion.button
+                whileTap={{ scale: 0.95 }}
+                transition={{ duration: 0.1 }}
+                onClick={togglePlayPause}
+                className="w-12 h-12 flex items-center justify-center rounded-full bg-white/20 hover:bg-white/30 transition"
+              >
+                {isPlaying ? (
+                  <Pause width={20} fill="white" />
+                ) : (
+                  <Play width={20} fill="white" />
+                )}
+              </motion.button>
+              <motion.button
+                whileTap={{ scale: 0.95 }}
+                transition={{ duration: 0.1 }}
+                onClick={nextTrack}
+                className="w-10 h-10 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 transition"
+              >
+                <SkipForward width={20} fill="white" />
+              </motion.button>
+            </section>
+
+            {/* <section
+              aria-label="공유하기"
+              className="mt-8 mb-4 flex justify-center space-x-8 w-full"
+            >
+              <motion.button
+                whileTap={{ scale: 0.95 }}
+                transition={{ duration: 0.1 }}
+                className="flex items-center space-x-1 text-gray-300 hover:text-pink-500 p-2 rounded-xl transition bg-white/10"
+                onClick={() =>
+                  handleOnLike(isLiked, currentTrack?.id as string, setIsLiked)
+                }
+              >
+                <span className="relative z-10 flex items-center space-x-1">
+                  <Heart
+                    className={clsx(
+                      "w-4 h-4 text-gray-400 hover:text-pink-500 transition-colors",
+                      isLiked.find(
+                        (item) => item.id === currentTrack?.id && item.isLike
+                      ) && "text-pink-500 fill-pink-500/30"
+                    )}
+                  />
+                  <span>좋아요</span>
+                  <OnclickEffect
+                    play={
+                      isLiked.find((item) => item.id === currentTrack?.id)
+                        ?.isLike || false
+                    }
+                    onComplete={() => {
+                      console.log("complete");
+                    }}
+                  />
+                </span>
+              </motion.button>
+            </section> */}
+          </div>
         </div>
+        <LoginSection />
       </aside>
 
       <aside className="col-span-2 p-8 overflow-auto">
         <section
-          aria-label="검색 및 닫기"
-          className="flex items-center justify-between mb-6"
+          aria-label="재생 목록 컨트롤"
+          className="mb-6 border-b border-white/10"
         >
-          <h2 className="text-2xl font-bold">재생 가능한 음악</h2>
-          <div className="flex items-center space-x-2">
-            <div className="relative">
+          <div className="flex items-center justify-between">
+            <div className="relative flex-grow mr-2">
               <input
                 type="text"
-                placeholder="노래 또는 아티스트 검색"
-                className="w-64 px-4 py-2 pr-10 bg-white/10 border border-white/20 rounded-full focus:outline-none focus:border-white/40 text-sm"
+                placeholder="Search for Songs or Artists"
+                className="w-full px-4 py-2 pr-10 bg-white/10 border border-white/20 rounded-full focus:outline-none focus:border-white/40 text-sm"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
@@ -192,13 +243,46 @@ export default function ListModal({
                 🔍
               </span>
             </div>
-            <button
+            <motion.button
+              whileTap={{ scale: 0.95 }}
+              transition={{ duration: 0.1 }}
               onClick={closeToggle}
               className="p-2 rounded-full hover:bg-white/20 transition"
               aria-label="닫기"
             >
               <X size={24} />
-            </button>
+            </motion.button>
+          </div>
+          <div className="flex items-center justify-between mt-6 mb-2">
+            <h2 className="text-2xl font-bold">Available Now</h2>
+            {user && (
+              <div className="flex flex-row space-x-2">
+                <motion.button
+                  whileTap={{ scale: 0.95 }}
+                  transition={{ duration: 0.1 }}
+                  className="px-3 py-1 text-sm font-medium text-white bg-purple-600/80 rounded-lg hover:bg-purple-700/80 transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50 flex items-center justify-center space-x-2"
+                >
+                  <Heart size={16} />
+                  {/* <span>Like</span> */}
+                </motion.button>
+                <motion.button
+                  whileTap={{ scale: 0.95 }}
+                  transition={{ duration: 0.1 }}
+                  className="px-3 py-1 text-sm font-medium text-white bg-sky-600/80 rounded-lg hover:bg-sky-700/80 transition-colors focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-opacity-50 flex items-center justify-center space-x-2"
+                >
+                  <ListMusic size={16} />
+                  {/* <span>List</span> */}
+                </motion.button>
+                <motion.button
+                  whileTap={{ scale: 0.95 }}
+                  transition={{ duration: 0.1 }}
+                  className="px-3 py-1 text-sm font-medium text-white bg-emerald-600/80 rounded-lg hover:bg-emerald-700/80 transition-colors focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-opacity-50 flex items-center justify-center space-x-2"
+                >
+                  <LayoutList size={16} />
+                  {/* <span>All</span> */}
+                </motion.button>
+              </div>
+            )}
           </div>
         </section>
 
@@ -216,6 +300,6 @@ export default function ListModal({
           />
         </section>
       </aside>
-    </div>
+    </motion.div>
   );
 }

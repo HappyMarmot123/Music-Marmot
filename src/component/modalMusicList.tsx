@@ -109,7 +109,7 @@ export default function ModalMusicList({
       )}
       {showEmptyResult() && (
         <div className="flex items-center justify-center h-full">
-          <p className="text-gray-400 text-sm">검색 결과가 없습니다.</p>
+          <p className="text-gray-400 text-sm">No results found.</p>
         </div>
       )}
     </>

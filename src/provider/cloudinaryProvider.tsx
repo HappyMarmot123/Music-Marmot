@@ -6,9 +6,11 @@ import useStore from "@/store/cloudinaryStore";
 import type { CloudinaryResource } from "@/type/dataType";
 import { fetchCloudinary } from "@/lib/util";
 
-const ClientLayout: React.FC<{ children: React.ReactNode }> = ({
+export function CloudinaryProvider({
   children,
-}) => {
+}: {
+  children: React.ReactNode;
+}) {
   const setCloudinaryData = useStore((state) => state.setCloudinaryData);
   const setCloudinaryError = useStore((state) => state.setCloudinaryError);
   const setIsLoadingCloudinary = useStore(
@@ -39,6 +41,4 @@ const ClientLayout: React.FC<{ children: React.ReactNode }> = ({
   }, [error, setCloudinaryError]);
 
   return <>{children}</>;
-};
-
-export default ClientLayout;
+}

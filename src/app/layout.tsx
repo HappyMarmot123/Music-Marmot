@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import "@/style/global.css?v=2";
-import ClientLayout from "@/layout/clientLayout";
+import { CloudinaryProvider } from "@/provider/cloudinaryProvider";
 import { TanstackProvider } from "@/provider/tanstackProvider";
 import Script from "next/script";
 import { AuthProvider } from "@/provider/authProvider";
@@ -55,9 +55,9 @@ const RootLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
       <body>
         <AuthProvider>
           <TanstackProvider>
-            <ClientLayout>
+            <CloudinaryProvider>
               <ToggleProvider>{children}</ToggleProvider>
-            </ClientLayout>
+            </CloudinaryProvider>
           </TanstackProvider>
         </AuthProvider>
       </body>

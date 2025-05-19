@@ -71,7 +71,7 @@ const Page: React.FC = () => {
         </section>
         <section className="flex flex-col gap-16 !py-16">
           <MusicList />
-          <SpotifyList />
+          {/* <SpotifyList /> */}
         </section>
       </MyArticle>
     </>

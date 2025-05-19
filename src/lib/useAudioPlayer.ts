@@ -4,10 +4,15 @@ import { useEffect, useCallback, useState, useMemo } from "react";
 import type { TrackInfo } from "@/type/dataType";
 import useCloudinaryStore from "@/store/cloudinaryStore";
 import useTrackStore from "@/store/trackStore";
-import { cleanupAudioInstance, getAudioInstance } from "./audioManager";
+import {
+  cleanupAudioInstance,
+  getAudioInstance,
+  getAnalyser,
+} from "./audioInstance";
 
 export function useAudioPlayer() {
   const [audio, setAudio] = useState<HTMLAudioElement | null>(null);
+  const [analyserNode, setAnalyserNode] = useState<AnalyserNode | null>(null);
 
   const currentTrack = useTrackStore((state) => state.currentTrack);
   const isPlaying = useTrackStore((state) => state.isPlaying);
@@ -35,14 +40,15 @@ export function useAudioPlayer() {
     (state) => state.isLoadingCloudinary
   );
 
-  // 오디오 인스턴스 생성
+  // 오디오 인스턴스 및 분석기 생성
   useEffect(() => {
     const audioInstance = getAudioInstance();
     setAudio(audioInstance);
+    setAnalyserNode(getAnalyser());
 
-    return () => {
-      cleanupAudioInstance();
-    };
+    // return () => {
+    //   cleanupAudioInstance();
+    // };
   }, []);
 
   // 오디오 및 플레이타임 업데이트
@@ -282,5 +288,6 @@ export function useAudioPlayer() {
     handleSelectTrack: storeHandleOnClickCard,
     setVolume: useTrackStore.getState().setVolume,
     toggleMute: useTrackStore.getState().toggleMute,
+    analyserNode,
   };
 }

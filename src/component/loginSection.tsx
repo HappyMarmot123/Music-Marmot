@@ -14,14 +14,14 @@ export default function LoginSection() {
       {showShareModal && <ShareModal setShowShareModal={setShowShareModal} />}
       <section
         aria-label="사용자 인증"
-        className="w-full flex items-center justify-center z-10 min-h-[40px] mb-8"
+        className="w-full flex items-center justify-center z-10 min-h-[40px]"
       >
         {isLoading ? (
           <div className="px-3 py-1.5 text-sm text-gray-300 bg-white/10 rounded-lg">
             로딩 중...
           </div>
         ) : user ? (
-          <div className="w-full flex items-center justify-between p-1.5 bg-white/10 rounded-lg">
+          <div className="w-full flex items-center justify-between px-3 py-1 bg-white/10 rounded-lg">
             <div>
               <span title={user.email || undefined}>
                 {user.user_metadata?.full_name ||
@@ -37,7 +37,7 @@ export default function LoginSection() {
               >
                 <span className="relative z-10 flex items-center space-x-1">
                   <span>↗</span>
-                  <span>공유하기</span>
+                  <span>Share</span>
                 </span>
               </button>
               <button
@@ -48,9 +48,9 @@ export default function LoginSection() {
                     console.error("Sign out failed", error);
                   }
                 }}
-                className="px-3 py-1 text-sm bg-primary/50 hover:bg-primary rounded-md transition-colors"
+                className="px-3 py-1 text-sm bg-pink-600/80 hover:bg-pink-700/80 rounded-md transition-colors"
               >
-                로그아웃
+                Logout
               </button>
             </div>
           </div>
@@ -59,7 +59,7 @@ export default function LoginSection() {
             onClick={() => setShowLoginModal(true)}
             className="px-3 py-1.5 text-sm bg-blue-500 hover:bg-blue-600 rounded-md transition-colors"
           >
-            로그인
+            Login
           </button>
         )}
       </section>

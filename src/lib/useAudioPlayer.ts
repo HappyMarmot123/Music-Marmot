@@ -8,6 +8,7 @@ import {
   cleanupAudioInstance,
   getAudioInstance,
   getAnalyser,
+  getAudioContext,
 } from "./audioInstance";
 
 export function useAudioPlayer() {
@@ -213,7 +214,18 @@ export function useAudioPlayer() {
     cloudinaryData,
   ]);
 
-  const togglePlayPause = useCallback(() => {
+  const togglePlayPause = useCallback(async () => {
+    const context = getAudioContext();
+    if (context && context.state === "suspended") {
+      try {
+        await context.resume();
+        console.log(
+          "AudioContext resumed on user interaction in togglePlayPause!"
+        );
+      } catch (e) {
+        console.error("Failed to resume AudioContext in togglePlayPause:", e);
+      }
+    }
     storeTogglePlayPause();
   }, [storeTogglePlayPause]);
 

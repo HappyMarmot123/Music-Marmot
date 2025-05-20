@@ -21,12 +21,6 @@ export const getAudioInstance = (): HTMLAudioElement => {
       audioContext = new (window.AudioContext ||
         Globalwindow.webkitAudioContext)();
       if (audioContext && audioInstance) {
-        if (audioContext.state === "suspended") {
-          console.log("🚀 ~ audioContext was suspended", audioContext.state);
-          audioContext
-            .resume()
-            .catch((err) => console.error("Error resuming AudioContext:", err));
-        }
         analyser = audioContext.createAnalyser();
         source = audioContext.createMediaElementSource(audioInstance);
         source.connect(analyser);
@@ -39,13 +33,6 @@ export const getAudioInstance = (): HTMLAudioElement => {
 };
 
 export const getAudioContext = (): AudioContext | null => {
-  if (audioContext && audioContext.state === "suspended") {
-    audioContext
-      .resume()
-      .catch((err) =>
-        console.error("Error resuming AudioContext from getAudioContext:", err)
-      );
-  }
   return audioContext;
 };
 

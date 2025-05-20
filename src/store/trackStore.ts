@@ -71,6 +71,13 @@ const useTrackStore = create<AudioPlayerState>()(
     }),
     {
       name: "track-store",
+      merge: (persistedState, currentState) => {
+        return {
+          ...currentState,
+          ...(persistedState as object),
+          isPlaying: currentState.isPlaying,
+        };
+      },
     }
   )
 );

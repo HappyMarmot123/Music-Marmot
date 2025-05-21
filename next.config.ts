@@ -22,6 +22,7 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  swcMinify: false, // 난독화 여부
 };
 
 module.exports = nextConfig;

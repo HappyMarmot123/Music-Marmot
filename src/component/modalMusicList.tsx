@@ -60,7 +60,7 @@ export default function ModalMusicList({
                 e.preventDefault();
                 handleOnClickCard(track.asset_id);
               }}
-              key={track.id}
+              key={track.asset_id}
               className={clsx(
                 "flex items-center p-3 rounded-lg hover:bg-white/10 transition cursor-pointer",
                 currentId === track.asset_id && "bg-white/10"
@@ -84,21 +84,22 @@ export default function ModalMusicList({
                   className="p-1"
                   onClick={(e) => {
                     e.stopPropagation();
-                    handleOnLike(isLiked, track.id, setIsLiked);
-                    setPlayingLottieTrackId(track.id);
+                    handleOnLike(isLiked, track.asset_id, setIsLiked);
+                    setPlayingLottieTrackId(track.asset_id);
                   }}
                 >
                   <Heart
                     className={clsx(
                       "w-4 h-4 text-gray-400 hover:text-pink-500 transition-colors",
                       isLiked.some(
-                        (item) => item.id === track.id && item.isLike
+                        (item) =>
+                          item.asset_id === track.asset_id && item.isLike
                       ) && "text-pink-500 fill-pink-500/30"
                     )}
                   />
                 </button>
                 <OnclickEffect
-                  play={playingLottieTrackId === track.id}
+                  play={playingLottieTrackId === track.asset_id}
                   onComplete={() => setPlayingLottieTrackId(null)}
                 />
                 <span className="text-gray-400 text-sm">128</span>

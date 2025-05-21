@@ -1,3 +1,13 @@
+/*
+  TODO:
+    Web Audio API 는 웹에서 오디오에 이펙트를 추가하거나, 파형을 시각화 하는등 다양한 기능을 구현할 수 있도록 도와준다.
+    Web Audio API 는 모든 작업을 AudioContext 내에서 처리한다.
+    AudioContext 내에서는 각각의 AudioNode 들로 소리를 제어할 수 있다.
+    analyser를 이용하여 오디오 신호의 주파수 데이터로 비쥬얼라이저 시각화 처리하였다.
+    웹 정책으로 인해 클라이언트가 접근하자마자 오디오를 자동 재생하는 것이 불가능하다.
+    따라서 사용자 상호작용으로만 resume() 메서드가 작동한다.
+*/
+
 let audioInstance: HTMLAudioElement | null = null;
 let audioContext: AudioContext | null = null;
 let analyser: AnalyserNode | null = null;
@@ -45,7 +55,7 @@ export const cleanupAudioInstance = () => {
     audioInstance.pause();
     audioInstance.src = "";
     audioInstance = null;
-    // source와 analyser도 연결 해제 및 null 처리 고려
+
     if (source) {
       source.disconnect();
       source = null;

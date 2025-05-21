@@ -115,7 +115,7 @@ export default function ListModal({
                 <>
                   {currentTrack?.artworkId && (
                     <motion.div
-                      key={currentTrack.id}
+                      key={currentTrack.assetId}
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       transition={{ duration: 0.75 }}
@@ -139,7 +139,7 @@ export default function ListModal({
 
           <div className="w-full max-w-md">
             <motion.h2
-              key={`${currentTrack?.id}-name`}
+              key={`${currentTrack?.assetId}-name`}
               animate={{ y: isPlaying ? [0, -2, 0] : 0 }}
               transition={{
                 duration: 1.5,
@@ -151,7 +151,7 @@ export default function ListModal({
               {currentTrack?.name}
             </motion.h2>
             <motion.h3
-              key={`${currentTrack?.id}-producer`}
+              key={`${currentTrack?.assetId}-producer`}
               animate={{ y: isPlaying ? [0, 2, 0] : 0 }}
               transition={{
                 duration: 1.5,
@@ -170,50 +170,47 @@ export default function ListModal({
               seek={seek}
             />
 
-            <section
-              aria-label="재생 컨트롤"
-              className="mt-6 flex items-center justify-center space-x-4"
-            >
+            <section aria-label="재생 컨트롤" className="mt-6 relative">
+              <div className="flex items-center justify-center space-x-4">
+                <motion.button
+                  whileTap={{ scale: 0.95 }}
+                  transition={{ duration: 0.1 }}
+                  onClick={prevTrack}
+                  className="w-10 h-10 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 transition"
+                >
+                  <SkipBack width={20} fill="white" />
+                </motion.button>
+                <motion.button
+                  whileTap={{ scale: 0.95 }}
+                  transition={{ duration: 0.1 }}
+                  onClick={togglePlayPause}
+                  className="w-12 h-12 flex items-center justify-center rounded-full bg-white/20 hover:bg-white/30 transition"
+                >
+                  {isPlaying ? (
+                    <Pause width={20} fill="white" />
+                  ) : (
+                    <Play width={20} fill="white" />
+                  )}
+                </motion.button>
+                <motion.button
+                  whileTap={{ scale: 0.95 }}
+                  transition={{ duration: 0.1 }}
+                  onClick={nextTrack}
+                  className="w-10 h-10 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 transition"
+                >
+                  <SkipForward width={20} fill="white" />
+                </motion.button>
+              </div>
               <motion.button
                 whileTap={{ scale: 0.95 }}
                 transition={{ duration: 0.1 }}
-                onClick={prevTrack}
-                className="w-10 h-10 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 transition"
-              >
-                <SkipBack width={20} fill="white" />
-              </motion.button>
-              <motion.button
-                whileTap={{ scale: 0.95 }}
-                transition={{ duration: 0.1 }}
-                onClick={togglePlayPause}
-                className="w-12 h-12 flex items-center justify-center rounded-full bg-white/20 hover:bg-white/30 transition"
-              >
-                {isPlaying ? (
-                  <Pause width={20} fill="white" />
-                ) : (
-                  <Play width={20} fill="white" />
-                )}
-              </motion.button>
-              <motion.button
-                whileTap={{ scale: 0.95 }}
-                transition={{ duration: 0.1 }}
-                onClick={nextTrack}
-                className="w-10 h-10 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 transition"
-              >
-                <SkipForward width={20} fill="white" />
-              </motion.button>
-            </section>
-
-            {/* <section
-              aria-label="공유하기"
-              className="mt-8 mb-4 flex justify-center space-x-8 w-full"
-            >
-              <motion.button
-                whileTap={{ scale: 0.95 }}
-                transition={{ duration: 0.1 }}
-                className="flex items-center space-x-1 text-gray-300 hover:text-pink-500 p-2 rounded-xl transition bg-white/10"
+                className="absolute top-1 right-0 text-gray-300 hover:text-pink-500 p-2 rounded-xl transition bg-white/10"
                 onClick={() =>
-                  handleOnLike(isLiked, currentTrack?.id as string, setIsLiked)
+                  handleOnLike(
+                    isLiked,
+                    currentTrack?.assetId as string,
+                    setIsLiked
+                  )
                 }
               >
                 <span className="relative z-10 flex items-center space-x-1">
@@ -221,15 +218,17 @@ export default function ListModal({
                     className={clsx(
                       "w-4 h-4 text-gray-400 hover:text-pink-500 transition-colors",
                       isLiked.find(
-                        (item) => item.id === currentTrack?.id && item.isLike
+                        (item) =>
+                          item.asset_id === currentTrack?.assetId && item.isLike
                       ) && "text-pink-500 fill-pink-500/30"
                     )}
                   />
-                  <span>좋아요</span>
+                  <span>128</span>
                   <OnclickEffect
                     play={
-                      isLiked.find((item) => item.id === currentTrack?.id)
-                        ?.isLike || false
+                      isLiked.find(
+                        (item) => item.asset_id === currentTrack?.assetId
+                      )?.isLike || false
                     }
                     onComplete={() => {
                       console.log("complete");
@@ -237,7 +236,7 @@ export default function ListModal({
                   />
                 </span>
               </motion.button>
-            </section> */}
+            </section>
           </div>
         </div>
         <LoginSection />

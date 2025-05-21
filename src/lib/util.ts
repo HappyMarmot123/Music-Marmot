@@ -16,7 +16,6 @@ export function formatTime(seconds: number): string {
 export function replaceKeyName(resource: CloudinaryResource) {
   return {
     ...resource,
-    id: resource.asset_id,
     title: resource.context?.caption || null,
     producer: resource.context?.alt || null,
   };
@@ -32,21 +31,21 @@ export const fetchCloudinary = async (): Promise<CloudinaryResource[]> => {
 
 export function handleOnLike(
   isLiked: likeType[],
-  trackId: string,
+  trackAssetId: string,
   setIsLiked: (isLiked: likeType[]) => void
 ): SetStateAction<unknown> {
   if (isLiked.length === 0) {
-    return setIsLiked([{ id: trackId, isLike: true }]);
+    return setIsLiked([{ asset_id: trackAssetId, isLike: true }]);
   }
 
   const dummy = [...isLiked];
-  const clickIdx = dummy.findIndex((item) => item.id === trackId);
+  const clickIdx = dummy.findIndex((item) => item.asset_id === trackAssetId);
   const exist = dummy[clickIdx];
 
   if (clickIdx !== -1) {
     dummy[clickIdx] = { ...exist, isLike: !exist.isLike };
   } else {
-    dummy.push({ id: trackId, isLike: true });
+    dummy.push({ asset_id: trackAssetId, isLike: true });
   }
   return setIsLiked(dummy);
 }

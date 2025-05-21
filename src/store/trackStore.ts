@@ -43,6 +43,7 @@ const useTrackStore = create<AudioPlayerState>()(
           currentTime: 0,
           isPlaying: track ? playImmediately : false,
           isBuffering: track ? true : false,
+          currentTrackAssetId: track ? track.assetId : null,
         });
       },
       togglePlayPause: () => {

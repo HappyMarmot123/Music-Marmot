@@ -89,7 +89,7 @@ export function useAudioPlayer() {
 
   // 선택된 트랙 변경시 트랙 정보 업데이트
   useEffect(() => {
-    if (currentTrack && currentTrack.id === currentTrackAssetId) {
+    if (currentTrack && currentTrack.assetId === currentTrackAssetId) {
       return;
     }
 
@@ -99,7 +99,7 @@ export function useAudioPlayer() {
       );
       if (trackToLoad) {
         const newTrackInfo: TrackInfo = {
-          id: trackToLoad.id,
+          assetId: trackToLoad.asset_id,
           album: trackToLoad.context?.caption || "Unknown Album",
           name: trackToLoad.title || "Unknown Track",
           artworkId: trackToLoad.album_secure_url,
@@ -149,7 +149,7 @@ export function useAudioPlayer() {
     };
     const handleEnded = () => {
       const currentIdx = cloudinaryData?.findIndex(
-        (track) => track.id === currentTrack?.id
+        (track) => track.asset_id === currentTrack?.assetId
       );
 
       if (
@@ -159,7 +159,7 @@ export function useAudioPlayer() {
       ) {
         const nextTrackData = cloudinaryData[currentIdx + 1];
         const nextTrackInfo: TrackInfo = {
-          id: nextTrackData.id,
+          assetId: nextTrackData.asset_id,
           album: nextTrackData.context?.caption || "Unknown Album",
           name: nextTrackData.title || "Unknown Track",
           artworkId: nextTrackData.album_secure_url,
@@ -243,14 +243,14 @@ export function useAudioPlayer() {
   const playNextTrack = useCallback(() => {
     if (!cloudinaryData || cloudinaryData.length === 0) return;
     const currentIndex = cloudinaryData.findIndex(
-      (track) => track.id === currentTrack?.id
+      (track) => track.asset_id === currentTrack?.assetId
     );
     if (currentIndex !== -1) {
       const nextIndex = (currentIndex + 1) % cloudinaryData.length;
       const nextTrackData = cloudinaryData[nextIndex];
 
       const nextTrackInfo: TrackInfo = {
-        id: nextTrackData.id,
+        assetId: nextTrackData.asset_id,
         album: nextTrackData.context?.caption || "Unknown Album",
         name: nextTrackData.title || "Unknown Track",
         artworkId: nextTrackData.album_secure_url,
@@ -264,7 +264,7 @@ export function useAudioPlayer() {
   const playPrevTrack = useCallback(() => {
     if (!cloudinaryData || cloudinaryData.length === 0) return;
     const currentIndex = cloudinaryData.findIndex(
-      (track) => track.id === currentTrack?.id
+      (track) => track.asset_id === currentTrack?.assetId
     );
     if (currentIndex !== -1) {
       const prevIndex =
@@ -272,7 +272,7 @@ export function useAudioPlayer() {
       const prevTrackData = cloudinaryData[prevIndex];
 
       const prevTrackInfo: TrackInfo = {
-        id: prevTrackData.id,
+        assetId: prevTrackData.asset_id,
         album: prevTrackData.context?.caption || "Unknown Album",
         name: prevTrackData.title || "Unknown Track",
         artworkId: prevTrackData.album_secure_url,

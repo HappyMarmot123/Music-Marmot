@@ -147,7 +147,7 @@ export interface PlayerControlsSectionProps {
 }
 
 export interface TrackInfo {
-  id: string;
+  assetId: string;
   album: string;
   name: string;
   artworkId: string | null;
@@ -156,7 +156,6 @@ export interface TrackInfo {
 }
 
 export interface CloudinaryResource {
-  id: string;
   asset_id: string;
   created_at: string;
   status: string;
@@ -176,7 +175,7 @@ export interface CloudinaryResource {
 }
 
 export interface likeType {
-  id: string;
+  asset_id: string;
   isLike: boolean;
 }
 

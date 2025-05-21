@@ -15,6 +15,7 @@ import {
   Subscription,
 } from "@supabase/supabase-js";
 import { supabase } from "@/api/supabaseClient";
+// import { createUser } from "@/db/userQuery"; // 이 줄은 삭제하거나 주석 처리합니다.
 
 /* 
   TODO: 
@@ -62,9 +63,50 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     getSession();
 
     const { data: authListener } = supabase.auth.onAuthStateChange(
-      (_event: AuthChangeEvent, currentSession: Session | null) => {
+      async (event: AuthChangeEvent, currentSession: Session | null) => {
         setSession(currentSession);
         setUser(currentSession?.user ?? null);
+
+        if (event === "SIGNED_IN" && currentSession?.user) {
+          const { id: uid, email, user_metadata } = currentSession.user;
+          if (!uid || !email) {
+            console.error(
+              "UID or Email is null from Supabase session on SIGNED_IN"
+            );
+            return;
+          }
+
+          try {
+            const userToCreate = {
+              uid: uid,
+              avatar_url: user_metadata?.avatar_url,
+              email: email,
+              full_name: user_metadata?.full_name,
+            };
+
+            const response = await fetch("/api/users", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(userToCreate),
+            });
+
+            if (!response.ok) {
+              console.error(
+                "Failed to Insert User",
+                response.status,
+                response.statusText
+              );
+              return;
+            }
+
+            const processedUser = await response.json();
+            console.log("User processed via API:", processedUser);
+          } catch (apiError) {
+            console.error("Error calling user processing API:", apiError);
+          }
+        }
       }
     );
     const authListenerSubscription: Subscription | undefined =
@@ -82,7 +124,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         provider: "google",
         options: {
           redirectTo: window.location.href,
-          // redirectTo: `${window.location.origin}/auth/callback`
         },
       });
       if (error) throw error;
@@ -103,7 +144,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         provider: "kakao",
         options: {
           redirectTo: window.location.href,
-          // redirectTo: `${window.location.origin}/auth/callback`
         },
       });
       if (error) throw error;

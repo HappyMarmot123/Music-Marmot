@@ -1,18 +1,26 @@
-import { pgTable, text, timestamp, uniqueIndex } from "drizzle-orm/pg-core";
+import {
+  pgTable,
+  text,
+  timestamp,
+  uniqueIndex,
+  serial,
+} from "drizzle-orm/pg-core";
 
 export const users = pgTable(
   "users",
   {
-    id: text("id").primaryKey(),
+    id: serial("id").primaryKey(),
+    uid: text("uid").notNull(),
     email: text("email").notNull(),
-    name: text("name"),
+    full_name: text("full_name"),
+    avatar_url: text("avatar_url"),
     createdAt: timestamp("created_at", { withTimezone: true })
       .notNull()
       .defaultNow(),
-    lastSignInAt: timestamp("last_sign_in_at", { withTimezone: true }),
   },
   (table) => {
     return {
+      uidKey: uniqueIndex("users_uid_key").on(table.uid),
       emailKey: uniqueIndex("users_email_key").on(table.email),
     };
   }

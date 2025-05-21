@@ -1,3 +1,4 @@
+import { UserMetadata } from "@supabase/supabase-js";
 import { RefObject, MouseEvent } from "react";
 
 export interface SpotifyTokenResponse {
@@ -185,4 +186,11 @@ export interface ModalMusicListProps {
   isLiked: likeType[];
   setIsLiked: React.Dispatch<React.SetStateAction<likeType[]>>;
   onTrackSelect?: (assetId: string) => void;
+}
+
+export interface CustomUserMetadata extends UserMetadata {
+  uid: string;
+  avatar_url: string;
+  email: string;
+  full_name: string;
 }

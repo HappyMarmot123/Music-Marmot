@@ -40,7 +40,7 @@ export function SpotifyList() {
             Error loading tracks: {errorTracks.message}
           </p>
         )}
-        {popularTracks && <Horizontal data={popularTracks} />}
+        {/* {popularTracks && <Horizontal data={popularTracks} />} */}
       </div>
     </>
   );

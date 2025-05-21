@@ -1,49 +1,33 @@
 "use client";
 
-import { CloudinaryResource, TrackObjectFull } from "@/type/dataType";
+import { CloudinaryResource } from "@/type/dataType";
 import Image from "next/image";
 import useTrackStore from "@/store/trackStore";
 import { useToggle } from "@/store/toggleStore";
 
-const Card = ({ card }: { card: TrackObjectFull | CloudinaryResource }) => {
+const Card = ({ card }: { card: CloudinaryResource }) => {
   const { openToggle } = useToggle();
   const handleOnClickCard = useTrackStore((state) => state.handleOnClickCard);
   const currentTrackAssetId = useTrackStore(
     (state) => state.currentTrackAssetId
   );
 
-  const isTrack = "album" in card;
+  const artistName = card.producer || "Unknown Producer";
 
-  const artistName = isTrack
-    ? (card as TrackObjectFull).artists &&
-      (card as TrackObjectFull).artists.length > 0
-      ? (card as TrackObjectFull).artists[0].name
-      : "Unknown Artist"
-    : (card as CloudinaryResource).producer || "Unknown Producer";
+  const imageUrl = card.album_secure_url;
 
-  const imageUrl = isTrack
-    ? (card as TrackObjectFull).album.images &&
-      (card as TrackObjectFull).album.images.length > 0
-      ? (card as TrackObjectFull).album.images[0].url
-      : undefined
-    : (card as CloudinaryResource).album_secure_url;
-
-  const itemName = isTrack
-    ? (card as TrackObjectFull).name
-    : (card as CloudinaryResource).title;
+  const itemName = card.title;
 
   return (
     <button
       onClick={(e) => {
         e.preventDefault();
-        if (!isTrack) {
-          const newAssetId = card.asset_id;
-          if (newAssetId === currentTrackAssetId) {
-            openToggle();
-          } else {
-            handleOnClickCard(newAssetId);
-            openToggle();
-          }
+        const newAssetId = card.asset_id;
+        if (newAssetId === currentTrackAssetId) {
+          openToggle();
+        } else {
+          handleOnClickCard(newAssetId);
+          openToggle();
         }
       }}
       rel="noopener noreferrer"

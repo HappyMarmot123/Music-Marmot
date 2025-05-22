@@ -76,6 +76,23 @@ export default function ListModal({
     }
   }, [isCursorHidden]);
 
+  const toggleLike = async (trackAssetId: string | undefined) => {
+    if (!trackAssetId) return;
+    if (!user) {
+      alert("로그인이 필요합니다. 로그인 후 다시 시도해주세요.");
+      return;
+    }
+
+    const currentTrackLikeInfo = isLiked.find(
+      (item) => item.asset_id === trackAssetId
+    );
+    const currentIsLikedState = currentTrackLikeInfo
+      ? currentTrackLikeInfo.isLike
+      : false;
+
+    await handleOnLike(trackAssetId, user.id, currentIsLikedState, setIsLiked);
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.95 }}
@@ -204,13 +221,15 @@ export default function ListModal({
               <motion.button
                 whileTap={{ scale: 0.95 }}
                 transition={{ duration: 0.1 }}
+                onClick={() => toggleLike(currentTrack?.assetId)}
                 className="absolute top-1 right-0 text-gray-300 hover:text-pink-500 p-2 rounded-xl transition bg-white/10"
-                onClick={() =>
-                  handleOnLike(
-                    isLiked,
-                    currentTrack?.assetId as string,
-                    setIsLiked
+                aria-label={
+                  isLiked.find(
+                    (item) =>
+                      item.asset_id === currentTrack?.assetId && item.isLike
                   )
+                    ? "dislike"
+                    : "like"
                 }
               >
                 <span className="relative z-10 flex items-center space-x-1">

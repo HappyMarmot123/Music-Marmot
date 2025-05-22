@@ -1,0 +1,33 @@
+import { db } from "./dbConnection";
+import { favorites } from "./favoriteSchema";
+import { and, eq } from "drizzle-orm";
+import { cache } from "react";
+
+export const addFavorite = cache(
+  async (userId: string, assetId: string): Promise<void> => {
+    try {
+      await db
+        .insert(favorites)
+        .values({ user_id: userId, asset_id: assetId })
+        .onConflictDoNothing(); // (userId, assetId) 충돌 시 무시
+    } catch (error) {
+      console.error("Error adding favorite:", error);
+      throw new Error("Failed to add favorite.");
+    }
+  }
+);
+
+export const removeFavorite = cache(
+  async (userId: string, assetId: string): Promise<void> => {
+    try {
+      await db
+        .delete(favorites)
+        .where(
+          and(eq(favorites.user_id, userId), eq(favorites.asset_id, assetId))
+        );
+    } catch (error) {
+      console.error("Error removing favorite:", error);
+      throw new Error("Failed to remove favorite.");
+    }
+  }
+);

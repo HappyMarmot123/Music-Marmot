@@ -6,6 +6,7 @@ package-lock.json
 
 # production builds
 build
+**/drizzle
 
 # misc
 .DS_Store

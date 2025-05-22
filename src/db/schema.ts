@@ -1,1 +1,2 @@
-export * from "./instrumentSchema";
+export * from "./userSchema";
+export * from "./favoriteSchema";

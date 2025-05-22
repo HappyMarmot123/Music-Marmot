@@ -1,30 +1,37 @@
 import { db } from "./dbConnection";
 import { users } from "./userSchema";
-import { eq, or, SQL } from "drizzle-orm";
+import { eq, or, and, SQL } from "drizzle-orm";
 import { CustomUserMetadata } from "@/type/dataType";
+import { cache } from "react";
 
+/*
+  TODO: react cache()
+  넥스트 내장 api (예: fetch) 재외하면 유용한 react19 훅훅
+*/
 export type User = typeof users.$inferSelect;
 
-export async function createUser(
-  socialUser: CustomUserMetadata
-): Promise<User | null> {
-  if (!socialUser.uid || !socialUser.email) {
+export const findUser = cache(async (uid: string): Promise<User | null> => {
+  if (!uid) {
     console.error("UID or Email is missing in socialUser data");
     return null;
   }
 
-  try {
-    const existingUser = await db
-      .select()
-      .from(users)
-      .where(
-        or(eq(users.uid, socialUser.uid), eq(users.email, socialUser.email))
-      )
-      .limit(1);
+  const user = await db
+    .select()
+    .from(users)
+    .where(and(eq(users.uid, uid)))
+    .limit(1);
+  return user[0];
+});
 
-    if (existingUser.length > 0) {
-      console.log("User already exists:", existingUser[0]);
-      return existingUser[0] as User;
+export async function createUser(
+  socialUser: CustomUserMetadata
+): Promise<User | null> {
+  try {
+    const user = await findUser(socialUser.uid);
+    if (user) {
+      console.log("User already exists:", user);
+      return user;
     }
 
     const newUser = {

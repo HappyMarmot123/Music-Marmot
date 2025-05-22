@@ -184,7 +184,7 @@ export interface ModalMusicListProps {
   loading: boolean | null;
   trackList: CloudinaryResource[];
   isLiked: likeType[];
-  setIsLiked: React.Dispatch<React.SetStateAction<likeType[]>>;
+  toggleLike: (assetId: string) => void;
   onTrackSelect?: (assetId: string) => void;
 }
 

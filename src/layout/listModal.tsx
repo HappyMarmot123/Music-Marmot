@@ -26,6 +26,7 @@ import { useToggle } from "@/store/toggleStore";
 import { useAuth } from "@/provider/authProvider";
 import { motion } from "framer-motion";
 import AudioVisualizer from "@/component/audioVisualizer";
+import { useFavorites } from "@/hooks/useFavorites";
 
 export default function ListModal({
   closeToggle,
@@ -52,6 +53,7 @@ export default function ListModal({
   } = useAudioPlayer();
 
   const { user } = useAuth();
+  const { data: favorites, isLoading, error, refetch } = useFavorites();
 
   const [trackList, setTrackList] = useState<CloudinaryResource[]>([]);
   const [isCursorHidden, setIsCursorHidden] = useState(true);
@@ -75,6 +77,17 @@ export default function ListModal({
       }
     }
   }, [isCursorHidden]);
+
+  useEffect(() => {
+    if (favorites) {
+      setIsLiked(
+        favorites.map((favorite) => ({
+          asset_id: favorite.asset_id,
+          isLike: true,
+        }))
+      );
+    }
+  }, [favorites]);
 
   const toggleLike = async (trackAssetId: string | undefined) => {
     if (!trackAssetId) return;
@@ -225,8 +238,7 @@ export default function ListModal({
                 className="absolute top-1 right-0 text-gray-300 hover:text-pink-500 p-2 rounded-xl transition bg-white/10"
                 aria-label={
                   isLiked.find(
-                    (item) =>
-                      item.asset_id === currentTrack?.assetId && item.isLike
+                    (item) => item.asset_id === currentTrack?.assetId
                   )
                     ? "dislike"
                     : "like"
@@ -237,9 +249,8 @@ export default function ListModal({
                     className={clsx(
                       "w-4 h-4 text-gray-400 hover:text-pink-500 transition-colors",
                       isLiked.find(
-                        (item) =>
-                          item.asset_id === currentTrack?.assetId && item.isLike
-                      ) && "text-pink-500 fill-pink-500/30"
+                        (item) => item.asset_id === currentTrack?.assetId
+                      )?.isLike && "text-pink-500 fill-pink-500/30"
                     )}
                   />
                   <span>128</span>
@@ -247,7 +258,9 @@ export default function ListModal({
                     play={
                       isLiked.find(
                         (item) => item.asset_id === currentTrack?.assetId
-                      )?.isLike || false
+                      )
+                        ? true
+                        : false
                     }
                     onComplete={() => {
                       console.log("complete");
@@ -331,7 +344,7 @@ export default function ListModal({
                 track.producer?.toLowerCase().includes(searchTerm.toLowerCase())
             )}
             isLiked={isLiked}
-            setIsLiked={setIsLiked}
+            toggleLike={toggleLike}
             onTrackSelect={(assetId) => handleSelectTrack(assetId)}
           />
         </section>

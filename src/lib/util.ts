@@ -1,3 +1,4 @@
+import { useAuth } from "@/provider/authProvider";
 import { CloudinaryResource, likeType } from "@/type/dataType";
 import { SetStateAction } from "react";
 import { Dispatch, MouseEvent, RefObject } from "react";
@@ -73,7 +74,6 @@ export const handleOnLike = async (
     }
   } catch (error) {
     console.error("Error liking track:", error);
-    alert("좋아요 처리에 실패했습니다. 다시 시도해주세요.");
   }
 };
 

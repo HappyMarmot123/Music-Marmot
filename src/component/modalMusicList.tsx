@@ -10,15 +10,15 @@ import { SetStateAction, useState, useCallback } from "react";
 import OnclickEffect from "./onclickEffect";
 import { handleOnLike } from "@/lib/util";
 import useTrackStore from "@/store/trackStore";
-
+import { useAuth } from "@/provider/authProvider";
 export default function ModalMusicList({
   loading,
   trackList,
   isLiked,
-  setIsLiked,
+  toggleLike,
 }: ModalMusicListProps) {
   const { handleOnClickCard, currentTrackAssetId: currentId } = useTrackStore();
-
+  const { user } = useAuth();
   const [playingLottieTrackId, setPlayingLottieTrackId] = useState<
     string | null
   >(null);
@@ -84,17 +84,15 @@ export default function ModalMusicList({
                   className="p-1"
                   onClick={(e) => {
                     e.stopPropagation();
-                    handleOnLike(isLiked, track.asset_id, setIsLiked);
+                    toggleLike(track.asset_id);
                     setPlayingLottieTrackId(track.asset_id);
                   }}
                 >
                   <Heart
                     className={clsx(
                       "w-4 h-4 text-gray-400 hover:text-pink-500 transition-colors",
-                      isLiked.some(
-                        (item) =>
-                          item.asset_id === track.asset_id && item.isLike
-                      ) && "text-pink-500 fill-pink-500/30"
+                      isLiked.find((item) => item.asset_id === track.asset_id)
+                        ?.isLike && "text-pink-500 fill-pink-500/30"
                     )}
                   />
                 </button>

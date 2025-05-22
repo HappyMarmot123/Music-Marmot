@@ -3,6 +3,21 @@ import { favorites } from "./favoriteSchema";
 import { and, eq } from "drizzle-orm";
 import { cache } from "react";
 
+export const getFavoritesByUserId = cache(
+  async (userId: string): Promise<Array<typeof favorites.$inferSelect>> => {
+    try {
+      const userFavorites = await db
+        .select()
+        .from(favorites)
+        .where(eq(favorites.user_id, userId));
+      return userFavorites;
+    } catch (error) {
+      console.error("Error selecting favorites by user ID:", error);
+      throw new Error("Failed to select favorites.");
+    }
+  }
+);
+
 export const addFavorite = cache(
   async (userId: string, assetId: string): Promise<void> => {
     try {

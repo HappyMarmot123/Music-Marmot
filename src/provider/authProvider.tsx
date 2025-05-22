@@ -15,6 +15,7 @@ import {
   Subscription,
 } from "@supabase/supabase-js";
 import { supabase } from "@/api/supabaseClient";
+import { useFavorites } from "@/hooks/useFavorites";
 // import { createUser } from "@/db/userQuery"; // 이 줄은 삭제하거나 주석 처리합니다.
 
 /* 
@@ -77,6 +78,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           }
 
           try {
+            // 유저 존재하면 생성 안하게 내부에서 막음
             const userToCreate = {
               uid: uid,
               avatar_url: user_metadata?.avatar_url,
@@ -84,25 +86,22 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
               full_name: user_metadata?.full_name,
             };
 
-            const response = await fetch("/api/users", {
+            await fetch("/api/users", {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
               },
               body: JSON.stringify(userToCreate),
-            });
-
-            if (!response.ok) {
-              console.error(
-                "Failed to Insert User",
-                response.status,
-                response.statusText
-              );
-              return;
-            }
-
-            const processedUser = await response.json();
-            console.log("User processed via API:", processedUser);
+            })
+              .then((response) => {
+                if (!response.ok) {
+                  throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                console.log("User processed via API:", response.json());
+              })
+              .catch((error) => {
+                console.error("Failed to Insert User:", error);
+              });
           } catch (apiError) {
             console.error("Error calling user processing API:", apiError);
           }

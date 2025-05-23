@@ -274,7 +274,7 @@ export default function ListModal({
         <LoginSection />
       </aside>
 
-      <aside className="col-span-2 p-8 overflow-auto">
+      <aside className="col-span-2 p-8 overflow-auto custom-scrollbar">
         <section
           aria-label="재생 목록 컨트롤"
           className="mb-6 border-b border-white/10"
@@ -314,14 +314,14 @@ export default function ListModal({
                   <Heart size={16} />
                   {/* <span>Like</span> */}
                 </motion.button>
-                <motion.button
+                {/* <motion.button
                   whileTap={{ scale: 0.95 }}
                   transition={{ duration: 0.1 }}
                   className="px-3 py-1 text-sm font-medium text-white bg-sky-600/80 rounded-lg hover:bg-sky-700/80 transition-colors focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-opacity-50 flex items-center justify-center space-x-2"
                 >
                   <ListMusic size={16} />
-                  {/* <span>List</span> */}
-                </motion.button>
+                  <span>List</span>
+                </motion.button> */}
                 <motion.button
                   whileTap={{ scale: 0.95 }}
                   transition={{ duration: 0.1 }}

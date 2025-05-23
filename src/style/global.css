@@ -10,6 +10,11 @@
   --color-primary-shadow-2: #ff98a280;
   --color-audio-player-button: #c2c2c9;
   --animate-rotate-album: rotateAlbumArt 3s linear infinite;
+  --color-primary-gradient-end: #ffccd1;
+  --color-primary-gradient-end-hover: #f0aab1;
+  --scrollbar-pink-start: #ffe5e8;
+  --scrollbar-pink-end: #ffeff2;
+  --scrollbar-pink-end-hover: #ffe0e3;
 
   @keyframes rotateAlbumArt {
     0% {
@@ -2875,4 +2880,43 @@ circle {
 
 .glow-button:active {
   transform: scale(0.97); /* 클릭 시 살짝 작아지는 효과 */
+}
+
+@layer utilities {
+  /* Chrome, Edge, and Safari */
+  .custom-scrollbar::-webkit-scrollbar {
+    /* width: 8px;
+    height: 8px; */
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: linear-gradient(
+      to bottom,
+      var(--scrollbar-pink-start),
+      var(--scrollbar-pink-end)
+    );
+    border-radius: 10px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(
+      to bottom,
+      var(--scrollbar-pink-start),
+      var(--scrollbar-pink-end-hover)
+    );
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-button {
+    display: none !important;
+  }
+
+  /* Firefox */
+  .custom-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: var(--scrollbar-pink-start) transparent;
+  }
 }

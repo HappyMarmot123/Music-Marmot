@@ -51,21 +51,10 @@ export const handleOnLike = async (
 
     if (response) {
       setIsLiked((prevLiked) => {
-        const existIndex = prevLiked.findIndex(
-          (item) => item.asset_id === trackAssetId
-        );
-        if (existIndex !== -1) {
-          const updatedLiked = [...prevLiked];
-          updatedLiked[existIndex] = {
-            ...updatedLiked[existIndex],
-            isLike: !currentIsLiked,
-          };
-          return updatedLiked;
+        if (currentIsLiked) {
+          return prevLiked.filter((item) => item.asset_id !== trackAssetId);
         } else {
-          return [
-            ...prevLiked,
-            { asset_id: trackAssetId, isLike: !currentIsLiked },
-          ];
+          return [...prevLiked, { asset_id: trackAssetId, isLike: true }];
         }
       });
     }

@@ -1,4 +1,4 @@
-import { SetStateAction, useEffect, useState } from "react";
+import { SetStateAction, useEffect, useMemo, useState } from "react";
 import {
   Heart,
   Pause,
@@ -11,8 +11,6 @@ import {
 } from "lucide-react";
 import useCloudinaryStore from "@/store/cloudinaryStore";
 import { CloudinaryResource } from "@/type/dataType";
-import ShareModal from "@/component/shareModal";
-import Image from "next/image";
 import ModalMusicList from "@/component/modalMusicList";
 import { likeType } from "@/type/dataType";
 import { useAudioPlayer } from "@/lib/useAudioPlayer";
@@ -22,11 +20,17 @@ import OnclickEffect from "@/component/onclickEffect";
 import { handleOnLike } from "@/lib/util";
 import ModalPlayerTrackDetails from "@/component/modalPlayerTrackDetails";
 import LoginSection from "@/component/loginSection";
-import { useToggle } from "@/store/toggleStore";
 import { useAuth } from "@/provider/authProvider";
 import { motion } from "framer-motion";
 import AudioVisualizer from "@/component/audioVisualizer";
 import { useFavorites } from "@/hooks/useFavorites";
+import * as Tooltip from "@radix-ui/react-tooltip";
+
+/*
+  TODO:
+  tippy.js 툴팁 괜찮은데, react19 에러가 뜨네...
+  https://www.npmjs.com/package/tippy.js
+*/
 
 export default function ListModal({
   closeToggle,
@@ -57,6 +61,14 @@ export default function ListModal({
 
   const [trackList, setTrackList] = useState<CloudinaryResource[]>([]);
   const [isCursorHidden, setIsCursorHidden] = useState(true);
+  const [activeButton, setActiveButton] = useState<string | null>(null);
+  const [listTitleText, setListTitleText] = useState<string>("Available Now");
+  const [displayedTrackList, setDisplayedTrackList] = useState<
+    CloudinaryResource[]
+  >([]);
+  const [animateLikeForAssetId, setAnimateLikeForAssetId] = useState<
+    string | null
+  >(null);
 
   const [searchTerm, setSearchTerm] = useState("");
   const [isLiked, setIsLiked] = useState<likeType[]>([]);
@@ -66,6 +78,26 @@ export default function ListModal({
       setTrackList(cloudinaryData);
     }
   }, [cloudinaryData]);
+
+  useEffect(() => {
+    if (user) {
+      const storedActiveButton = localStorage.getItem("activeButtonKey");
+      if (storedActiveButton) {
+        setActiveButton(storedActiveButton);
+      } else {
+        setActiveButton("available");
+      }
+    }
+  }, [user]);
+
+  useEffect(() => {
+    if (activeButton && user) {
+      setListTitleText(
+        activeButton === "heart" ? "Your Liked" : "Available Now"
+      );
+      localStorage.setItem("activeButtonKey", activeButton);
+    }
+  }, [activeButton, user]);
 
   useEffect(() => {
     const secondaryCursor = document.querySelector(".secondary-cursor");
@@ -89,6 +121,33 @@ export default function ListModal({
     }
   }, [favorites]);
 
+  useEffect(() => {
+    let newDisplayedList: CloudinaryResource[] = [];
+
+    if (activeButton === "heart") {
+      const likedAssetIds = new Set(isLiked.map((like) => like.asset_id));
+      newDisplayedList = trackList.filter(
+        (track) => track.asset_id && likedAssetIds.has(track.asset_id)
+      );
+    }
+    if (activeButton === "available") {
+      newDisplayedList = trackList;
+    }
+
+    setDisplayedTrackList(newDisplayedList);
+  }, [activeButton, trackList, isLiked]);
+
+  const searchedTrackList = useMemo(() => {
+    if (searchTerm) {
+      return displayedTrackList.filter(
+        (track) =>
+          track.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          track.producer?.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+    return displayedTrackList;
+  }, [displayedTrackList, searchTerm]);
+
   const toggleLike = async (trackAssetId: string | undefined) => {
     if (!trackAssetId) return;
     if (!user) {
@@ -99,11 +158,14 @@ export default function ListModal({
     const currentTrackLikeInfo = isLiked.find(
       (item) => item.asset_id === trackAssetId
     );
-    const currentIsLikedState = currentTrackLikeInfo
-      ? currentTrackLikeInfo.isLike
-      : false;
+    const currentIsLikedState = !!currentTrackLikeInfo;
 
     await handleOnLike(trackAssetId, user.id, currentIsLikedState, setIsLiked);
+
+    if (!currentIsLikedState) {
+      // This means the track was just liked
+      setAnimateLikeForAssetId(trackAssetId);
+    }
   };
 
   return (
@@ -235,7 +297,11 @@ export default function ListModal({
                 whileTap={{ scale: 0.95 }}
                 transition={{ duration: 0.1 }}
                 onClick={() => toggleLike(currentTrack?.assetId)}
-                className="absolute top-1 right-0 text-gray-300 hover:text-pink-500 p-2 rounded-xl transition bg-white/10"
+                disabled={!user}
+                className={clsx(
+                  "absolute top-1 right-0 text-gray-300 p-2 rounded-xl transition bg-white/10",
+                  user ? "hover:text-pink-500" : "opacity-50 cursor-not-allowed"
+                )}
                 aria-label={
                   isLiked.find(
                     (item) => item.asset_id === currentTrack?.assetId
@@ -250,20 +316,14 @@ export default function ListModal({
                       "w-4 h-4 text-gray-400 hover:text-pink-500 transition-colors",
                       isLiked.find(
                         (item) => item.asset_id === currentTrack?.assetId
-                      )?.isLike && "text-pink-500 fill-pink-500/30"
+                      ) && "text-pink-500 fill-pink-500/30"
                     )}
                   />
                   <span>128</span>
                   <OnclickEffect
-                    play={
-                      isLiked.find(
-                        (item) => item.asset_id === currentTrack?.assetId
-                      )
-                        ? true
-                        : false
-                    }
+                    play={animateLikeForAssetId === currentTrack?.assetId}
                     onComplete={() => {
-                      console.log("complete");
+                      setAnimateLikeForAssetId(null);
                     }}
                   />
                 </span>
@@ -303,46 +363,65 @@ export default function ListModal({
             </motion.button>
           </div>
           <div className="flex items-center justify-between mt-6 mb-2">
-            <h2 className="text-2xl font-bold">Available Now</h2>
-            {user && (
-              <div className="flex flex-row space-x-2">
-                <motion.button
-                  whileTap={{ scale: 0.95 }}
-                  transition={{ duration: 0.1 }}
-                  className="px-3 py-1 text-sm font-medium text-white bg-purple-600/80 rounded-lg hover:bg-purple-700/80 transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50 flex items-center justify-center space-x-2"
-                >
-                  <Heart size={16} />
-                  {/* <span>Like</span> */}
-                </motion.button>
-                {/* <motion.button
-                  whileTap={{ scale: 0.95 }}
-                  transition={{ duration: 0.1 }}
-                  className="px-3 py-1 text-sm font-medium text-white bg-sky-600/80 rounded-lg hover:bg-sky-700/80 transition-colors focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-opacity-50 flex items-center justify-center space-x-2"
-                >
-                  <ListMusic size={16} />
-                  <span>List</span>
-                </motion.button> */}
-                <motion.button
-                  whileTap={{ scale: 0.95 }}
-                  transition={{ duration: 0.1 }}
-                  className="px-3 py-1 text-sm font-medium text-white bg-emerald-600/80 rounded-lg hover:bg-emerald-700/80 transition-colors focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-opacity-50 flex items-center justify-center space-x-2"
-                >
-                  <LayoutList size={16} />
-                  {/* <span>All</span> */}
-                </motion.button>
-              </div>
-            )}
+            <h2 className="text-2xl font-bold">{listTitleText}</h2>
+            <div className="flex flex-row space-x-4">
+              <Tooltip.Provider delayDuration={200}>
+                <Tooltip.Root>
+                  <Tooltip.Trigger asChild>
+                    <motion.button
+                      disabled={!user}
+                      whileTap={{ scale: 0.95 }}
+                      transition={{ duration: 0.1 }}
+                      onClick={() => setActiveButton("heart")}
+                      className={clsx(
+                        "px-3 py-1 text-sm font-medium text-white rounded-lg transition-colors focus:outline-none flex items-center justify-center space-x-2 border border-white/20",
+                        activeButton === "heart"
+                          ? "bg-purple-600/80 hover:bg-purple-700/80 ring-1 ring-purple-500 ring-opacity-50"
+                          : "bg-purple-300/50 hover:bg-purple-500/60",
+                        !user && "cursor-default opacity-70"
+                      )}
+                    >
+                      <Heart size={16} />
+                      <span>Like</span>
+                    </motion.button>
+                  </Tooltip.Trigger>
+                  {!user && (
+                    <Tooltip.Portal>
+                      <Tooltip.Content
+                        sideOffset={5}
+                        className="radix-tooltip-content-gradient"
+                      >
+                        You need to Login!
+                        <Tooltip.Arrow className="radix-tooltip-arrow-gradient" />
+                      </Tooltip.Content>
+                    </Tooltip.Portal>
+                  )}
+                </Tooltip.Root>
+              </Tooltip.Provider>
+              <motion.button
+                whileTap={{ scale: 0.95 }}
+                transition={{ duration: 0.1 }}
+                onClick={() => setActiveButton("available")}
+                className={clsx(
+                  "px-3 py-1 text-sm font-medium text-white rounded-lg transition-colors focus:outline-none flex items-center justify-center space-x-2 border border-white/20",
+                  activeButton === "available"
+                    ? "bg-emerald-600/80 hover:bg-emerald-700/80 ring-1 ring-emerald-500 ring-opacity-50"
+                    : "bg-emerald-300/50 hover:bg-emerald-500/60"
+                )}
+              >
+                <LayoutList size={16} />
+                <span>List</span>
+              </motion.button>
+            </div>
           </div>
         </section>
 
         <section aria-label="음악 리스트" className="space-y-3">
           <ModalMusicList
-            loading={isLoadingCloudinary}
-            trackList={trackList.filter(
-              (track) =>
-                track.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                track.producer?.toLowerCase().includes(searchTerm.toLowerCase())
-            )}
+            loading={
+              isLoadingCloudinary || (activeButton === "heart" && isLoading)
+            }
+            trackList={searchedTrackList}
             isLiked={isLiked}
             toggleLike={toggleLike}
             onTrackSelect={(assetId) => handleSelectTrack(assetId)}

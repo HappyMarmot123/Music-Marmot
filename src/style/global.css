@@ -2920,3 +2920,67 @@ circle {
     scrollbar-color: var(--scrollbar-pink-start) transparent;
   }
 }
+
+/* Tippy.js Custom Gradient Theme - REMOVED or COMMENTED OUT
+.tippy-box[data-theme~='gradient'] {
+  background-image: linear-gradient(to right, #6a11cb 0%, #2575fc 100%);
+  color: white;
+  font-weight: bold;
+  border-radius: 4px;
+}
+
+.tippy-box[data-theme~='gradient'][data-placement^='top'] > .tippy-arrow::before {
+  border-top-color: #6a11cb;
+}
+
+.tippy-box[data-theme~='gradient'][data-placement^='bottom'] > .tippy-arrow::before {
+  border-bottom-color: #2575fc;
+}
+
+.tippy-box[data-theme~='gradient'][data-placement^='left'] > .tippy-arrow::before {
+  border-left-color: #6a11cb;
+}
+
+.tippy-box[data-theme~='gradient'][data-placement^='right'] > .tippy-arrow::before {
+  border-right-color: #2575fc;
+}
+*/
+
+/* Radix UI Tooltip Custom Gradient Theme */
+.radix-tooltip-content-gradient {
+  /* New gradient: Soft Violet to Light Pinkish-Purple */
+  background-image: linear-gradient(to right, #a78bfa, #f472b6);
+  color: white;
+  font-weight: 600; /* Slightly bolder for better readability on lighter gradient */
+  padding: 8px 12px;
+  border-radius: 6px; /* Slightly more rounded */
+  font-size: 0.875rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); /* Softer shadow */
+  z-index: 50;
+  transform-origin: var(--radix-tooltip-content-transform-origin);
+  animation: scaleIn 0.1s ease-out forwards, fadeIn 0.1s ease-out forwards;
+}
+
+.radix-tooltip-arrow-gradient {
+  fill: #a78bfa; /* Match the start of the new gradient */
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}

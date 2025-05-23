@@ -8,6 +8,7 @@ import Parallax from "@/component/parallax";
 import MyArticle from "@/layout/myArticle";
 import MusicList from "@/layout/musicList";
 import { SpotifyList } from "@/layout/spotifyList";
+import RecentList from "@/layout/recentList";
 
 const Page: React.FC = () => {
   return (
@@ -71,6 +72,7 @@ const Page: React.FC = () => {
         </section>
         <section className="flex flex-col gap-16 !py-16">
           <MusicList />
+          <RecentList />
           {/* <SpotifyList /> */}
         </section>
       </MyArticle>

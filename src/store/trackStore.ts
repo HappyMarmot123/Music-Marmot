@@ -1,6 +1,7 @@
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
+import { persist, createJSONStorage } from "zustand/middleware";
 import type { TrackInfo } from "@/type/dataType";
+import useRecentPlayStore from "./recentPlayStore";
 
 interface AudioPlayerState {
   currentTrack: TrackInfo | null;
@@ -38,6 +39,9 @@ const useTrackStore = create<AudioPlayerState>()(
       currentTrackAssetId: null,
 
       setTrack: (track, playImmediately = false) => {
+        if (track && track.assetId) {
+          useRecentPlayStore.getState().addRecentAssetId(track.assetId);
+        }
         set({
           currentTrack: track,
           currentTime: 0,
@@ -49,7 +53,7 @@ const useTrackStore = create<AudioPlayerState>()(
       togglePlayPause: () => {
         set((state) => ({ isPlaying: !state.isPlaying }));
       },
-      setIsPlaying: (playing) => {},
+      setIsPlaying: (playing) => set({ isPlaying: playing }),
       setCurrentTime: (time) => set({ currentTime: time }),
       setDuration: (duration) => set({ duration: duration }),
       setIsBuffering: (buffering) => set({ isBuffering: buffering }),
@@ -72,11 +76,20 @@ const useTrackStore = create<AudioPlayerState>()(
     }),
     {
       name: "track-store",
+      storage: createJSONStorage(() => localStorage),
+      partialize: (state) => ({
+        volume: state.volume,
+        isMuted: state.isMuted,
+        currentTrack: state.currentTrack,
+        currentTrackAssetId: state.currentTrackAssetId,
+      }),
       merge: (persistedState, currentState) => {
         return {
           ...currentState,
           ...(persistedState as object),
-          isPlaying: currentState.isPlaying,
+          isPlaying: false,
+          isBuffering: false,
+          currentTime: 0,
         };
       },
     }

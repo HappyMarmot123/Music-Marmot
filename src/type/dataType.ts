@@ -194,3 +194,10 @@ export interface CustomUserMetadata extends UserMetadata {
   email: string;
   full_name: string;
 }
+
+export interface AudioVisualizerProps {
+  analyserNode: AnalyserNode | null;
+  isPlaying: boolean;
+  width?: number;
+  height?: number;
+}

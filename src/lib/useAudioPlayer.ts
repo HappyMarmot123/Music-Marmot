@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useCallback, useState, useMemo } from "react";
+import { useEffect, useCallback, useState, useMemo, useRef } from "react";
 import type { TrackInfo } from "@/type/dataType";
 import useCloudinaryStore from "@/store/cloudinaryStore";
 import useTrackStore from "@/store/trackStore";
@@ -14,6 +14,7 @@ import {
 export function useAudioPlayer() {
   const [audio, setAudio] = useState<HTMLAudioElement | null>(null);
   const [analyserNode, setAnalyserNode] = useState<AnalyserNode | null>(null);
+  const isSeekingRef = useRef(false);
 
   const currentTrack = useTrackStore((state) => state.currentTrack);
   const isPlaying = useTrackStore((state) => state.isPlaying);
@@ -174,13 +175,25 @@ export function useAudioPlayer() {
       storeSetIsBuffering(false);
     };
     const handleWaiting = () => {
-      storeSetIsBuffering(true);
+      if (!isSeekingRef.current) {
+        storeSetIsBuffering(true);
+      }
     };
     const handlePlaying = () => {
+      if (isSeekingRef.current) {
+        isSeekingRef.current = false;
+      }
       storeSetIsBuffering(false);
     };
     const handleCanPlayThrough = () => {
+      if (isSeekingRef.current) {
+        isSeekingRef.current = false;
+      }
       storeSetIsBuffering(false);
+    };
+    // TODO: 오디오 타임 업데이트 트래킹 (자동 로딩 피하기 위함함)
+    const handleSeeked = () => {
+      isSeekingRef.current = false;
     };
 
     audio.addEventListener("timeupdate", handleTimeUpdate);
@@ -192,6 +205,7 @@ export function useAudioPlayer() {
     audio.addEventListener("waiting", handleWaiting);
     audio.addEventListener("playing", handlePlaying);
     audio.addEventListener("canplaythrough", handleCanPlayThrough);
+    audio.addEventListener("seeked", handleSeeked);
 
     return () => {
       audio.removeEventListener("timeupdate", handleTimeUpdate);
@@ -203,6 +217,7 @@ export function useAudioPlayer() {
       audio.removeEventListener("waiting", handleWaiting);
       audio.removeEventListener("playing", handlePlaying);
       audio.removeEventListener("canplaythrough", handleCanPlayThrough);
+      audio.removeEventListener("seeked", handleSeeked);
     };
   }, [
     audio,
@@ -232,6 +247,7 @@ export function useAudioPlayer() {
   const seek = useCallback(
     (time: number) => {
       if (audio && currentTrack) {
+        isSeekingRef.current = true;
         const newTime = Math.max(0, Math.min(time, duration || 0));
         audio.currentTime = newTime;
         storeSeekTo(newTime);

@@ -1,11 +1,10 @@
 import React, { useEffect, useRef } from "react";
+import { AudioVisualizerProps } from "@/type/dataType";
 
-interface AudioVisualizerProps {
-  analyserNode: AnalyserNode | null;
-  isPlaying: boolean;
-  width?: number;
-  height?: number;
-}
+/* 
+  TODO: mdn doc reference
+  https://developer.mozilla.org/en-US/docs/Web/API/BaseAudioContext/createAnalyser
+*/
 
 const AudioVisualizer: React.FC<AudioVisualizerProps> = ({
   analyserNode,

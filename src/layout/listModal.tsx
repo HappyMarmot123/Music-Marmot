@@ -199,8 +199,8 @@ export default function ListModal({
                 </div>
               )}
               {(isBuffering || !currentTrack?.artworkId) && (
-                <div className="grid place-items-center w-full h-full animate-pulse rounded-xl">
-                  <div className="w-8 h-8 border-4 border-white border-t-transparent rounded-full animate-spin" />
+                <div className="grid place-items-center w-56 h-56 bg-white/10 animate-pulse rounded-xl">
+                  <div className="w-8 h-8 border-4  border-white border-t-transparent rounded-full animate-spin" />
                 </div>
               )}
               {!(isBuffering || !currentTrack?.artworkId) && (

@@ -47,7 +47,7 @@ export default function MusicList() {
           </p>
         )}
         {!loading && recentTracksData.length > 0 && (
-          <Horizontal data={recentTracksData} />
+          <Horizontal data={recentTracksData} swiperId="recent-list-swiper" />
         )}
         {!loading && recentAssetIds.length === 0 && (
           <p className="col-start-2 mt-4">최근 재생한 음악이 없습니다.</p>

@@ -25,7 +25,7 @@ export default function MusicList() {
         {error && (
           <p className="text-red-500">Error loading tracks: {error.message}</p>
         )}
-        {data && <Horizontal data={data} />}
+        {data && <Horizontal data={data} swiperId="music-list-swiper" />}
       </div>
     </>
   );

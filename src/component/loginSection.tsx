@@ -2,6 +2,7 @@ import { useAuth } from "@/provider/authProvider";
 import { useState } from "react";
 import LoginModal from "./loginModal";
 import ShareModal from "./shareModal";
+import ReusableTooltip from "./myTooltip";
 
 export default function LoginSection() {
   const { user, isLoading, signOut } = useAuth();
@@ -31,15 +32,21 @@ export default function LoginSection() {
               </span>
             </div>
             <div className="flex items-center space-x-2">
-              <button
-                className="px-3 py-1 text-sm text-gray-300 hover:text-blue-400 bg-white/10 p-2 rounded-md transition-colors"
-                onClick={() => setShowShareModal(true)}
+              <ReusableTooltip
+                tooltipText="You need to Login!"
+                showTooltip={!user}
               >
-                <span className="relative z-10 flex items-center space-x-1">
-                  <span>↗</span>
-                  <span>Share</span>
-                </span>
-              </button>
+                <button
+                  disabled={!user}
+                  className="px-3 py-1 text-sm text-gray-300 hover:text-blue-400 bg-white/10 p-2 rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  onClick={() => setShowShareModal(true)}
+                >
+                  <span className="relative z-10 flex items-center space-x-1">
+                    <span>↗</span>
+                    <span>Share</span>
+                  </span>
+                </button>
+              </ReusableTooltip>
               <button
                 onClick={async () => {
                   try {

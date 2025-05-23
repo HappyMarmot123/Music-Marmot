@@ -24,7 +24,7 @@ import { useAuth } from "@/provider/authProvider";
 import { motion } from "framer-motion";
 import AudioVisualizer from "@/component/audioVisualizer";
 import { useFavorites } from "@/hooks/useFavorites";
-import * as Tooltip from "@radix-ui/react-tooltip";
+import MyTooltip from "@/component/myTooltip";
 
 /*
   TODO:
@@ -61,7 +61,7 @@ export default function ListModal({
 
   const [trackList, setTrackList] = useState<CloudinaryResource[]>([]);
   const [isCursorHidden, setIsCursorHidden] = useState(true);
-  const [activeButton, setActiveButton] = useState<string | null>(null);
+  const [activeButton, setActiveButton] = useState<string | null>("available");
   const [listTitleText, setListTitleText] = useState<string>("Available Now");
   const [displayedTrackList, setDisplayedTrackList] = useState<
     CloudinaryResource[]
@@ -293,41 +293,45 @@ export default function ListModal({
                   <SkipForward width={20} fill="white" />
                 </motion.button>
               </div>
-              <motion.button
-                whileTap={{ scale: 0.95 }}
-                transition={{ duration: 0.1 }}
-                onClick={() => toggleLike(currentTrack?.assetId)}
-                disabled={!user}
-                className={clsx(
-                  "absolute top-1 right-0 text-gray-300 p-2 rounded-xl transition bg-white/10",
-                  user ? "hover:text-pink-500" : "opacity-50 cursor-not-allowed"
-                )}
-                aria-label={
-                  isLiked.find(
-                    (item) => item.asset_id === currentTrack?.assetId
-                  )
-                    ? "dislike"
-                    : "like"
-                }
-              >
-                <span className="relative z-10 flex items-center space-x-1">
-                  <Heart
-                    className={clsx(
-                      "w-4 h-4 text-gray-400 hover:text-pink-500 transition-colors",
-                      isLiked.find(
-                        (item) => item.asset_id === currentTrack?.assetId
-                      ) && "text-pink-500 fill-pink-500/30"
-                    )}
-                  />
-                  <span>128</span>
-                  <OnclickEffect
-                    play={animateLikeForAssetId === currentTrack?.assetId}
-                    onComplete={() => {
-                      setAnimateLikeForAssetId(null);
-                    }}
-                  />
-                </span>
-              </motion.button>
+              <MyTooltip tooltipText="You need to Login!" showTooltip={!user}>
+                <motion.button
+                  whileTap={{ scale: 0.95 }}
+                  transition={{ duration: 0.1 }}
+                  onClick={() => toggleLike(currentTrack?.assetId)}
+                  disabled={!user}
+                  className={clsx(
+                    "absolute top-1 right-0 text-gray-300 p-2 rounded-xl transition bg-white/10",
+                    user
+                      ? "hover:text-pink-500"
+                      : "opacity-50 cursor-not-allowed"
+                  )}
+                  aria-label={
+                    isLiked.find(
+                      (item) => item.asset_id === currentTrack?.assetId
+                    )
+                      ? "dislike"
+                      : "like"
+                  }
+                >
+                  <span className="relative z-10 flex items-center space-x-1">
+                    <Heart
+                      className={clsx(
+                        "w-4 h-4 text-gray-400 hover:text-pink-500 transition-colors",
+                        isLiked.find(
+                          (item) => item.asset_id === currentTrack?.assetId
+                        ) && "text-pink-500 fill-pink-500/30"
+                      )}
+                    />
+                    <span>128</span>
+                    <OnclickEffect
+                      play={animateLikeForAssetId === currentTrack?.assetId}
+                      onComplete={() => {
+                        setAnimateLikeForAssetId(null);
+                      }}
+                    />
+                  </span>
+                </motion.button>
+              </MyTooltip>
             </section>
           </div>
         </div>
@@ -365,39 +369,24 @@ export default function ListModal({
           <div className="flex items-center justify-between mt-6 mb-2">
             <h2 className="text-2xl font-bold">{listTitleText}</h2>
             <div className="flex flex-row space-x-4">
-              <Tooltip.Provider delayDuration={200}>
-                <Tooltip.Root>
-                  <Tooltip.Trigger asChild>
-                    <motion.button
-                      disabled={!user}
-                      whileTap={{ scale: 0.95 }}
-                      transition={{ duration: 0.1 }}
-                      onClick={() => setActiveButton("heart")}
-                      className={clsx(
-                        "px-3 py-1 text-sm font-medium text-white rounded-lg transition-colors focus:outline-none flex items-center justify-center space-x-2 border border-white/20",
-                        activeButton === "heart"
-                          ? "bg-purple-600/80 hover:bg-purple-700/80 ring-1 ring-purple-500 ring-opacity-50"
-                          : "bg-purple-300/50 hover:bg-purple-500/60",
-                        !user && "cursor-default opacity-70"
-                      )}
-                    >
-                      <Heart size={16} />
-                      <span>Like</span>
-                    </motion.button>
-                  </Tooltip.Trigger>
-                  {!user && (
-                    <Tooltip.Portal>
-                      <Tooltip.Content
-                        sideOffset={5}
-                        className="radix-tooltip-content-gradient"
-                      >
-                        You need to Login!
-                        <Tooltip.Arrow className="radix-tooltip-arrow-gradient" />
-                      </Tooltip.Content>
-                    </Tooltip.Portal>
+              <MyTooltip tooltipText="You need to Login!" showTooltip={!user}>
+                <motion.button
+                  disabled={!user}
+                  whileTap={{ scale: 0.95 }}
+                  transition={{ duration: 0.1 }}
+                  onClick={() => setActiveButton("heart")}
+                  className={clsx(
+                    "px-3 py-1 text-sm font-medium text-white rounded-lg transition-colors focus:outline-none flex items-center justify-center space-x-2 border border-white/20",
+                    activeButton === "heart"
+                      ? "bg-purple-600/80 hover:bg-purple-700/80 ring-1 ring-purple-500 ring-opacity-50"
+                      : "bg-purple-300/50 hover:bg-purple-500/60",
+                    !user && "cursor-not-allowed opacity-70"
                   )}
-                </Tooltip.Root>
-              </Tooltip.Provider>
+                >
+                  <Heart size={16} />
+                  <span>Like</span>
+                </motion.button>
+              </MyTooltip>
               <motion.button
                 whileTap={{ scale: 0.95 }}
                 transition={{ duration: 0.1 }}

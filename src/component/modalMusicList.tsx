@@ -11,6 +11,8 @@ import OnclickEffect from "./onclickEffect";
 import { handleOnLike } from "@/lib/util";
 import useTrackStore from "@/store/trackStore";
 import { useAuth } from "@/provider/authProvider";
+import MyTooltip from "./myTooltip";
+
 export default function ModalMusicList({
   loading,
   trackList,
@@ -80,22 +82,30 @@ export default function ModalMusicList({
               </div>
 
               <div className="relative flex items-center space-x-2">
-                <button
-                  className="p-1"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    toggleLike(track.asset_id);
-                    setPlayingLottieTrackId(track.asset_id);
-                  }}
+                <MyTooltip
+                  tooltipText={!user ? "You need to Login!" : ""}
+                  showTooltip={!user}
                 >
-                  <Heart
-                    className={clsx(
-                      "w-4 h-4 text-gray-400 hover:text-pink-500 transition-colors",
-                      isLiked.find((item) => item.asset_id === track.asset_id)
-                        ?.isLike && "text-pink-500 fill-pink-500/30"
-                    )}
-                  />
-                </button>
+                  <button
+                    disabled={!user}
+                    className={clsx("p-1", !user && "cursor-not-allowed")}
+                    onClick={(e) => {
+                      if (!user) return;
+                      e.stopPropagation();
+                      toggleLike(track.asset_id);
+                      setPlayingLottieTrackId(track.asset_id);
+                    }}
+                  >
+                    <Heart
+                      className={clsx(
+                        "w-4 h-4 text-gray-400",
+                        user && "hover:text-pink-500 transition-colors",
+                        isLiked.find((item) => item.asset_id === track.asset_id)
+                          ?.isLike && "text-pink-500 fill-pink-500/30"
+                      )}
+                    />
+                  </button>
+                </MyTooltip>
                 <OnclickEffect
                   play={playingLottieTrackId === track.asset_id}
                   onComplete={() => setPlayingLottieTrackId(null)}

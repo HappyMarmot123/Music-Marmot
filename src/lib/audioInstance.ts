@@ -35,7 +35,7 @@ export const getAudioInstance = (): HTMLAudioElement => {
         source = audioContext.createMediaElementSource(audioInstance);
         source.connect(analyser);
         analyser.connect(audioContext.destination);
-        analyser.fftSize = 256; // 시각화에 사용할 데이터 크기 설정
+        analyser.fftSize = 512; // 시각화에 사용할 데이터 크기 설정
       }
     }
   }

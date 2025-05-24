@@ -1,4 +1,4 @@
-import { SetStateAction, useEffect, useMemo, useState } from "react";
+import { SetStateAction, useEffect, useMemo, useRef, useState } from "react";
 import {
   Heart,
   Pause,
@@ -8,6 +8,8 @@ import {
   X,
   ListMusic,
   LayoutList,
+  Volume2,
+  VolumeX,
 } from "lucide-react";
 import useCloudinaryStore from "@/store/cloudinaryStore";
 import { CloudinaryResource } from "@/type/dataType";
@@ -48,16 +50,21 @@ export default function ListModal({
     currentTime,
     duration,
     isBuffering,
+    volume,
+    isMuted,
     togglePlayPause,
     nextTrack,
     prevTrack,
     seek,
+    setVolume,
+    toggleMute,
     handleSelectTrack,
     analyserNode,
   } = useAudioPlayer();
 
   const { user } = useAuth();
   const { data: favorites, isLoading, error, refetch } = useFavorites();
+  const volumeSliderTimeoutId = useRef<NodeJS.Timeout | null>(null);
 
   const [trackList, setTrackList] = useState<CloudinaryResource[]>([]);
   const [isCursorHidden, setIsCursorHidden] = useState(true);
@@ -72,6 +79,7 @@ export default function ListModal({
 
   const [searchTerm, setSearchTerm] = useState("");
   const [isLiked, setIsLiked] = useState<likeType[]>([]);
+  const [showVolumeSlider, setShowVolumeSlider] = useState(false);
 
   useEffect(() => {
     if (cloudinaryData) {
@@ -168,6 +176,25 @@ export default function ListModal({
     }
   };
 
+  const handleVolumeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const newVolume = parseFloat(event.target.value);
+    setVolume(newVolume);
+  };
+
+  const handleVolumeMouseEnter = () => {
+    if (volumeSliderTimeoutId.current) {
+      clearTimeout(volumeSliderTimeoutId.current);
+      volumeSliderTimeoutId.current = null;
+    }
+    setShowVolumeSlider(true);
+  };
+
+  const handleVolumeMouseLeave = () => {
+    volumeSliderTimeoutId.current = setTimeout(() => {
+      setShowVolumeSlider(false);
+    }, 1000);
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.95 }}
@@ -262,76 +289,125 @@ export default function ListModal({
               seek={seek}
             />
 
-            <section aria-label="재생 컨트롤" className="mt-6 relative">
-              <div className="flex items-center justify-center space-x-4">
-                <motion.button
-                  whileTap={{ scale: 0.95 }}
-                  transition={{ duration: 0.1 }}
-                  onClick={prevTrack}
-                  className="w-10 h-10 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 transition"
+            <section aria-label="재생 컨트롤" className="mt-6">
+              <div className="flex items-center justify-between w-full">
+                <MyTooltip tooltipText="You need to Login!" showTooltip={!user}>
+                  <motion.button
+                    whileTap={{ scale: 0.95 }}
+                    transition={{ duration: 0.1 }}
+                    onClick={() => toggleLike(currentTrack?.assetId)}
+                    disabled={!user}
+                    className={clsx(
+                      "p-2 rounded-full transition bg-white/10 hover:bg-white/20",
+                      user ? "" : "opacity-50 cursor-not-allowed"
+                    )}
+                    aria-label={
+                      isLiked.find(
+                        (item) => item.asset_id === currentTrack?.assetId
+                      )
+                        ? "dislike"
+                        : "like"
+                    }
+                  >
+                    <span className="relative z-10 flex items-center space-x-1">
+                      <Heart
+                        size={20}
+                        fill={"white"}
+                        className={clsx(
+                          "!m-0",
+                          isLiked.find(
+                            (item) => item.asset_id === currentTrack?.assetId
+                          ) && "text-pink-500 fill-pink-500/30"
+                        )}
+                      />
+                      <OnclickEffect
+                        play={animateLikeForAssetId === currentTrack?.assetId}
+                        onComplete={() => {
+                          setAnimateLikeForAssetId(null);
+                        }}
+                      />
+                    </span>
+                  </motion.button>
+                </MyTooltip>
+
+                <div className="flex items-center justify-center space-x-4">
+                  <motion.button
+                    whileTap={{ scale: 0.95 }}
+                    transition={{ duration: 0.1 }}
+                    onClick={prevTrack}
+                    className="w-10 h-10 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 transition"
+                  >
+                    <SkipBack width={20} fill="white" />
+                  </motion.button>
+                  <motion.button
+                    whileTap={{ scale: 0.95 }}
+                    transition={{ duration: 0.1 }}
+                    onClick={togglePlayPause}
+                    className="w-12 h-12 flex items-center justify-center rounded-full bg-white/20 hover:bg-white/30 transition"
+                  >
+                    {isPlaying ? (
+                      <Pause width={20} fill="white" />
+                    ) : (
+                      <Play width={20} fill="white" />
+                    )}
+                  </motion.button>
+                  <motion.button
+                    whileTap={{ scale: 0.95 }}
+                    transition={{ duration: 0.1 }}
+                    onClick={nextTrack}
+                    className="w-10 h-10 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 transition"
+                  >
+                    <SkipForward width={20} fill="white" />
+                  </motion.button>
+                </div>
+
+                <div
+                  className="flex items-center relative"
+                  onMouseEnter={handleVolumeMouseEnter}
+                  onMouseLeave={handleVolumeMouseLeave}
                 >
-                  <SkipBack width={20} fill="white" />
-                </motion.button>
-                <motion.button
-                  whileTap={{ scale: 0.95 }}
-                  transition={{ duration: 0.1 }}
-                  onClick={togglePlayPause}
-                  className="w-12 h-12 flex items-center justify-center rounded-full bg-white/20 hover:bg-white/30 transition"
-                >
-                  {isPlaying ? (
-                    <Pause width={20} fill="white" />
-                  ) : (
-                    <Play width={20} fill="white" />
-                  )}
-                </motion.button>
-                <motion.button
-                  whileTap={{ scale: 0.95 }}
-                  transition={{ duration: 0.1 }}
-                  onClick={nextTrack}
-                  className="w-10 h-10 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 transition"
-                >
-                  <SkipForward width={20} fill="white" />
-                </motion.button>
-              </div>
-              <MyTooltip tooltipText="You need to Login!" showTooltip={!user}>
-                <motion.button
-                  whileTap={{ scale: 0.95 }}
-                  transition={{ duration: 0.1 }}
-                  onClick={() => toggleLike(currentTrack?.assetId)}
-                  disabled={!user}
-                  className={clsx(
-                    "absolute top-1 right-0 text-gray-300 p-2 rounded-xl transition bg-white/10",
-                    user
-                      ? "hover:text-pink-500"
-                      : "opacity-50 cursor-not-allowed"
-                  )}
-                  aria-label={
-                    isLiked.find(
-                      (item) => item.asset_id === currentTrack?.assetId
-                    )
-                      ? "dislike"
-                      : "like"
-                  }
-                >
-                  <span className="relative z-10 flex items-center space-x-1">
-                    <Heart
-                      className={clsx(
-                        "w-4 h-4 text-gray-400 hover:text-pink-500 transition-colors",
-                        isLiked.find(
-                          (item) => item.asset_id === currentTrack?.assetId
-                        ) && "text-pink-500 fill-pink-500/30"
-                      )}
-                    />
-                    <span>128</span>
-                    <OnclickEffect
-                      play={animateLikeForAssetId === currentTrack?.assetId}
-                      onComplete={() => {
-                        setAnimateLikeForAssetId(null);
+                  <motion.button
+                    whileTap={{ scale: 0.95 }}
+                    transition={{ duration: 0.1 }}
+                    onClick={toggleMute}
+                    className="p-2 bg-white/10 rounded-full hover:bg-white/20 transition"
+                    aria-label={isMuted ? "Unmute" : "Mute"}
+                  >
+                    {isMuted ? (
+                      <VolumeX size={20} fill="white" />
+                    ) : (
+                      <Volume2 size={20} fill="white" />
+                    )}
+                  </motion.button>
+                  {showVolumeSlider && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: 10 }}
+                      transition={{ duration: 0.2 }}
+                      className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 bg-gray-800/80 backdrop-blur-sm rounded-lg shadow-lg flex items-center justify-center"
+                      style={{
+                        height: "120px",
+                        width: "-webkit-fill-available",
+                        padding: "1rem",
                       }}
-                    />
-                  </span>
-                </motion.button>
-              </MyTooltip>
+                    >
+                      <input
+                        type="range"
+                        min="0"
+                        max="1"
+                        step="0.01"
+                        value={isMuted ? 0 : volume}
+                        onChange={handleVolumeChange}
+                        className="w-[80px] h-1.5 bg-white/20 rounded-lg appearance-none cursor-pointer origin-center transform -rotate-90 
+                                 [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white/50 [&::-webkit-slider-thumb]:cursor-pointer 
+                                 [&::-moz-range-thumb]:h-3 [&::-moz-range-thumb]:w-3 [&::-moz-range-thumb]:appearance-none [&::-moz-range-thumb]:border-0 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-white/50 [&::-moz-range-thumb]:cursor-pointer"
+                        style={{ width: "80px" }} // 실제 슬라이더 길이 (회전 전 너비)
+                      />
+                    </motion.div>
+                  )}
+                </div>
+              </div>
             </section>
           </div>
         </div>

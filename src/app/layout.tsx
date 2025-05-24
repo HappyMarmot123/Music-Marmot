@@ -58,7 +58,9 @@ const RootLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
           <TanstackProvider>
             <CloudinaryProvider>
               <ToggleProvider>
-                <LenisProvider>{children}</LenisProvider>
+                {/* <LenisProvider> */}
+                {children}
+                {/* </LenisProvider> */}
               </ToggleProvider>
             </CloudinaryProvider>
           </TanstackProvider>

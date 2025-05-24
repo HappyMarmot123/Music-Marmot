@@ -39,7 +39,7 @@ const PlayerTrackDetails: React.FC<PlayerTrackDetailsProps> = ({
         <section
           id="seek-bar-container"
           ref={seekBarContainerRef}
-          className="relative h-[8px] rounded-[4px] bg-[#ffe8ee] cursor-pointer group mx-2 flex-grow"
+          className="no-drag relative h-[8px] rounded-[4px] bg-[#ffe8ee] cursor-pointer group mx-2 flex-grow"
           onClick={handleSeek}
           onMouseMove={handleSeek}
           onMouseOut={handleSeekMouseOut}

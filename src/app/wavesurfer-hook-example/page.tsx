@@ -8,12 +8,6 @@ const audioUrl = "/BEATPELLAHOUSE_CandyThief.mp3";
 export default function WavesurferHookPage() {
   const containerRef = useRef<HTMLDivElement>(null);
   const [duration, setDuration] = useState(0);
-  const timelineContainerRef = useRef<HTMLDivElement>(null);
-
-  //   container: document.body,
-  //   waveColor: 'rgb(200, 0, 200)',
-  //   progressColor: 'rgb(100, 0, 100)',
-  //   url: '/examples/audio/demo.wav',
 
   const { wavesurfer, isReady, isPlaying, currentTime } = useWavesurfer({
     container: containerRef,

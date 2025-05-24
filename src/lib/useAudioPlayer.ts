@@ -10,6 +10,7 @@ import {
   getAnalyser,
   getAudioContext,
 } from "./audioInstance";
+import { isNumber } from "lodash";
 
 export function useAudioPlayer() {
   const [audio, setAudio] = useState<HTMLAudioElement | null>(null);
@@ -28,7 +29,7 @@ export function useAudioPlayer() {
   );
   const setTrack = useTrackStore((state) => state.setTrack);
   const storeTogglePlayPause = useTrackStore((state) => state.togglePlayPause);
-  // const storeSetIsPlaying = useTrackStore((state) => state.setIsPlaying);
+  const storeSetVolume = useTrackStore((state) => state.setVolume);
   const storeSetCurrentTime = useTrackStore((state) => state.setCurrentTime);
   const storeSetDuration = useTrackStore((state) => state.setDuration);
   const storeSetIsBuffering = useTrackStore((state) => state.setIsBuffering);
@@ -59,9 +60,10 @@ export function useAudioPlayer() {
       if (audio.src !== currentTrack.url) {
         audio.src = currentTrack.url;
         storeSetCurrentTime(0);
-        storeSetIsBuffering(true);
       }
-      audio.volume = isMuted ? 0 : volume;
+      if (isNumber(volume)) {
+        audio.volume = isMuted ? 0 : volume;
+      }
     } else if (audio && !currentTrack) {
       audio.pause();
       audio.src = "";
@@ -170,7 +172,6 @@ export function useAudioPlayer() {
         setTrack(nextTrackInfo, true);
       }
     };
-    const handleVolumeChange = () => {};
     const handleError = (e: Event) => {
       storeSetIsBuffering(false);
     };
@@ -200,7 +201,6 @@ export function useAudioPlayer() {
     audio.addEventListener("durationchange", handleDurationChange);
     audio.addEventListener("loadedmetadata", handleDurationChange);
     audio.addEventListener("ended", handleEnded);
-    audio.addEventListener("volumechange", handleVolumeChange);
     audio.addEventListener("error", handleError);
     audio.addEventListener("waiting", handleWaiting);
     audio.addEventListener("playing", handlePlaying);
@@ -212,7 +212,6 @@ export function useAudioPlayer() {
       audio.removeEventListener("durationchange", handleDurationChange);
       audio.removeEventListener("loadedmetadata", handleDurationChange);
       audio.removeEventListener("ended", handleEnded);
-      audio.removeEventListener("volumechange", handleVolumeChange);
       audio.removeEventListener("error", handleError);
       audio.removeEventListener("waiting", handleWaiting);
       audio.removeEventListener("playing", handlePlaying);
@@ -314,7 +313,7 @@ export function useAudioPlayer() {
     nextTrack: playNextTrack,
     prevTrack: playPrevTrack,
     handleSelectTrack: storeHandleOnClickCard,
-    setVolume: useTrackStore.getState().setVolume,
+    setVolume: storeSetVolume,
     toggleMute: useTrackStore.getState().toggleMute,
     analyserNode,
   };

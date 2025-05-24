@@ -18,6 +18,7 @@
     "@supabase/supabase-js": "^2.49.4",
     "@tanstack/react-query": "^5.75.1",
     "@types/lodash.isempty": "^4.4.9",
+    "@types/lodash.isnumber": "^3.0.9",
     "@vercel/postgres": "^0.10.0",
     "@wavesurfer/react": "^1.0.11",
     "axios": "^1.9.0",

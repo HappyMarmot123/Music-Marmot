@@ -5,7 +5,10 @@ import { useAudioPlayer } from "@/lib/useAudioPlayer";
 import PlayerTrackDetails from "@/component/playerTrackDetails";
 import PlayerControlsSection from "@/component/playerControlsSection";
 import AlbumArtwork from "@/component/albumArtwork";
-import Draggable, { type DraggableBounds } from "react-draggable";
+import Draggable, {
+  DraggableEvent,
+  type DraggableBounds,
+} from "react-draggable";
 import "@/lib/util";
 import { handleSeekInteraction } from "@/lib/util";
 import { useToggle } from "@/store/toggleStore";
@@ -36,10 +39,14 @@ export default function AudioPlayer() {
     isBuffering,
     currentTime,
     duration,
+    volume,
+    setVolume,
     togglePlayPause,
     nextTrack,
     prevTrack,
     seek,
+    isMuted,
+    toggleMute,
     isLoadingCloudinary,
   } = useAudioPlayer();
 
@@ -109,6 +116,15 @@ export default function AudioPlayer() {
     setSeekHoverTime(null);
   };
 
+  const handleStart = (e: DraggableEvent) => {
+    if (
+      e.target instanceof HTMLElement &&
+      e.target.classList.contains("no-drag")
+    ) {
+      return false; // 특정 요소에서 드래그 방지
+    }
+  };
+
   return (
     <Draggable
       key={draggableKey}
@@ -116,11 +132,12 @@ export default function AudioPlayer() {
       defaultPosition={defaultPositionRef.current}
       nodeRef={draggableRef as React.RefObject<HTMLElement>}
       handle=".draggable-handle"
+      onStart={handleStart}
     >
       <div
         ref={draggableRef}
         id="player-container"
-        className="fixed w-[344px] h-[80px] mx-auto mt-[-4px] z-50 select-none"
+        className="fixed w-[444px] h-[80px] mx-auto mt-[-4px] z-50 select-none"
       >
         <div
           id="player"
@@ -153,6 +170,10 @@ export default function AudioPlayer() {
               togglePlayPause={togglePlayPause}
               nextTrack={nextTrack}
               isPlaying={isPlaying}
+              volume={volume}
+              setVolume={setVolume}
+              isMuted={isMuted}
+              toggleMute={toggleMute}
             />
           </div>
         </div>

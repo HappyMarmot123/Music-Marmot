@@ -145,6 +145,10 @@ export interface PlayerControlsSectionProps {
   togglePlayPause: () => void;
   nextTrack: () => void;
   isPlaying: boolean;
+  volume: number;
+  setVolume: (volume: number) => void;
+  isMuted: boolean;
+  toggleMute: () => void;
 }
 
 export interface TrackInfo {

@@ -41,7 +41,7 @@ const ModalPlayerTrackDetails: React.FC<ModalPlayerTrackDetailsProps> = ({
     <section aria-label="재생 진행 막대" className="w-full mt-6 mb-2">
       <div
         ref={seekBarContainerRef}
-        className="w-full h-2 bg-white/20 rounded-full overflow-hidden cursor-pointer group relative"
+        className="w-full h-2 bg-white/20 rounded-full cursor-pointer group relative"
         onClick={handleSeekClick}
         onMouseMove={handleSeekClick}
         onMouseOut={handleSeekMouseOut}
@@ -61,6 +61,10 @@ const ModalPlayerTrackDetails: React.FC<ModalPlayerTrackDetailsProps> = ({
         <div
           className="h-full bg-white rounded-full transition-all duration-100 ease-linear"
           style={{ width: `${calculateProgress()}%` }}
+        ></div>
+        <div
+          className="absolute top-1/2 -translate-y-1/2 w-3 h-3 bg-gray-300 rounded-full z-30 pointer-events-none"
+          style={{ left: `calc(${calculateProgress()}% - 8px)` }}
         ></div>
       </div>
       <div className="flex justify-between text-xs text-gray-400 mt-1">

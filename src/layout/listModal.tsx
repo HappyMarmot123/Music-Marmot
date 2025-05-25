@@ -402,7 +402,7 @@ export default function ListModal({
                         className="w-[80px] h-1.5 bg-white/20 rounded-lg appearance-none cursor-pointer origin-center transform -rotate-90 
                                  [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white/50 [&::-webkit-slider-thumb]:cursor-pointer 
                                  [&::-moz-range-thumb]:h-3 [&::-moz-range-thumb]:w-3 [&::-moz-range-thumb]:appearance-none [&::-moz-range-thumb]:border-0 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-white/50 [&::-moz-range-thumb]:cursor-pointer"
-                        style={{ width: "80px" }} // 실제 슬라이더 길이 (회전 전 너비)
+                        style={{ width: "80px" }}
                       />
                     </motion.div>
                   )}

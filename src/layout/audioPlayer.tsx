@@ -55,6 +55,7 @@ export default function AudioPlayer() {
   const [seekHoverPosition, setSeekHoverPosition] = useState(0);
   const seekBarContainerRef = useRef<HTMLDivElement>(null);
 
+  const isDragging = useRef(false);
   const draggableRef = useRef<HTMLDivElement>(null);
   const [bounds, setBounds] = useState<DraggableBounds | undefined>(undefined);
   const defaultPositionRef = useRef({ x: 700, y: 640 });
@@ -116,12 +117,14 @@ export default function AudioPlayer() {
     setSeekHoverTime(null);
   };
 
-  const handleStart = (e: DraggableEvent) => {
+  const handleDrag = (e: DraggableEvent) => {
+    isDragging.current = true;
+
     if (
       e.target instanceof HTMLElement &&
       e.target.classList.contains("no-drag")
     ) {
-      return false; // 특정 요소에서 드래그 방지
+      return false;
     }
   };
 
@@ -132,7 +135,12 @@ export default function AudioPlayer() {
       defaultPosition={defaultPositionRef.current}
       nodeRef={draggableRef as React.RefObject<HTMLElement>}
       handle=".draggable-handle"
-      onStart={handleStart}
+      onDrag={handleDrag}
+      onStop={(e) => {
+        setTimeout(() => {
+          isDragging.current = false;
+        }, 0);
+      }}
     >
       <div
         ref={draggableRef}
@@ -162,7 +170,11 @@ export default function AudioPlayer() {
               isPlaying={isPlaying}
               isBuffering={isBuffering}
               currentTrackInfo={currentTrack}
-              onClick={openToggle}
+              onClick={() => {
+                if (!isDragging.current) {
+                  openToggle();
+                }
+              }}
             />
             <PlayerControlsSection
               currentTrackInfo={currentTrack}

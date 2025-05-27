@@ -1,11 +1,12 @@
+import dynamic from "next/dynamic";
 import Cursor from "@/component/cursor";
 import DustySnow from "@/component/dustySnow";
 import Intro from "@/component/intro";
 import AudioPlayer from "@/layout/audioPlayer";
-import ListModal from "@/layout/listModal";
 import { useToggle } from "@/store/toggleStore";
 import { motion, useScroll, useSpring, useTransform } from "framer-motion";
 import { useRef } from "react";
+import ListModal from "@/layout/listModal";
 
 export default function MyArticle({ children }: { children: React.ReactNode }) {
   const { isOpen, closeToggle } = useToggle();

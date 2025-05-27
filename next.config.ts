@@ -22,6 +22,13 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  webpack: (config) => {
+    config.optimization.splitChunks = {
+      chunks: "all",
+      minChunks: 2,
+    };
+    return config;
+  },
   swcMinify: false, // 난독화 여부
 };
 

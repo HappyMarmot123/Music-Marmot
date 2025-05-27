@@ -8,6 +8,7 @@ import { ToggleProvider } from "@/store/toggleStore";
 import LenisProvider from "@/provider/lenisProvider";
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://edmm.vercel.app"),
   title: "EDMM",
   description: "음악 스트리밍 서비스",
   keywords: ["음악", "스트리밍", "노래", "EDMM", "music"],

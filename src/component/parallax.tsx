@@ -49,7 +49,7 @@ export default function Parallax({
   });
 
   return (
-    <div className="parallax">
+    <div className="parallax relative">
       <motion.div className="scroller" style={{ x }}>
         {Array.from({ length: 8 }).map((_, index) => (
           <span

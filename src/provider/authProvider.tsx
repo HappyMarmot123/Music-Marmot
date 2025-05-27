@@ -14,9 +14,7 @@ import {
   AuthError,
   Subscription,
 } from "@supabase/supabase-js";
-import { supabase } from "@/api/supabaseClient";
-import { useFavorites } from "@/hooks/useFavorites";
-// import { createUser } from "@/db/userQuery"; // 이 줄은 삭제하거나 주석 처리합니다.
+import { supabaseClient } from "@/api/supabaseClient";
 
 /* 
   TODO: 
@@ -24,6 +22,10 @@ import { useFavorites } from "@/hooks/useFavorites";
   어떤 블로거가 설명을 되게 잘해주심
   https://mycodings.fly.dev/blog/2025-01-01-nextjs-supabase-tutorial-2-login-with-google-id-oauth
 */
+
+type AuthProviderProps = {
+  children: ReactNode;
+};
 
 type AuthContextType = {
   session: Session | null;
@@ -36,37 +38,38 @@ type AuthContextType = {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export const AuthProvider = ({ children }: { children: ReactNode }) => {
+export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [session, setSession] = useState<Session | null>(null);
   const [user, setUser] = useState<User | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    const getSession = async () => {
-      try {
-        const {
-          data: { session: currentSession },
-          error,
-        } = await supabase.auth.getSession();
-        if (error) throw error;
-        setSession(currentSession);
-        setUser(currentSession?.user ?? null);
-      } catch (error) {
-        console.error(
-          "Error getting session:",
-          error instanceof Error ? error.message : error
-        );
-      } finally {
-        setIsLoading(false);
-      }
-    };
+    // const getSession = async () => {
+    //   try {
+    //     const {
+    //       data: { session: currentSession },
+    //       error,
+    //     } = await supabaseClient.auth.getSession();
+    //     if (error) throw error;
+    //     setSession(currentSession);
+    //     setUser(currentSession?.user ?? null);
+    //   } catch (error) {
+    //     console.error(
+    //       "Error getting session:",
+    //       error instanceof Error ? error.message : error
+    //     );
+    //   } finally {
+    //     setIsLoading(false);
+    //   }
+    // };
 
-    getSession();
+    // getSession();
 
-    const { data: authListener } = supabase.auth.onAuthStateChange(
+    const { data: authListener } = supabaseClient.auth.onAuthStateChange(
       async (event: AuthChangeEvent, currentSession: Session | null) => {
         setSession(currentSession);
-        setUser(currentSession?.user ?? null);
+        setUser(currentSession?.user || null);
+        setIsLoading(false);
 
         if (event === "SIGNED_IN" && currentSession?.user) {
           const { id: uid, email, user_metadata } = currentSession.user;
@@ -97,7 +100,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                 if (!response.ok) {
                   throw new Error(`HTTP error! status: ${response.status}`);
                 }
-                console.log("User processed via API:", response.json());
+                console.log("User processed via API:");
               })
               .catch((error) => {
                 console.error("Failed to Insert User:", error);
@@ -119,7 +122,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const signInWithGoogle = async () => {
     setIsLoading(true);
     try {
-      const { error } = await supabase.auth.signInWithOAuth({
+      const { error } = await supabaseClient.auth.signInWithOAuth({
         provider: "google",
         options: {
           redirectTo: window.location.href,
@@ -131,15 +134,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         "Error signing in with Google:",
         error instanceof AuthError ? error.message : error
       );
-    } finally {
-      // setIsLoading(false); // OAuth 리디렉션으로 인해 이 시점에 도달하지 않을 수 있음
     }
   };
 
   const signInWithKakao = async () => {
     setIsLoading(true);
     try {
-      const { error } = await supabase.auth.signInWithOAuth({
+      const { error } = await supabaseClient.auth.signInWithOAuth({
         provider: "kakao",
         options: {
           redirectTo: window.location.href,
@@ -151,13 +152,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         "Error signing in with Kakao:",
         error instanceof AuthError ? error.message : error
       );
+      setIsLoading(false);
     }
   };
 
   const signOut = async () => {
     setIsLoading(true);
     try {
-      const { error } = await supabase.auth.signOut();
+      const { error } = await supabaseClient.auth.signOut();
       if (error) throw error;
     } catch (error) {
       console.error(

@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import { addFavorite, removeFavorite } from "@/db/favoritesQuery";
-import { supabase } from "@/api/supabaseClient";
 import { getFavoritesByUserId } from "@/db/favoritesQuery";
 import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";

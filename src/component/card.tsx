@@ -40,7 +40,8 @@ const Card = ({ card }: { card: CloudinaryResource }) => {
           alt={`${itemName} album art`}
           className="absolute inset-0 w-full h-full object-cover opacity-40 group-hover:opacity-60 transition-opacity duration-300"
           loading="lazy"
-          fill
+          width={256}
+          height={256}
         />
       ) : (
         <div className="absolute inset-0 bg-neutral-700 flex items-center justify-center">

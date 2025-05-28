@@ -19,7 +19,7 @@ import { useAudioPlayer } from "@/lib/useAudioPlayer";
 import clsx from "clsx";
 import { CldImage } from "next-cloudinary";
 import OnclickEffect from "@/component/onclickEffect";
-import { handleOnLike } from "@/lib/util";
+import { handleOnLike, listModalRootClassName } from "@/lib/util";
 import ModalPlayerTrackDetails from "@/component/modalPlayerTrackDetails";
 import LoginSection from "@/component/loginSection";
 import { useAuth } from "@/provider/authProvider";
@@ -27,6 +27,8 @@ import { motion } from "framer-motion";
 import AudioVisualizer from "@/component/audioVisualizer";
 import { useFavorites } from "@/hooks/useFavorites";
 import MyTooltip from "@/component/myTooltip";
+import { useListModal } from "@/hooks/useListModal";
+import { User } from "@/db/userQuery";
 
 /*
   TODO:
@@ -64,12 +66,11 @@ export default function ListModal({
 
   const { user } = useAuth();
   const { data: favorites, isLoading, error, refetch } = useFavorites();
-  const volumeSliderTimeoutId = useRef<NodeJS.Timeout | null>(null);
 
   const [trackList, setTrackList] = useState<CloudinaryResource[]>([]);
-  const [isCursorHidden, setIsCursorHidden] = useState(true);
-  const [activeButton, setActiveButton] = useState<string | null>("available");
-  const [listTitleText, setListTitleText] = useState<string>("Available Now");
+  const [isCursorHidden, _setIsCursorHidden] = useState(true);
+  const [activeButton, setActiveButton] = useState("available");
+  const [listTitleText, setListTitleText] = useState("Available Now");
   const [displayedTrackList, setDisplayedTrackList] = useState<
     CloudinaryResource[]
   >([]);
@@ -132,14 +133,16 @@ export default function ListModal({
   useEffect(() => {
     let newDisplayedList: CloudinaryResource[] = [];
 
-    if (activeButton === "heart") {
-      const likedAssetIds = new Set(isLiked.map((like) => like.asset_id));
-      newDisplayedList = trackList.filter(
-        (track) => track.asset_id && likedAssetIds.has(track.asset_id)
-      );
-    }
-    if (activeButton === "available") {
-      newDisplayedList = trackList;
+    switch (activeButton) {
+      case "heart":
+        const likedAssetIds = new Set(isLiked.map((like) => like.asset_id));
+        newDisplayedList = trackList.filter(
+          (track) => track.asset_id && likedAssetIds.has(track.asset_id)
+        );
+        break;
+      case "available":
+        newDisplayedList = trackList;
+        break;
     }
 
     setDisplayedTrackList(newDisplayedList);
@@ -156,44 +159,21 @@ export default function ListModal({
     return displayedTrackList;
   }, [displayedTrackList, searchTerm]);
 
-  const toggleLike = async (trackAssetId: string | undefined) => {
-    if (!trackAssetId) return;
-    if (!user) {
-      alert("로그인이 필요합니다. 로그인 후 다시 시도해주세요.");
-      return;
-    }
-
-    const currentTrackLikeInfo = isLiked.find(
-      (item) => item.asset_id === trackAssetId
-    );
-    const currentIsLikedState = !!currentTrackLikeInfo;
-
-    await handleOnLike(trackAssetId, user.id, currentIsLikedState, setIsLiked);
-
-    if (!currentIsLikedState) {
-      // This means the track was just liked
-      setAnimateLikeForAssetId(trackAssetId);
-    }
-  };
-
-  const handleVolumeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newVolume = parseFloat(event.target.value);
-    setVolume(newVolume);
-  };
-
-  const handleVolumeMouseEnter = () => {
-    if (volumeSliderTimeoutId.current) {
-      clearTimeout(volumeSliderTimeoutId.current);
-      volumeSliderTimeoutId.current = null;
-    }
-    setShowVolumeSlider(true);
-  };
-
-  const handleVolumeMouseLeave = () => {
-    volumeSliderTimeoutId.current = setTimeout(() => {
-      setShowVolumeSlider(false);
-    }, 1000);
-  };
+  const {
+    toggleLike,
+    handleVolumeChange,
+    handleVolumeMouseEnter,
+    handleVolumeMouseLeave,
+  } = useListModal(
+    currentTrack?.assetId as string,
+    user as unknown as User,
+    isLiked,
+    setIsLiked,
+    setAnimateLikeForAssetId,
+    volume,
+    setVolume,
+    setShowVolumeSlider
+  );
 
   return (
     <motion.div
@@ -201,9 +181,7 @@ export default function ListModal({
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.95 }}
       transition={{ duration: 0.3, ease: "easeInOut" }}
-      className="grid grid-cols-4 fixed inset-0 m-auto w-[90%] h-[90%]  
-              bg-[#483544aa] backdrop-blur-[10px] border border-white/50 rounded-2xl text-white z-40 
-              shadow-[0_0.5px_0_1px_rgba(255,255,255,0.2)_inset,0_1px_0_0_rgba(255,255,255,0.6)_inset,0_4px_16px_rgba(0,0,0,0.1)]   overflow-hidden"
+      className={listModalRootClassName()}
     >
       <aside className="col-span-2 p-8 flex flex-col items-center border-r border-white/10">
         <div className="flex flex-col items-center flex-grow w-full">
@@ -295,7 +273,7 @@ export default function ListModal({
                   <motion.button
                     whileTap={{ scale: 0.95 }}
                     transition={{ duration: 0.1 }}
-                    onClick={() => toggleLike(currentTrack?.assetId)}
+                    onClick={() => toggleLike()}
                     disabled={!user}
                     className={clsx(
                       "p-2 rounded-full transition bg-white/10 hover:bg-white/20",

@@ -205,3 +205,12 @@ export interface AudioVisualizerProps {
   width?: number;
   height?: number;
 }
+
+export interface EarthProps {
+  width?: number;
+  height?: number;
+  className?: string;
+  baseColor?: [number, number, number];
+  markerColor?: [number, number, number];
+  glowColor?: [number, number, number];
+}

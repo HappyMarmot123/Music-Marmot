@@ -2,8 +2,8 @@ import React from "react";
 import { AlbumArtworkProps } from "@/type/dataType";
 import { CldImage } from "next-cloudinary";
 import clsx from "clsx";
+import { albumArtClassName } from "@/lib/util";
 
-// AlbumArtworkProps에 onClick 타입 추가
 interface ExtendedAlbumArtworkProps extends AlbumArtworkProps {
   onClick?: () => void;
 }
@@ -12,20 +12,13 @@ const AlbumArtwork: React.FC<ExtendedAlbumArtworkProps> = ({
   isPlaying,
   isBuffering,
   currentTrackInfo,
-  onClick, // onClick prop 추가
+  onClick,
 }) => {
   return (
     <div
       id="album-art"
-      onClick={onClick} // div에 onClick 이벤트 전달
-      className={clsx(
-        "absolute w-[92px] h-[92px] ml-[32px] bg-gray-300 transform top-[-22px] rotate-0 transition-all duration-300 ease-[ease] shadow-[0_0_0_10px_#fff] rounded-full overflow-hidden",
-        "cursor-pointer hover:scale-105", // 커서 포인터 및 호버 효과 추가
-        isPlaying &&
-          "active shadow-[0_0_0_4px_#fff7f7,_0_30px_50px_-15px_#afb7c1] top-[-32px]",
-        isBuffering &&
-          "buffering [&>img]:opacity-25 [&>img.active]:opacity-80 [&>img.active]:blur-sm [&_#buffer-box]:opacity-100"
-      )}
+      onClick={onClick}
+      className={albumArtClassName(isPlaying, isBuffering)}
     >
       {currentTrackInfo?.artworkId ? (
         <CldImage

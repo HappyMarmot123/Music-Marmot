@@ -8,68 +8,116 @@
     따라서 사용자 상호작용으로만 resume() 메서드가 작동한다.
 */
 
-let audioInstance: HTMLAudioElement | null = null;
-let audioContext: AudioContext | null = null;
-let analyser: AnalyserNode | null = null;
-let source: MediaElementAudioSourceNode | null = null;
-
 interface WindowWithWebKitAudioContext extends Window {
   webkitAudioContext?: typeof AudioContext;
 }
 
-export const getAudioInstance = (): HTMLAudioElement => {
-  if (!audioInstance) {
-    audioInstance = new Audio();
-    audioInstance.crossOrigin = "anonymous";
-    audioInstance.src = "";
-    audioInstance.loop = false;
-    console.log("Global Audio instance created");
+class AudioSingletonInstance {
+  private static instance: AudioSingletonInstance | null = null;
+  public audio: HTMLAudioElement | null = null;
+  public audioContext: AudioContext | null = null;
+  public analyser: AnalyserNode | null = null;
+  public source: MediaElementAudioSourceNode | null = null;
 
+  private constructor() {
     // Browser only
     if (typeof window !== "undefined") {
+      this.audio = new Audio();
+      this.audio.crossOrigin = "anonymous";
+      this.audio.src = "";
+      this.audio.loop = false;
+      console.log("HTMLAudioElement instance created");
+
       const Globalwindow = window as WindowWithWebKitAudioContext;
-      audioContext = new (window.AudioContext ||
-        Globalwindow.webkitAudioContext)();
-      if (audioContext && audioInstance) {
-        analyser = audioContext.createAnalyser();
-        source = audioContext.createMediaElementSource(audioInstance);
-        source.connect(analyser);
-        analyser.connect(audioContext.destination);
-        analyser.fftSize = 512; // 시각화에 사용할 데이터 크기 설정
+      const AudioContextConstructor =
+        window.AudioContext || Globalwindow.webkitAudioContext;
+
+      if (AudioContextConstructor) {
+        this.audioContext = new AudioContextConstructor();
+
+        if (this.audio) {
+          this.analyser = this.audioContext.createAnalyser();
+          this.source = this.audioContext.createMediaElementSource(this.audio);
+          this.source.connect(this.analyser);
+          this.analyser.connect(this.audioContext.destination);
+          this.analyser.fftSize = 512;
+
+          console.log("Web Audio API components initialized");
+        } else {
+          console.error("HTMLAudioElement failed to initialize");
+        }
+      } else {
+        console.error(
+          "AudioSingletonInstance: AudioContext not supported in this environment."
+        );
       }
+    } else {
+      console.error("AudioSingletonInstance: not in a browser environment.");
     }
   }
-  return audioInstance;
+
+  public static getInstance() {
+    if (!AudioSingletonInstance.instance) {
+      AudioSingletonInstance.instance = new AudioSingletonInstance();
+    }
+    return AudioSingletonInstance.instance;
+  }
+
+  public static cleanup(): void {
+    const instance = AudioSingletonInstance?.instance;
+
+    if (instance) {
+      if (instance.audio) {
+        instance.audio.pause();
+        instance.audio.src = "";
+      }
+      if (instance.source) {
+        instance.source.disconnect();
+      }
+      if (instance.analyser) {
+        instance.analyser.disconnect();
+      }
+      if (instance.audioContext && instance.audioContext.state !== "closed") {
+        instance.audioContext
+          .close()
+          .then(() =>
+            console.log(
+              "AudioSingletonInstance: AudioContext closed successfully."
+            )
+          )
+          .catch((err) =>
+            console.error(
+              "AudioSingletonInstance: Error closing AudioContext:",
+              err
+            )
+          );
+      }
+
+      AudioSingletonInstance.instance = null;
+      console.log("AudioSingletonInstance: Instance cleaned up and reset.");
+    }
+  }
+}
+
+// 헬퍼 함수
+export const getAudioInstance = (): HTMLAudioElement | null => {
+  if (typeof window === "undefined") return null;
+  const instance = AudioSingletonInstance.getInstance();
+  return instance.audio;
 };
 
 export const getAudioContext = (): AudioContext | null => {
-  return audioContext;
+  if (typeof window === "undefined") return null;
+  const instance = AudioSingletonInstance.getInstance();
+  return instance.audioContext;
 };
 
 export const getAnalyser = (): AnalyserNode | null => {
-  return analyser;
+  if (typeof window === "undefined") return null;
+  const instance = AudioSingletonInstance.getInstance();
+  return instance.analyser;
 };
 
-export const cleanupAudioInstance = () => {
-  if (audioInstance) {
-    audioInstance.pause();
-    audioInstance.src = "";
-    audioInstance = null;
-
-    if (source) {
-      source.disconnect();
-      source = null;
-    }
-    if (analyser) {
-      analyser.disconnect();
-      analyser = null;
-    }
-    if (audioContext && audioContext.state !== "closed") {
-      audioContext
-        .close()
-        .catch((err) => console.error("Error closing AudioContext:", err));
-      audioContext = null;
-    }
-    console.log("Global Audio instance cleaned up");
-  }
+export const cleanupAudioInstance = (): void => {
+  AudioSingletonInstance.cleanup();
 };

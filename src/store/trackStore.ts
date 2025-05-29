@@ -1,34 +1,16 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
-import type { TrackInfo } from "@/type/dataType";
-import useRecentPlayStore from "./recentPlayStore";
-
-interface AudioPlayerState {
-  currentTrack: TrackInfo | null;
-  isPlaying: boolean;
-  currentTime: number;
-  duration: number;
-  isBuffering: boolean;
-  volume: number; // 0 to 1
-  isMuted: boolean;
-  currentTrackAssetId: string | null;
-
-  // Actions
-  setTrack: (track: TrackInfo | null, playImmediately?: boolean) => void;
-  togglePlayPause: () => void;
-  setIsPlaying: (playing: boolean) => void;
-  setCurrentTime: (time: number) => void;
-  setDuration: (duration: number) => void;
-  setIsBuffering: (buffering: boolean) => void;
-  setVolume: (volume: number) => void;
-  toggleMute: () => void;
-  handleOnClickCard: (paramAssetId: string | null) => void;
-  seekTo: (time: number) => void;
-}
+import type { AudioPlayerState } from "@/type/dataType";
+import {
+  CLAMP_VOLUME,
+  mergeFunction,
+  partializeFunction,
+  setTrackFunction,
+} from "@/lib/util";
 
 const useTrackStore = create<AudioPlayerState>()(
   persist(
-    (set, get) => ({
+    (set, _get) => ({
       currentTrack: null,
       isPlaying: false,
       currentTime: 0,
@@ -39,16 +21,7 @@ const useTrackStore = create<AudioPlayerState>()(
       currentTrackAssetId: null,
 
       setTrack: (track, playImmediately = false) => {
-        if (track && track.assetId) {
-          useRecentPlayStore.getState().addRecentAssetId(track.assetId);
-        }
-        set({
-          currentTrack: track,
-          currentTime: 0,
-          isPlaying: track ? playImmediately : false,
-          isBuffering: track ? true : false,
-          currentTrackAssetId: track ? track.assetId : null,
-        });
+        setTrackFunction(track, playImmediately, set);
       },
       togglePlayPause: () => {
         set((state) => ({ isPlaying: !state.isPlaying }));
@@ -58,8 +31,10 @@ const useTrackStore = create<AudioPlayerState>()(
       setDuration: (duration) => set({ duration: duration }),
       setIsBuffering: (buffering) => set({ isBuffering: buffering }),
       setVolume: (volume) => {
-        const newVolume = Math.max(0, Math.min(1, volume));
-        set({ volume: newVolume, isMuted: newVolume === 0 });
+        set(() => {
+          const newVolume = CLAMP_VOLUME(volume);
+          return { volume: newVolume, isMuted: newVolume === 0 };
+        });
       },
       toggleMute: () => {
         set((state) => ({ isMuted: !state.isMuted }));
@@ -77,20 +52,9 @@ const useTrackStore = create<AudioPlayerState>()(
     {
       name: "track-store",
       storage: createJSONStorage(() => localStorage),
-      partialize: (state) => ({
-        volume: state.volume,
-        isMuted: state.isMuted,
-        currentTrack: state.currentTrack,
-        currentTrackAssetId: state.currentTrackAssetId,
-      }),
+      partialize: (state) => partializeFunction(state),
       merge: (persistedState, currentState) => {
-        return {
-          ...currentState,
-          ...(persistedState as object),
-          isPlaying: false,
-          isBuffering: false,
-          currentTime: 0,
-        };
+        return mergeFunction(persistedState, currentState);
       },
     }
   )

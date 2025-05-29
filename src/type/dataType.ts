@@ -214,3 +214,43 @@ export interface EarthProps {
   markerColor?: [number, number, number];
   glowColor?: [number, number, number];
 }
+
+export interface AudioPlayerState {
+  currentTrack: TrackInfo | null;
+  isPlaying: boolean;
+  currentTime: number;
+  duration: number;
+  isBuffering: boolean;
+  volume: number; // 0 to 1
+  isMuted: boolean;
+  currentTrackAssetId: string | null;
+
+  // Actions
+  setTrack: (track: TrackInfo | null, playImmediately?: boolean) => void;
+  togglePlayPause: () => void;
+  setIsPlaying: (playing: boolean) => void;
+  setCurrentTime: (time: number) => void;
+  setDuration: (duration: number) => void;
+  setIsBuffering: (buffering: boolean) => void;
+  setVolume: (volume: number) => void;
+  toggleMute: () => void;
+  handleOnClickCard: (paramAssetId: string | null) => void;
+  seekTo: (time: number) => void;
+}
+
+export interface zustandPersistSet {
+  (
+    partial:
+      | AudioPlayerState
+      | Partial<AudioPlayerState>
+      | ((
+          state: AudioPlayerState
+        ) => AudioPlayerState | Partial<AudioPlayerState>),
+    replace?: false
+  ): void;
+  (
+    state: AudioPlayerState | ((state: AudioPlayerState) => AudioPlayerState),
+    replace: true
+  ): void;
+  (arg0: any): any;
+}

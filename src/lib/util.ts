@@ -1,8 +1,15 @@
 import { useAuth } from "@/provider/authProvider";
-import { CloudinaryResource, likeType } from "@/type/dataType";
+import {
+  AudioPlayerState,
+  CloudinaryResource,
+  likeType,
+  TrackInfo,
+  zustandPersistSet,
+} from "@/type/dataType";
 import { SetStateAction } from "react";
 import { Dispatch, MouseEvent, RefObject } from "react";
 import clsx from "clsx";
+import useRecentPlayStore from "@/store/recentPlayStore";
 
 export function formatTime(seconds: number): string {
   if (isNaN(seconds) || seconds < 0) {
@@ -166,3 +173,41 @@ export const listModalRootClassName = () => {
     "z-40"
   );
 };
+
+export const CLAMP_VOLUME = (volume: number) =>
+  Math.max(0, Math.min(1, volume));
+
+export const setTrackFunction = (
+  track: TrackInfo | null,
+  playImmediately: boolean,
+  set: zustandPersistSet
+) => {
+  if (track && track.assetId) {
+    useRecentPlayStore.getState().addRecentAssetId(track.assetId);
+  }
+  set((state: AudioPlayerState) => ({
+    currentTrack: track,
+    currentTime: 0,
+    isPlaying: !!track && playImmediately,
+    isBuffering: !!track,
+    currentTrackAssetId: track?.assetId ?? null,
+  }));
+};
+
+export const partializeFunction = (state: AudioPlayerState) => ({
+  volume: state.volume,
+  isMuted: state.isMuted,
+  currentTrack: state.currentTrack,
+  currentTrackAssetId: state.currentTrackAssetId,
+});
+
+export const mergeFunction = (
+  persistedState: unknown | AudioPlayerState,
+  currentState: AudioPlayerState
+) => ({
+  ...currentState,
+  ...(persistedState as object),
+  isPlaying: false,
+  isBuffering: false,
+  currentTime: 0,
+});

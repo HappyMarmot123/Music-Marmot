@@ -2,46 +2,44 @@
 
 import { useEffect, useCallback, useState, useMemo, useRef } from "react";
 import type { TrackInfo } from "@/type/dataType";
-import useCloudinaryStore from "@/store/cloudinaryStore";
-import useTrackStore from "@/store/trackStore";
-import useAudioInstanceStore from "@/store/audioInstanceStore";
+
 import { isNumber } from "lodash";
+import {
+  playNextTrackLogic,
+  playPrevTrackLogic,
+  seekLogic,
+  togglePlayPauseLogic,
+  useTrackStoreVariables,
+} from "@/lib/audioPlayerUtil";
 
 export function useAudioPlayer() {
   const isSeekingRef = useRef(false);
 
-  const currentTrack = useTrackStore((state) => state.currentTrack);
-  const isPlaying = useTrackStore((state) => state.isPlaying);
-  const currentTime = useTrackStore((state) => state.currentTime);
-  const duration = useTrackStore((state) => state.duration);
-  const isBuffering = useTrackStore((state) => state.isBuffering);
-  const volume = useTrackStore((state) => state.volume);
-  const isMuted = useTrackStore((state) => state.isMuted);
-  const currentTrackAssetId = useTrackStore(
-    (state) => state.currentTrackAssetId
-  );
-  const setTrack = useTrackStore((state) => state.setTrack);
-  const storeTogglePlayPause = useTrackStore((state) => state.togglePlayPause);
-  const storeSetVolume = useTrackStore((state) => state.setVolume);
-  const storeSetCurrentTime = useTrackStore((state) => state.setCurrentTime);
-  const storeSetDuration = useTrackStore((state) => state.setDuration);
-  const storeSetIsBuffering = useTrackStore((state) => state.setIsBuffering);
-  const storeHandleOnClickCard = useTrackStore(
-    (state) => state.handleOnClickCard
-  );
-  const storeSeekTo = useTrackStore((state) => state.seekTo);
-
-  const cloudinaryData = useCloudinaryStore((state) => state.cloudinaryData);
-  const isLoadingCloudinary = useCloudinaryStore(
-    (state) => state.isLoadingCloudinary
-  );
-
-  const audio = useAudioInstanceStore((state) => state.audioInstance);
-  const analyserNode = useAudioInstanceStore((state) => state.audioAnalyser);
-  const audioContext = useAudioInstanceStore((state) => state.audioContext);
-  const cleanAudioInstance = useAudioInstanceStore(
-    (state) => state.cleanAudioInstance
-  );
+  const {
+    currentTrack,
+    isPlaying,
+    currentTime,
+    duration,
+    isBuffering,
+    volume,
+    isMuted,
+    currentTrackAssetId,
+    setTrack,
+    storeTogglePlayPause,
+    storeSetVolume,
+    storeSetCurrentTime,
+    storeSetDuration,
+    storeSetIsBuffering,
+    storeHandleOnClickCard,
+    storeSeekTo,
+    storeToggleMute,
+    cloudinaryData,
+    isLoadingCloudinary,
+    audio,
+    analyserNode,
+    audioContext,
+    cleanAudioInstance,
+  } = useTrackStoreVariables();
 
   // 오디오 및 플레이타임 업데이트
   useEffect(() => {
@@ -218,72 +216,29 @@ export function useAudioPlayer() {
   ]);
 
   const togglePlayPause = useCallback(async () => {
-    if (audioContext && audioContext.state === "suspended") {
-      try {
-        await audioContext.resume();
-        console.log(
-          "AudioContext resumed on user interaction in togglePlayPause!"
-        );
-      } catch (e) {
-        console.error("Failed to resume AudioContext in togglePlayPause:", e);
-      }
-    }
-    storeTogglePlayPause();
-  }, [storeTogglePlayPause]);
+    await togglePlayPauseLogic({ audioContext, storeTogglePlayPause });
+  }, [audioContext, storeTogglePlayPause]);
 
   const seek = useCallback(
     (time: number) => {
-      if (audio && currentTrack) {
-        isSeekingRef.current = true;
-        const newTime = Math.max(0, Math.min(time, duration || 0));
-        audio.currentTime = newTime;
-        storeSeekTo(newTime);
-      }
+      seekLogic({
+        audio,
+        currentTrack,
+        duration,
+        time,
+        storeSeekTo,
+        isSeekingRef,
+      });
     },
-    [audio, duration, currentTrack, storeSeekTo]
+    [audio, currentTrack, duration, storeSeekTo]
   );
 
   const playNextTrack = useCallback(() => {
-    if (!cloudinaryData || cloudinaryData.length === 0) return;
-    const currentIndex = cloudinaryData.findIndex(
-      (track) => track.asset_id === currentTrack?.assetId
-    );
-    if (currentIndex !== -1) {
-      const nextIndex = (currentIndex + 1) % cloudinaryData.length;
-      const nextTrackData = cloudinaryData[nextIndex];
-
-      const nextTrackInfo: TrackInfo = {
-        assetId: nextTrackData.asset_id,
-        album: nextTrackData.context?.caption || "Unknown Album",
-        name: nextTrackData.title || "Unknown Track",
-        artworkId: nextTrackData.album_secure_url,
-        url: nextTrackData.secure_url,
-        producer: nextTrackData.producer || "Unknown Artist",
-      };
-      setTrack(nextTrackInfo, isPlaying);
-    }
+    playNextTrackLogic({ cloudinaryData, currentTrack, setTrack, isPlaying });
   }, [cloudinaryData, currentTrack, setTrack, isPlaying]);
 
   const playPrevTrack = useCallback(() => {
-    if (!cloudinaryData || cloudinaryData.length === 0) return;
-    const currentIndex = cloudinaryData.findIndex(
-      (track) => track.asset_id === currentTrack?.assetId
-    );
-    if (currentIndex !== -1) {
-      const prevIndex =
-        (currentIndex - 1 + cloudinaryData.length) % cloudinaryData.length;
-      const prevTrackData = cloudinaryData[prevIndex];
-
-      const prevTrackInfo: TrackInfo = {
-        assetId: prevTrackData.asset_id,
-        album: prevTrackData.context?.caption || "Unknown Album",
-        name: prevTrackData.title || "Unknown Track",
-        artworkId: prevTrackData.album_secure_url,
-        url: prevTrackData.secure_url,
-        producer: prevTrackData.producer || "Unknown Artist",
-      };
-      setTrack(prevTrackInfo, isPlaying);
-    }
+    playPrevTrackLogic({ cloudinaryData, currentTrack, setTrack, isPlaying });
   }, [cloudinaryData, currentTrack, setTrack, isPlaying]);
 
   return {
@@ -302,7 +257,7 @@ export function useAudioPlayer() {
     prevTrack: playPrevTrack,
     handleSelectTrack: storeHandleOnClickCard,
     setVolume: storeSetVolume,
-    toggleMute: useTrackStore.getState().toggleMute,
+    toggleMute: storeToggleMute,
     analyserNode,
   };
 }

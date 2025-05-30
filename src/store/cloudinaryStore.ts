@@ -1,7 +1,7 @@
 import { A11y } from "swiper/modules";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import type { CloudinaryResource } from "@/type/dataType";
+import type { CloudinaryStoreState } from "@/type/dataType";
 
 /* 
   TODO:
@@ -12,21 +12,12 @@ import type { CloudinaryResource } from "@/type/dataType";
   서버 스냅샷 해결, 일부 상태만 유지, SSR에서 하이드레이션 건너뜀
 */
 
-interface AppState {
-  cloudinaryData: CloudinaryResource[] | null;
-  cloudinaryError: Error | null;
-  isLoadingCloudinary: boolean | null;
-  setCloudinaryData: (data: CloudinaryResource[] | null) => void;
-  setCloudinaryError: (error: Error | null) => void;
-  setIsLoadingCloudinary: (isLoading: boolean | null) => void;
-}
-
-const useStore = create<AppState>()(
+const useStore = create<CloudinaryStoreState>()(
   persist(
     (set) => ({
-      cloudinaryData: null,
+      cloudinaryData: [],
       cloudinaryError: null,
-      isLoadingCloudinary: null,
+      isLoadingCloudinary: false,
 
       setCloudinaryData: (data) => set({ cloudinaryData: data }),
       setCloudinaryError: (error) => set({ cloudinaryError: error }),

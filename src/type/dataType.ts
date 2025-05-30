@@ -254,3 +254,40 @@ export interface zustandPersistSet {
   ): void;
   (arg0: any): any;
 }
+
+export type TogglePlayPauseLogicParams = {
+  audioContext: AudioContext | null;
+  storeTogglePlayPause: () => void;
+};
+
+export type SeekLogicParams = {
+  audio: HTMLAudioElement | null;
+  currentTrack: TrackInfo | null;
+  duration: number | null;
+  time: number;
+  storeSeekTo: (time: number) => void;
+  isSeekingRef: React.MutableRefObject<boolean>;
+};
+
+export type PlayNextTrackLogicParams = {
+  cloudinaryData: CloudinaryResource[];
+  currentTrack: TrackInfo | null;
+  setTrack: (track: TrackInfo, playNow: boolean) => void;
+  isPlaying: boolean;
+};
+
+export type PlayPrevTrackLogicParams = {
+  cloudinaryData: CloudinaryResource[];
+  currentTrack: TrackInfo | null;
+  setTrack: (track: TrackInfo, playNow: boolean) => void;
+  isPlaying: boolean;
+};
+
+export interface CloudinaryStoreState {
+  cloudinaryData: CloudinaryResource[];
+  cloudinaryError: Error | null;
+  isLoadingCloudinary: boolean;
+  setCloudinaryData: (data: CloudinaryResource[]) => void;
+  setCloudinaryError: (error: Error | null) => void;
+  setIsLoadingCloudinary: (isLoading: boolean) => void;
+}

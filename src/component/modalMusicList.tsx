@@ -19,7 +19,8 @@ export default function ModalMusicList({
   isLiked,
   toggleLike,
 }: ModalMusicListProps) {
-  const { handleOnClickCard, currentTrackAssetId: currentId } = useTrackStore();
+  const { setCurrentTrackAssetId, currentTrackAssetId: currentId } =
+    useTrackStore();
   const { user } = useAuth();
   const [playingLottieTrackId, setPlayingLottieTrackId] = useState<
     string | null
@@ -34,6 +35,9 @@ export default function ModalMusicList({
     () => loading === false && trackList.length === 0,
     [loading, trackList.length]
   );
+  const handleOnClickCard = useCallback((paramAssetId: string) => {
+    setCurrentTrackAssetId(paramAssetId);
+  }, []);
 
   return (
     <>

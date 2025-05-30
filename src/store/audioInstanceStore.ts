@@ -5,6 +5,7 @@ import {
   getAnalyser,
   getAudioContext,
   getAudioInstance,
+  cleanupAudioInstance,
 } from "@/lib/audioInstance";
 
 interface AppState {
@@ -20,7 +21,7 @@ const useStore = create<AppState>()(
       audioInstance: getAudioInstance(),
       audioAnalyser: getAnalyser(),
       audioContext: getAudioContext(),
-      cleanAudioInstance: () => set({ audioInstance: null }),
+      cleanAudioInstance: () => cleanupAudioInstance(),
     }),
     {
       name: "audio-instance-store",

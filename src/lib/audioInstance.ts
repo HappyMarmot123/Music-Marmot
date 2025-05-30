@@ -100,19 +100,19 @@ class AudioSingletonInstance {
 }
 
 // 헬퍼 함수
-export const getAudioInstance = (): HTMLAudioElement | null => {
+export const getAudioInstance = () => {
   if (typeof window === "undefined") return null;
   const instance = AudioSingletonInstance.getInstance();
   return instance.audio;
 };
 
-export const getAudioContext = (): AudioContext | null => {
+export const getAudioContext = () => {
   if (typeof window === "undefined") return null;
   const instance = AudioSingletonInstance.getInstance();
   return instance.audioContext;
 };
 
-export const getAnalyser = (): AnalyserNode | null => {
+export const getAnalyser = () => {
   if (typeof window === "undefined") return null;
   const instance = AudioSingletonInstance.getInstance();
   return instance.analyser;

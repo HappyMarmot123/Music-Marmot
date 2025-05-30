@@ -82,6 +82,7 @@ export default function ListModal({
   const [isLiked, setIsLiked] = useState<likeType[]>([]);
   const [showVolumeSlider, setShowVolumeSlider] = useState(false);
 
+  // TODO: 클라디나리에서 트랙스토어에 데이터 저장하는 부분
   useEffect(() => {
     if (cloudinaryData) {
       setTrackList(cloudinaryData);

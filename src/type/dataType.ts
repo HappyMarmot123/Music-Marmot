@@ -234,7 +234,7 @@ export interface AudioPlayerState {
   setIsBuffering: (buffering: boolean) => void;
   setVolume: (volume: number) => void;
   toggleMute: () => void;
-  handleOnClickCard: (paramAssetId: string | null) => void;
+  setCurrentTrackAssetId: (paramAssetId: string | null) => void;
   seekTo: (time: number) => void;
 }
 

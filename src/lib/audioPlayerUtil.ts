@@ -15,13 +15,14 @@ export const togglePlayPauseLogic = async ({
   storeTogglePlayPause,
 }: TogglePlayPauseLogicParams) => {
   if (!audioContext || audioContext.state === "suspended") {
-    throw new Error("AudioContext is suspended");
+    console.error("AudioContext is suspended");
+    return;
   }
 
   try {
     await audioContext.resume();
   } catch (e) {
-    throw new Error("Failed to resume AudioContext");
+    console.error("Failed to resume AudioContext", e);
   } finally {
     storeTogglePlayPause();
   }
@@ -35,7 +36,10 @@ export const seekLogic = ({
   storeSeekTo,
   isSeekingRef,
 }: SeekLogicParams) => {
-  if (!audio || !currentTrack) throw new Error("Audio or currentTrack is null");
+  if (!audio || !currentTrack) {
+    console.error("Audio or currentTrack is null");
+    return;
+  }
 
   isSeekingRef.current = true;
   const newTime = Math.max(0, Math.min(time, duration || 0));
@@ -49,13 +53,19 @@ export const playNextTrackLogic = ({
   setTrack,
   isPlaying,
 }: PlayNextTrackLogicParams) => {
-  if (isEmpty(cloudinaryData)) throw new Error("Cloudinary data is empty");
+  if (isEmpty(cloudinaryData)) {
+    console.error("Cloudinary data is empty");
+    return;
+  }
 
   const currentIndex = cloudinaryData.findIndex(
     (track) => track.asset_id === currentTrack?.assetId
   );
 
-  if (currentIndex === -1) throw new Error("Current track not found");
+  if (currentIndex === -1) {
+    console.error("Current track not found");
+    return;
+  }
 
   const nextIndex = (currentIndex + 1) % cloudinaryData.length;
   const nextTrackData = cloudinaryData[nextIndex];
@@ -77,13 +87,19 @@ export const playPrevTrackLogic = ({
   setTrack,
   isPlaying,
 }: PlayPrevTrackLogicParams) => {
-  if (isEmpty(cloudinaryData)) throw new Error("Cloudinary data is empty");
+  if (isEmpty(cloudinaryData)) {
+    console.error("Cloudinary data is empty");
+    return;
+  }
 
   const currentIndex = cloudinaryData.findIndex(
     (track) => track.asset_id === currentTrack?.assetId
   );
 
-  if (currentIndex === -1) throw new Error("Current track not found");
+  if (currentIndex === -1) {
+    console.error("Current track not found");
+    return;
+  }
 
   const prevIndex =
     (currentIndex - 1 + cloudinaryData.length) % cloudinaryData.length;
@@ -117,8 +133,8 @@ export const useTrackStoreVariables = () => {
   const storeSetCurrentTime = useTrackStore((state) => state.setCurrentTime);
   const storeSetDuration = useTrackStore((state) => state.setDuration);
   const storeSetIsBuffering = useTrackStore((state) => state.setIsBuffering);
-  const storeHandleOnClickCard = useTrackStore(
-    (state) => state.handleOnClickCard
+  const storeSetCurrentTrackAssetId = useTrackStore(
+    (state) => state.setCurrentTrackAssetId
   );
   const storeToggleMute = useTrackStore((state) => state.toggleMute);
   const storeSeekTo = useTrackStore((state) => state.seekTo);
@@ -128,7 +144,9 @@ export const useTrackStoreVariables = () => {
     (state) => state.isLoadingCloudinary
   );
 
-  const audio = useAudioInstanceStore((state) => state.audioInstance);
+  const audio = useAudioInstanceStore(
+    (state) => state.audioInstance
+  ) as HTMLAudioElement;
   const analyserNode = useAudioInstanceStore((state) => state.audioAnalyser);
   const audioContext = useAudioInstanceStore((state) => state.audioContext);
   const cleanAudioInstance = useAudioInstanceStore(
@@ -150,7 +168,7 @@ export const useTrackStoreVariables = () => {
     storeSetCurrentTime,
     storeSetDuration,
     storeSetIsBuffering,
-    storeHandleOnClickCard,
+    storeSetCurrentTrackAssetId,
     storeToggleMute,
     storeSeekTo,
     cloudinaryData,

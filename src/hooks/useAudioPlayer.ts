@@ -3,7 +3,7 @@
 import { useEffect, useCallback, useState, useMemo, useRef } from "react";
 import type { TrackInfo } from "@/type/dataType";
 
-import { isNumber } from "lodash";
+import { isNumber, isEmpty } from "lodash";
 import {
   playNextTrackLogic,
   playPrevTrackLogic,
@@ -30,7 +30,7 @@ export function useAudioPlayer() {
     storeSetCurrentTime,
     storeSetDuration,
     storeSetIsBuffering,
-    storeHandleOnClickCard,
+    storeSetCurrentTrackAssetId,
     storeSeekTo,
     storeToggleMute,
     cloudinaryData,
@@ -41,53 +41,45 @@ export function useAudioPlayer() {
     cleanAudioInstance,
   } = useTrackStoreVariables();
 
-  // 오디오 및 플레이타임 업데이트
+  // 오디오, 현재트랙 정보 업데이트
   useEffect(() => {
-    if (audio && currentTrack) {
-      if (audio.src !== currentTrack.url) {
-        audio.src = currentTrack.url;
-        storeSetCurrentTime(0);
-      }
-      if (isNumber(volume)) {
-        audio.volume = isMuted ? 0 : volume;
-      }
-    } else if (audio && !currentTrack) {
-      audio.pause();
-      audio.src = "";
+    if (!currentTrack) return;
+    if (audio.src !== currentTrack.url) {
+      audio.src = currentTrack.url;
       storeSetCurrentTime(0);
-      storeSetIsBuffering(false);
     }
-  }, [
-    audio,
-    currentTrack,
-    storeSetCurrentTime,
-    storeSetIsBuffering,
-    volume,
-    isMuted,
-  ]);
+  }, [currentTrack]);
 
-  // 하나의 인스턴스 트랙만 플레이이
+  // 볼륨 설정
   useEffect(() => {
-    if (!audio || !currentTrack) return;
+    if (isNumber(volume)) {
+      audio.volume = isMuted ? 0 : volume;
+    }
+  }, [volume, isMuted]);
 
+  // 트랙플레이 컨트롤 play only
+  useEffect(() => {
     if (isPlaying) {
       audio.play().catch((e) => {});
     } else {
       audio.pause();
     }
-  }, [audio, isPlaying, currentTrack]);
+  }, [isPlaying, currentTrack]);
 
   // 선택된 트랙 변경시 트랙 정보 업데이트
   useEffect(() => {
     if (currentTrack && currentTrack.assetId === currentTrackAssetId) {
+      console.log("why i did it");
       return;
     }
 
     if (currentTrackAssetId && cloudinaryData && cloudinaryData.length > 0) {
+      console.log("why i did it2");
       const trackToLoad = cloudinaryData.find(
         (asset) => asset.asset_id === currentTrackAssetId
       );
       if (trackToLoad) {
+        console.log("why i did it3");
         const newTrackInfo: TrackInfo = {
           assetId: trackToLoad.asset_id,
           album: trackToLoad.context?.caption || "Unknown Album",
@@ -102,28 +94,18 @@ export function useAudioPlayer() {
         setTrack(null);
       }
     }
-  }, [currentTrackAssetId, cloudinaryData, setTrack]);
+  }, [currentTrackAssetId, cloudinaryData]);
 
   useEffect(() => {
-    if (
-      !isLoadingCloudinary &&
-      cloudinaryData &&
-      cloudinaryData.length > 0 &&
-      !currentTrackAssetId &&
-      !currentTrack
-    ) {
-      const firstTrackAssetId = cloudinaryData[0].asset_id;
-      if (firstTrackAssetId) {
-        storeHandleOnClickCard(firstTrackAssetId);
-      }
+    if (isEmpty(cloudinaryData) || currentTrack) {
+      return;
     }
-  }, [
-    isLoadingCloudinary,
-    cloudinaryData,
-    currentTrackAssetId,
-    currentTrack,
-    storeHandleOnClickCard,
-  ]);
+
+    const firstTrackAssetId = cloudinaryData[0].asset_id;
+    if (firstTrackAssetId) {
+      storeSetCurrentTrackAssetId(firstTrackAssetId);
+    }
+  }, [cloudinaryData, currentTrack]);
 
   useEffect(() => {
     if (!audio) return;
@@ -255,7 +237,7 @@ export function useAudioPlayer() {
     seek,
     nextTrack: playNextTrack,
     prevTrack: playPrevTrack,
-    handleSelectTrack: storeHandleOnClickCard,
+    handleSelectTrack: storeSetCurrentTrackAssetId,
     setVolume: storeSetVolume,
     toggleMute: storeToggleMute,
     analyserNode,

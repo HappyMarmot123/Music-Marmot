@@ -39,7 +39,7 @@ const useTrackStore = create<AudioPlayerState>()(
       toggleMute: () => {
         set((state) => ({ isMuted: !state.isMuted }));
       },
-      handleOnClickCard: (paramAssetId) => {
+      setCurrentTrackAssetId: (paramAssetId) => {
         set({ currentTrackAssetId: paramAssetId });
       },
       seekTo: (time) => {

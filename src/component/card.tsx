@@ -7,7 +7,9 @@ import { useToggle } from "@/store/toggleStore";
 
 const Card = ({ card }: { card: CloudinaryResource }) => {
   const { openToggle } = useToggle();
-  const handleOnClickCard = useTrackStore((state) => state.handleOnClickCard);
+  const handleOnClickCard = useTrackStore(
+    (state) => state.setCurrentTrackAssetId
+  );
   const currentTrackAssetId = useTrackStore(
     (state) => state.currentTrackAssetId
   );

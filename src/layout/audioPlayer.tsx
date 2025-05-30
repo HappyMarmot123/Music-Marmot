@@ -58,7 +58,7 @@ export default function AudioPlayer() {
   const isDragging = useRef(false);
   const draggableRef = useRef<HTMLDivElement>(null);
   const [bounds, setBounds] = useState<DraggableBounds | undefined>(undefined);
-  const defaultPositionRef = useRef({ x: 700, y: 640 });
+  const defaultPositionRef = useRef({ x: 100, y: 640 });
   // const defaultPositionRef = useRef({ x: 0, y: 0 });
   // useEffect(() => {
   //   const playerWidth = 344;

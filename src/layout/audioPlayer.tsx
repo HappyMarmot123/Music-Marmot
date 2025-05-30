@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, MouseEvent, useEffect } from "react";
-import { useAudioPlayer } from "@/lib/useAudioPlayer";
+import { useAudioPlayer } from "@/hooks/useAudioPlayer";
 import PlayerTrackDetails from "@/component/playerTrackDetails";
 import PlayerControlsSection from "@/component/playerControlsSection";
 import AlbumArtwork from "@/component/albumArtwork";

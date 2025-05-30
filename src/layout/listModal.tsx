@@ -15,7 +15,7 @@ import useCloudinaryStore from "@/store/cloudinaryStore";
 import { CloudinaryResource } from "@/type/dataType";
 import ModalMusicList from "@/component/modalMusicList";
 import { likeType } from "@/type/dataType";
-import { useAudioPlayer } from "@/lib/useAudioPlayer";
+import { useAudioPlayer } from "@/hooks/useAudioPlayer";
 import clsx from "clsx";
 import { CldImage } from "next-cloudinary";
 import OnclickEffect from "@/component/onclickEffect";

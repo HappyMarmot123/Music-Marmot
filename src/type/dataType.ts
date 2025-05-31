@@ -174,9 +174,9 @@ export interface CloudinaryResource {
     caption: string;
   };
   // 가공된 추가 필드
-  title: string | null;
-  producer: string | null;
-  album_secure_url: string | null;
+  title: string;
+  producer: string;
+  album_secure_url: string;
 }
 
 export interface likeType {

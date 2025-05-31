@@ -2,7 +2,6 @@
 
 import { useEffect, useCallback, useState, useMemo, useRef } from "react";
 import type { TrackInfo } from "@/type/dataType";
-
 import { isNumber, isEmpty } from "lodash";
 import {
   playNextTrackLogic,
@@ -57,7 +56,7 @@ export function useAudioPlayer() {
     }
   }, [volume, isMuted]);
 
-  // 트랙플레이 컨트롤 play only
+  // 트랙플레이 컨트롤
   useEffect(() => {
     if (isPlaying) {
       audio.play().catch((e) => {});
@@ -66,50 +65,42 @@ export function useAudioPlayer() {
     }
   }, [isPlaying, currentTrack]);
 
-  // 선택된 트랙 변경시 트랙 정보 업데이트
+  // 첫 접근시시 트랙 세팅
   useEffect(() => {
-    if (currentTrack && currentTrack.assetId === currentTrackAssetId) {
-      console.log("why i did it");
-      return;
-    }
+    if (isEmpty(cloudinaryData) || currentTrackAssetId) return;
+    const firstTrackAssetId = cloudinaryData[0].asset_id;
+    storeSetCurrentTrackAssetId(firstTrackAssetId);
+  }, [cloudinaryData, currentTrackAssetId]);
 
-    if (currentTrackAssetId && cloudinaryData && cloudinaryData.length > 0) {
-      console.log("why i did it2");
-      const trackToLoad = cloudinaryData.find(
+  // 트랙정보 세팅
+  useEffect(() => {
+    if (isEmpty(cloudinaryData)) return;
+
+    if (currentTrack?.assetId !== currentTrackAssetId) {
+      const findTrackInData = cloudinaryData.find(
         (asset) => asset.asset_id === currentTrackAssetId
       );
-      if (trackToLoad) {
-        console.log("why i did it3");
-        const newTrackInfo: TrackInfo = {
-          assetId: trackToLoad.asset_id,
-          album: trackToLoad.context?.caption || "Unknown Album",
-          name: trackToLoad.title || "Unknown Track",
-          artworkId: trackToLoad.album_secure_url,
-          url: trackToLoad.secure_url,
-          producer: trackToLoad.producer || "Unknown Artist",
-        };
-        setTrack(newTrackInfo, false);
-      } else {
-        console.warn(`Track with assetId ${currentTrackAssetId} not found.`);
+
+      if (!findTrackInData) {
+        console.error("Track not found in cloudinaryData");
         setTrack(null);
+        return;
       }
+
+      storeSetCurrentTrackAssetId(findTrackInData!.asset_id);
+      const newTrackInfo: TrackInfo = {
+        assetId: findTrackInData.asset_id,
+        album: findTrackInData.context?.caption,
+        name: findTrackInData.title,
+        artworkId: findTrackInData.album_secure_url,
+        url: findTrackInData.secure_url,
+        producer: findTrackInData.producer || "Unknown Artist",
+      };
+      setTrack(newTrackInfo, false);
     }
-  }, [currentTrackAssetId, cloudinaryData]);
+  }, [cloudinaryData, currentTrackAssetId]);
 
   useEffect(() => {
-    if (isEmpty(cloudinaryData) || currentTrack) {
-      return;
-    }
-
-    const firstTrackAssetId = cloudinaryData[0].asset_id;
-    if (firstTrackAssetId) {
-      storeSetCurrentTrackAssetId(firstTrackAssetId);
-    }
-  }, [cloudinaryData, currentTrack]);
-
-  useEffect(() => {
-    if (!audio) return;
-
     const handleTimeUpdate = () => storeSetCurrentTime(audio.currentTime || 0);
     const handleDurationChange = () => {
       if (!isNaN(audio.duration) && isFinite(audio.duration)) {
@@ -124,22 +115,22 @@ export function useAudioPlayer() {
         (track) => track.asset_id === currentTrack?.assetId
       );
 
-      if (
-        cloudinaryData &&
-        typeof currentIdx === "number" &&
-        currentIdx < cloudinaryData.length - 1
-      ) {
-        const nextTrackData = cloudinaryData[currentIdx + 1];
-        const nextTrackInfo: TrackInfo = {
-          assetId: nextTrackData.asset_id,
-          album: nextTrackData.context?.caption || "Unknown Album",
-          name: nextTrackData.title || "Unknown Track",
-          artworkId: nextTrackData.album_secure_url,
-          url: nextTrackData.secure_url,
-          producer: nextTrackData.producer || "Unknown Artist",
-        };
-        setTrack(nextTrackInfo, true);
+      if (currentIdx === -1) {
+        console.error("Track not found in cloudinaryData");
+        setTrack(null);
+        return;
       }
+
+      const nextTrackData = cloudinaryData[currentIdx + 1];
+      const nextTrackInfo: TrackInfo = {
+        assetId: nextTrackData.asset_id,
+        album: nextTrackData.context?.caption || "Unknown Album",
+        name: nextTrackData.title || "Unknown Track",
+        artworkId: nextTrackData.album_secure_url,
+        url: nextTrackData.secure_url,
+        producer: nextTrackData.producer || "Unknown Artist",
+      };
+      setTrack(nextTrackInfo, true);
     };
     const handleError = (e: Event) => {
       storeSetIsBuffering(false);

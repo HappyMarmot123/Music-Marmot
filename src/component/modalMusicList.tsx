@@ -2,6 +2,7 @@ import {
   CloudinaryResource,
   ModalMusicListProps,
   likeType,
+  TrackInfo,
 } from "@/type/dataType";
 import { Heart } from "lucide-react";
 import Image from "next/image";
@@ -12,6 +13,7 @@ import { handleOnLike } from "@/lib/util";
 import useTrackStore from "@/store/trackStore";
 import { useAuth } from "@/provider/authProvider";
 import MyTooltip from "./myTooltip";
+import useCloudinaryStore from "@/store/cloudinaryStore";
 
 export default function ModalMusicList({
   loading,
@@ -19,9 +21,9 @@ export default function ModalMusicList({
   isLiked,
   toggleLike,
 }: ModalMusicListProps) {
-  const { setCurrentTrackAssetId, currentTrackAssetId: currentId } =
-    useTrackStore();
+  const { setTrack, currentTrack } = useTrackStore();
   const { user } = useAuth();
+  const cloudinaryData = useCloudinaryStore((state) => state.cloudinaryData);
   const [playingLottieTrackId, setPlayingLottieTrackId] = useState<
     string | null
   >(null);
@@ -35,9 +37,25 @@ export default function ModalMusicList({
     () => loading === false && trackList.length === 0,
     [loading, trackList.length]
   );
-  const handleOnClickCard = useCallback((paramAssetId: string) => {
-    setCurrentTrackAssetId(paramAssetId);
-  }, []);
+  const handleOnClickCard = useCallback(
+    (paramAssetId: string) => {
+      const findTrackInData = cloudinaryData.find(
+        (asset) => asset.asset_id === paramAssetId
+      );
+      if (findTrackInData) {
+        const newTrackInfo: TrackInfo = {
+          assetId: findTrackInData.asset_id,
+          album: findTrackInData.context?.caption || "Unknown Album",
+          name: findTrackInData.title || "Unknown Track",
+          artworkId: findTrackInData.album_secure_url,
+          url: findTrackInData.secure_url,
+          producer: findTrackInData.producer || "Unknown Artist",
+        };
+        setTrack(newTrackInfo, true);
+      }
+    },
+    [cloudinaryData]
+  );
 
   return (
     <>
@@ -69,7 +87,7 @@ export default function ModalMusicList({
               key={track.asset_id}
               className={clsx(
                 "flex items-center p-3 rounded-lg hover:bg-white/10 transition cursor-pointer",
-                currentId === track.asset_id && "bg-white/10"
+                currentTrack?.assetId === track.asset_id && "bg-white/10"
               )}
             >
               <Image

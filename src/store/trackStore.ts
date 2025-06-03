@@ -1,12 +1,8 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import type { AudioPlayerState } from "@/type/dataType";
-import {
-  CLAMP_VOLUME,
-  mergeFunction,
-  partializeFunction,
-  setTrackFunction,
-} from "@/lib/util";
+import { CLAMP_VOLUME, mergeFunction } from "@/lib/util";
+import { setTrackFunction, partializeFunction } from "@/lib/audioPlayerUtil";
 
 const useTrackStore = create<AudioPlayerState>()(
   persist(
@@ -18,7 +14,6 @@ const useTrackStore = create<AudioPlayerState>()(
       isBuffering: false,
       volume: 1,
       isMuted: false,
-      currentTrackAssetId: null,
 
       setTrack: (track, playImmediately = false) => {
         setTrackFunction(track, playImmediately, set);
@@ -38,9 +33,6 @@ const useTrackStore = create<AudioPlayerState>()(
       },
       toggleMute: () => {
         set((state) => ({ isMuted: !state.isMuted }));
-      },
-      setCurrentTrackAssetId: (paramAssetId) => {
-        set({ currentTrackAssetId: paramAssetId });
       },
       seekTo: (time) => {
         set((state) => {

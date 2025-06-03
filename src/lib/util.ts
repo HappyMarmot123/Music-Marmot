@@ -177,30 +177,6 @@ export const listModalRootClassName = () => {
 export const CLAMP_VOLUME = (volume: number) =>
   Math.max(0, Math.min(1, volume));
 
-export const setTrackFunction = (
-  track: TrackInfo | null,
-  playImmediately: boolean,
-  set: zustandPersistSet
-) => {
-  if (track && track.assetId) {
-    useRecentPlayStore.getState().addRecentAssetId(track.assetId);
-  }
-  set((state: AudioPlayerState) => ({
-    currentTrack: track,
-    currentTime: 0,
-    isPlaying: !!track && playImmediately,
-    isBuffering: !!track,
-    currentTrackAssetId: track?.assetId ?? null,
-  }));
-};
-
-export const partializeFunction = (state: AudioPlayerState) => ({
-  volume: state.volume,
-  isMuted: state.isMuted,
-  currentTrack: state.currentTrack,
-  currentTrackAssetId: state.currentTrackAssetId,
-});
-
 export const mergeFunction = (
   persistedState: unknown | AudioPlayerState,
   currentState: AudioPlayerState

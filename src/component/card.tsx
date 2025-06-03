@@ -4,15 +4,14 @@ import { CloudinaryResource } from "@/type/dataType";
 import Image from "next/image";
 import useTrackStore from "@/store/trackStore";
 import { useToggle } from "@/store/toggleStore";
+import useCloudinaryStore from "@/store/cloudinaryStore";
+import { TrackInfo } from "@/type/dataType";
 
 const Card = ({ card }: { card: CloudinaryResource }) => {
   const { openToggle } = useToggle();
-  const handleOnClickCard = useTrackStore(
-    (state) => state.setCurrentTrackAssetId
-  );
-  const currentTrackAssetId = useTrackStore(
-    (state) => state.currentTrackAssetId
-  );
+  const setTrack = useTrackStore((state) => state.setTrack);
+  const currentTrack = useTrackStore((state) => state.currentTrack);
+  const cloudinaryData = useCloudinaryStore((state) => state.cloudinaryData);
 
   const artistName = card.producer || "Unknown Producer";
 
@@ -25,10 +24,23 @@ const Card = ({ card }: { card: CloudinaryResource }) => {
       onClick={(e) => {
         e.preventDefault();
         const newAssetId = card.asset_id;
-        if (newAssetId === currentTrackAssetId) {
+        if (newAssetId === currentTrack?.assetId) {
           openToggle();
         } else {
-          handleOnClickCard(newAssetId);
+          const findTrackInData = cloudinaryData.find(
+            (asset) => asset.asset_id === newAssetId
+          );
+          if (findTrackInData) {
+            const newTrackInfo: TrackInfo = {
+              assetId: findTrackInData.asset_id,
+              album: findTrackInData.context?.caption || "Unknown Album",
+              name: findTrackInData.title || "Unknown Track",
+              artworkId: findTrackInData.album_secure_url,
+              url: findTrackInData.secure_url,
+              producer: findTrackInData.producer || "Unknown Artist",
+            };
+            setTrack(newTrackInfo, true);
+          }
           openToggle();
         }
       }}

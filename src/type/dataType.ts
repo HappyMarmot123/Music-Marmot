@@ -223,7 +223,6 @@ export interface AudioPlayerState {
   isBuffering: boolean;
   volume: number; // 0 to 1
   isMuted: boolean;
-  currentTrackAssetId: string | null;
 
   // Actions
   setTrack: (track: TrackInfo | null, playImmediately?: boolean) => void;
@@ -234,7 +233,6 @@ export interface AudioPlayerState {
   setIsBuffering: (buffering: boolean) => void;
   setVolume: (volume: number) => void;
   toggleMute: () => void;
-  setCurrentTrackAssetId: (paramAssetId: string | null) => void;
   seekTo: (time: number) => void;
 }
 

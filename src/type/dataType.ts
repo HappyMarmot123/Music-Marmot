@@ -270,14 +270,14 @@ export type SeekLogicParams = {
 export type PlayNextTrackLogicParams = {
   cloudinaryData: CloudinaryResource[];
   currentTrack: TrackInfo | null;
-  setTrack: (track: TrackInfo, playNow: boolean) => void;
+  setTrack: (track: TrackInfo | null, playImmediately: boolean) => void;
   isPlaying: boolean;
 };
 
 export type PlayPrevTrackLogicParams = {
   cloudinaryData: CloudinaryResource[];
   currentTrack: TrackInfo | null;
-  setTrack: (track: TrackInfo, playNow: boolean) => void;
+  setTrack: (track: TrackInfo | null, playImmediately: boolean) => void;
   isPlaying: boolean;
 };
 
@@ -288,4 +288,20 @@ export interface CloudinaryStoreState {
   setCloudinaryData: (data: CloudinaryResource[]) => void;
   setCloudinaryError: (error: Error | null) => void;
   setIsLoadingCloudinary: (isLoading: boolean) => void;
+}
+
+export interface AudioStoreActions {
+  storeSetCurrentTime: (time: number) => void;
+  storeSetDuration: (duration: number) => void;
+  storeSetIsBuffering: (isBuffering: boolean) => void;
+  setTrack: (track: TrackInfo | null, playImmediately?: boolean) => void;
+}
+
+export interface CloudinaryData {
+  asset_id: string;
+  context?: { caption?: string };
+  title?: string;
+  album_secure_url?: string;
+  secure_url?: string;
+  producer?: string;
 }

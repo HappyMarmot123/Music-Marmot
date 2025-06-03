@@ -6,6 +6,7 @@ import useTrackStore from "@/store/trackStore";
 import { useToggle } from "@/store/toggleStore";
 import useCloudinaryStore from "@/store/cloudinaryStore";
 import { TrackInfo } from "@/type/dataType";
+import { setFindNewTrack } from "@/lib/audioPlayerUtil";
 
 const Card = ({ card }: { card: CloudinaryResource }) => {
   const { openToggle } = useToggle();
@@ -24,25 +25,10 @@ const Card = ({ card }: { card: CloudinaryResource }) => {
       onClick={(e) => {
         e.preventDefault();
         const newAssetId = card.asset_id;
-        if (newAssetId === currentTrack?.assetId) {
-          openToggle();
-        } else {
-          const findTrackInData = cloudinaryData.find(
-            (asset) => asset.asset_id === newAssetId
-          );
-          if (findTrackInData) {
-            const newTrackInfo: TrackInfo = {
-              assetId: findTrackInData.asset_id,
-              album: findTrackInData.context?.caption || "Unknown Album",
-              name: findTrackInData.title || "Unknown Track",
-              artworkId: findTrackInData.album_secure_url,
-              url: findTrackInData.secure_url,
-              producer: findTrackInData.producer || "Unknown Artist",
-            };
-            setTrack(newTrackInfo, true);
-          }
-          openToggle();
+        if (newAssetId !== currentTrack?.assetId) {
+          setFindNewTrack(cloudinaryData, newAssetId, setTrack);
         }
+        openToggle();
       }}
       rel="noopener noreferrer"
       className="group relative h-48 w-48 md:h-64 md:w-64 lg:h-72 lg:w-72 p-3 md:p-4 overflow-hidden bg-neutral-800/50 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 flex flex-col justify-between flex-shrink-0"

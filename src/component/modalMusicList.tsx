@@ -14,6 +14,7 @@ import useTrackStore from "@/store/trackStore";
 import { useAuth } from "@/provider/authProvider";
 import MyTooltip from "./myTooltip";
 import useCloudinaryStore from "@/store/cloudinaryStore";
+import { setFindNewTrack } from "@/lib/audioPlayerUtil";
 
 export default function ModalMusicList({
   loading,
@@ -39,20 +40,7 @@ export default function ModalMusicList({
   );
   const handleOnClickCard = useCallback(
     (paramAssetId: string) => {
-      const findTrackInData = cloudinaryData.find(
-        (asset) => asset.asset_id === paramAssetId
-      );
-      if (findTrackInData) {
-        const newTrackInfo: TrackInfo = {
-          assetId: findTrackInData.asset_id,
-          album: findTrackInData.context?.caption || "Unknown Album",
-          name: findTrackInData.title || "Unknown Track",
-          artworkId: findTrackInData.album_secure_url,
-          url: findTrackInData.secure_url,
-          producer: findTrackInData.producer || "Unknown Artist",
-        };
-        setTrack(newTrackInfo, true);
-      }
+      setFindNewTrack(cloudinaryData, paramAssetId, setTrack);
     },
     [cloudinaryData]
   );

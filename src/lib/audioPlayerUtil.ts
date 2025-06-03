@@ -6,6 +6,7 @@ import type {
   PlayPrevTrackLogicParams,
   AudioPlayerState,
   zustandPersistSet,
+  CloudinaryData,
 } from "@/type/dataType";
 import useCloudinaryStore from "@/store/cloudinaryStore";
 import useTrackStore from "@/store/trackStore";
@@ -72,16 +73,7 @@ export const playNextTrackLogic = ({
 
   const nextIndex = (currentIndex + 1) % cloudinaryData.length;
   const nextTrackData = cloudinaryData[nextIndex];
-
-  const nextTrackInfo: TrackInfo = {
-    assetId: nextTrackData.asset_id,
-    album: nextTrackData.context?.caption || "Unknown Album",
-    name: nextTrackData.title || "Unknown Track",
-    artworkId: nextTrackData.album_secure_url,
-    url: nextTrackData.secure_url,
-    producer: nextTrackData.producer || "Unknown Artist",
-  };
-  setTrack(nextTrackInfo, isPlaying);
+  setFindNewTrack(cloudinaryData, nextTrackData.asset_id, setTrack, isPlaying);
 };
 
 export const playPrevTrackLogic = ({
@@ -107,16 +99,38 @@ export const playPrevTrackLogic = ({
   const prevIndex =
     (currentIndex - 1 + cloudinaryData.length) % cloudinaryData.length;
   const prevTrackData = cloudinaryData[prevIndex];
+  setFindNewTrack(cloudinaryData, prevTrackData.asset_id, setTrack, isPlaying);
+};
 
-  const prevTrackInfo: TrackInfo = {
-    assetId: prevTrackData.asset_id,
-    album: prevTrackData.context?.caption || "Unknown Album",
-    name: prevTrackData.title || "Unknown Track",
-    artworkId: prevTrackData.album_secure_url,
-    url: prevTrackData.secure_url,
-    producer: prevTrackData.producer || "Unknown Artist",
+export const setFindNewTrack = (
+  cloudinaryData: CloudinaryData[],
+  assetId: string,
+  setTrack: (track: TrackInfo | null, playImmediately: boolean) => void,
+  isPlaying?: boolean
+) => {
+  if (isEmpty(cloudinaryData)) {
+    console.error("Cloudinary data is empty");
+    return;
+  }
+
+  const findTrackInData = cloudinaryData.find(
+    (asset) => asset.asset_id === assetId
+  );
+
+  if (!findTrackInData) {
+    console.error("Track not found");
+    return;
+  }
+
+  const newTrackInfo: TrackInfo = {
+    assetId: findTrackInData.asset_id,
+    album: findTrackInData.context?.caption || "Unknown Album",
+    name: findTrackInData.title || "Unknown Track",
+    artworkId: findTrackInData.album_secure_url || null,
+    url: findTrackInData.secure_url || "",
+    producer: findTrackInData.producer || "Unknown Artist",
   };
-  setTrack(prevTrackInfo, isPlaying);
+  setTrack(newTrackInfo, isPlaying || false);
 };
 
 export const setTrackFunction = (

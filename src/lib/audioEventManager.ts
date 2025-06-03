@@ -1,15 +1,14 @@
 import type {
-  CloudinaryData,
+  CloudinaryResource,
   AudioStoreActions,
   TrackInfo,
 } from "@/type/dataType";
 import { isEmpty } from "lodash";
+import { playNextTrackLogic, useTrackStoreVariables } from "./audioPlayerUtil";
 
 export const setupAudioEventListeners = (
   audio: HTMLAudioElement,
   actions: AudioStoreActions,
-  getCloudinaryData: () => CloudinaryData[],
-  getCurrentTrack: () => TrackInfo | null,
   isSeekingRef: React.MutableRefObject<boolean>
 ) => {
   const handleTimeUpdate = () =>
@@ -23,43 +22,7 @@ export const setupAudioEventListeners = (
     }
   };
 
-  const handleEnded = () => {
-    const cloudinaryData = getCloudinaryData();
-    const currentTrack = getCurrentTrack();
-    if (isEmpty(cloudinaryData) || !currentTrack) {
-      actions.setTrack(null);
-      return;
-    }
-
-    const currentIdx = cloudinaryData.findIndex(
-      (track) => track.asset_id === currentTrack.assetId
-    );
-
-    if (currentIdx === -1) {
-      console.error("Track not found in cloudinaryData on ended");
-      actions.setTrack(null);
-      return;
-    }
-
-    const nextTrackIndex = (currentIdx + 1) % cloudinaryData.length;
-    const nextTrackData = cloudinaryData[nextTrackIndex];
-
-    if (!nextTrackData) {
-      console.error("Next track data not found");
-      actions.setTrack(null);
-      return;
-    }
-
-    const nextTrackInfo: TrackInfo = {
-      assetId: nextTrackData.asset_id,
-      album: nextTrackData.context?.caption || "Unknown Album",
-      name: nextTrackData.title || "Unknown Track",
-      artworkId: nextTrackData.album_secure_url || null,
-      url: nextTrackData.secure_url || "",
-      producer: nextTrackData.producer || "Unknown Artist",
-    };
-    actions.setTrack(nextTrackInfo, true);
-  };
+  const handleEnded = () => {};
 
   const handleError = (e: Event) => {
     console.error("Audio Error:", e);

@@ -298,15 +298,6 @@ export interface AudioStoreActions {
   setTrack: (track: TrackInfo | null, playImmediately?: boolean) => void;
 }
 
-export interface CloudinaryData {
-  asset_id: string;
-  context?: { caption?: string };
-  title?: string;
-  album_secure_url?: string;
-  secure_url?: string;
-  producer?: string;
-}
-
 export interface AuthProviderProps {
   children: ReactNode;
 }

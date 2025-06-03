@@ -3,6 +3,10 @@
 import { useCloudinary } from "@/hook/useCloudinary";
 
 export function DataLoader() {
-  useCloudinary();
-  return null;
+  try {
+    useCloudinary();
+    return null;
+  } catch (error) {
+    console.error("Error loading Cloudinary data:", error);
+  }
 }

@@ -6,7 +6,7 @@ import type {
   PlayPrevTrackLogicParams,
   AudioPlayerState,
   zustandPersistSet,
-  CloudinaryData,
+  CloudinaryResource,
 } from "@/type/dataType";
 import useCloudinaryStore from "@/store/cloudinaryStore";
 import useTrackStore from "@/store/trackStore";
@@ -103,7 +103,7 @@ export const playPrevTrackLogic = ({
 };
 
 export const setFindNewTrack = (
-  cloudinaryData: CloudinaryData[],
+  cloudinaryData: CloudinaryResource[],
   assetId: string,
   setTrack: (track: TrackInfo | null, playImmediately: boolean) => void,
   isPlaying?: boolean
@@ -158,7 +158,6 @@ export const partializeFunction = (state: AudioPlayerState) => ({
 export const useTrackStoreVariables = () => {
   const currentTrack = useTrackStore((state) => state.currentTrack);
   const isPlaying = useTrackStore((state) => state.isPlaying);
-  console.log("🚀 ~ useTrackStoreVariables ~ isPlaying:", isPlaying);
   const currentTime = useTrackStore((state) => state.currentTime);
   const duration = useTrackStore((state) => state.duration);
   const isBuffering = useTrackStore((state) => state.isBuffering);

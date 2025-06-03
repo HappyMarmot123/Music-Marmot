@@ -90,34 +90,8 @@ function useAudioPlayerLogic() {
     }
   }, [cloudinaryData]);
 
-  // 오디오 이벤트 리스너 설정
-  useEffect(() => {
-    const actions = {
-      storeSetCurrentTime,
-      storeSetDuration,
-      storeSetIsBuffering,
-      setTrack,
-    };
-    const getCloudinaryData = () => cloudinaryData;
-    const getCurrentTrack = () => currentTrack;
-
-    const cleanup = setupAudioEventListeners(
-      audio,
-      actions,
-      getCloudinaryData,
-      getCurrentTrack,
-      isSeekingRef
-    );
-
-    return cleanup;
-  }, []);
-
   const togglePlayPause = useCallback(async () => {
     if (!currentTrack && !isPlaying) return;
-    // if (!currentTrack && isPlaying) {
-    //   storeTogglePlayPause();
-    //   return;
-    // }
     await togglePlayPauseLogic({ audioContext, storeTogglePlayPause });
   }, [currentTrack, isPlaying]);
 
@@ -137,16 +111,30 @@ function useAudioPlayerLogic() {
     [currentTrack, isSeekingRef]
   );
 
-  const playNextTrack = useCallback(() => {
+  const playNextTrack = () => {
     playNextTrackLogic({ cloudinaryData, currentTrack, setTrack, isPlaying });
-  }, [currentTrack, isPlaying]);
+  };
 
-  const playPrevTrack = useCallback(() => {
+  const playPrevTrack = () => {
     playPrevTrackLogic({ cloudinaryData, currentTrack, setTrack, isPlaying });
-  }, [currentTrack, isPlaying]);
+  };
 
   const handleSelectTrack = useCallback((assetId: string) => {
     setFindNewTrack(cloudinaryData, assetId, setTrack);
+  }, []);
+
+  // 오디오 이벤트 리스너 설정
+  useEffect(() => {
+    const actions = {
+      storeSetCurrentTime,
+      storeSetDuration,
+      storeSetIsBuffering,
+      setTrack,
+    };
+
+    const cleanup = setupAudioEventListeners(audio, actions, isSeekingRef);
+
+    return cleanup;
   }, []);
 
   // 컴포넌트 언마운트 시 오디오 인스턴스 정리

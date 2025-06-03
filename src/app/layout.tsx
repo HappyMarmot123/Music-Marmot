@@ -5,6 +5,8 @@ import Script from "next/script";
 import { AuthProvider } from "@/provider/authProvider";
 import { ToggleProvider } from "@/store/toggleStore";
 import { AudioPlayerProvider } from "@/provider/audioPlayerProvider";
+import { CloudinaryProvider } from "@/provider/cloudinaryProvider";
+import { Suspense } from "react";
 import { DataLoader } from "@/lib/dataLoader";
 
 export const metadata: Metadata = {
@@ -59,10 +61,14 @@ const RootLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
           <TanstackProvider>
             <AudioPlayerProvider>
               <ToggleProvider>
-                <DataLoader />
-                {/* <LenisProvider> */}
-                {children}
-                {/* </LenisProvider> */}
+                <Suspense fallback={<div>Loading...</div>}>
+                  <DataLoader />
+                  {/* <CloudinaryProvider> */}
+                  {/* <LenisProvider> */}
+                  {children}
+                  {/* </LenisProvider> */}
+                  {/* </CloudinaryProvider> */}
+                </Suspense>
               </ToggleProvider>
             </AudioPlayerProvider>
           </TanstackProvider>

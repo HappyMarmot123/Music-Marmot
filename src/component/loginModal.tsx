@@ -1,31 +1,24 @@
-// src/component/LoginModal.tsx
 "use client";
 
 import { X } from "lucide-react";
 import Image from "next/image";
 import { useAuth } from "@/provider/authProvider";
+import { GoogleAuthStrategy, KakaoAuthStrategy } from "@/hook/useAuthActions";
 
 interface LoginModalProps {
   setShowLoginModal: (show: boolean) => void;
 }
 
 export default function LoginModal({ setShowLoginModal }: LoginModalProps) {
-  const { signInWithGoogle, signInWithKakao, isLoading } = useAuth();
+  const { authActions } = useAuth();
+  const { signIn, isLoading } = authActions;
 
   const handleGoogleLogin = async () => {
-    try {
-      await signInWithGoogle();
-    } catch (error) {
-      console.error("Google login failed:", error);
-    }
+    await signIn(new GoogleAuthStrategy());
   };
 
   const handleKakaoLogin = async () => {
-    try {
-      await signInWithKakao();
-    } catch (error) {
-      console.error("Kakao login failed in modal:", error);
-    }
+    await signIn(new KakaoAuthStrategy());
   };
 
   return (

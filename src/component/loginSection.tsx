@@ -5,7 +5,9 @@ import ShareModal from "./shareModal";
 import ReusableTooltip from "./myTooltip";
 
 export default function LoginSection() {
-  const { user, isLoading, signOut } = useAuth();
+  const { user, isLoadingSession, authActions } = useAuth();
+  const { signOut } = authActions;
+
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [showShareModal, setShowShareModal] = useState(false);
 
@@ -17,7 +19,7 @@ export default function LoginSection() {
         aria-label="사용자 인증"
         className="w-full flex items-center justify-center z-10 min-h-[40px]"
       >
-        {isLoading ? (
+        {isLoadingSession ? (
           <div className="px-3 py-1.5 text-sm text-gray-300 bg-white/10 rounded-lg">
             로딩 중...
           </div>

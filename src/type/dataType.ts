@@ -1,5 +1,6 @@
-import { UserMetadata } from "@supabase/supabase-js";
-import { RefObject, MouseEvent } from "react";
+import { GoogleAuthStrategy, KakaoAuthStrategy } from "@/hook/useAuthActions";
+import { Session, User, UserMetadata } from "@supabase/supabase-js";
+import { RefObject, MouseEvent, ReactNode } from "react";
 
 export interface SpotifyTokenResponse {
   access_token: string;
@@ -304,4 +305,25 @@ export interface CloudinaryData {
   album_secure_url?: string;
   secure_url?: string;
   producer?: string;
+}
+
+export interface AuthProviderProps {
+  children: ReactNode;
+}
+
+export interface UseAuthActionsReturnType {
+  isLoading: boolean;
+  signIn: (
+    strategy: InstanceType<typeof GoogleAuthStrategy | typeof KakaoAuthStrategy>
+  ) => Promise<void>;
+  signOut: () => Promise<void>;
+  GoogleAuthStrategy: typeof GoogleAuthStrategy;
+  KakaoAuthStrategy: typeof KakaoAuthStrategy;
+}
+
+export interface AuthContextType {
+  session: Session | null;
+  user: User | null;
+  isLoadingSession: boolean;
+  authActions: UseAuthActionsReturnType;
 }

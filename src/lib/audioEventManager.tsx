@@ -5,6 +5,8 @@ import type {
 } from "@/type/dataType";
 import { isEmpty } from "lodash";
 import { playNextTrackLogic, useTrackStoreVariables } from "./audioPlayerUtil";
+import useTrackStore from "@/store/trackStore";
+import useStore from "@/store/cloudinaryStore";
 
 export const setupAudioEventListeners = (
   audio: HTMLAudioElement,
@@ -22,7 +24,11 @@ export const setupAudioEventListeners = (
     }
   };
 
-  const handleEnded = () => {};
+  const handleEnded = () => {
+    const { currentTrack, setTrack, isPlaying } = useTrackStore.getState();
+    const { cloudinaryData } = useStore.getState();
+    playNextTrackLogic({ cloudinaryData, currentTrack, setTrack, isPlaying });
+  };
 
   const handleError = (e: Event) => {
     console.error("Audio Error:", e);

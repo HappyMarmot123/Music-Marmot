@@ -11,8 +11,8 @@ import { isNumber, isEmpty } from "lodash";
 import {
   togglePlayPauseLogic,
   seekLogic,
-  playNextTrackLogic,
   playPrevTrackLogic,
+  playNextTrackLogic,
   useTrackStoreVariables,
   setFindNewTrack,
 } from "@/lib/audioPlayerUtil";
@@ -72,7 +72,7 @@ function useAudioPlayerLogic() {
   useEffect(() => {
     if (isPlaying) {
       audio.play().catch((e) => {
-        console.error("Error playing audio:", e);
+        console.warn("Error playing audio:", e);
       });
     } else {
       audio.pause();
@@ -133,7 +133,6 @@ function useAudioPlayerLogic() {
     };
 
     const cleanup = setupAudioEventListeners(audio, actions, isSeekingRef);
-
     return cleanup;
   }, []);
 

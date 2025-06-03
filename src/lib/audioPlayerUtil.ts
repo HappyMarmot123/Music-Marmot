@@ -158,6 +158,7 @@ export const partializeFunction = (state: AudioPlayerState) => ({
 export const useTrackStoreVariables = () => {
   const currentTrack = useTrackStore((state) => state.currentTrack);
   const isPlaying = useTrackStore((state) => state.isPlaying);
+  console.log("🚀 ~ useTrackStoreVariables ~ isPlaying:", isPlaying);
   const currentTime = useTrackStore((state) => state.currentTime);
   const duration = useTrackStore((state) => state.duration);
   const isBuffering = useTrackStore((state) => state.isBuffering);

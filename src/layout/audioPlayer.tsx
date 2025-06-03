@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useRef, MouseEvent, useEffect } from "react";
-import { useAudioPlayer } from "@/hooks/useAudioPlayer";
 import PlayerTrackDetails from "@/component/playerTrackDetails";
 import PlayerControlsSection from "@/component/playerControlsSection";
 import AlbumArtwork from "@/component/albumArtwork";
@@ -12,6 +11,7 @@ import Draggable, {
 import "@/lib/util";
 import { handleSeekInteraction } from "@/lib/util";
 import { useToggle } from "@/store/toggleStore";
+import { useAudioPlayer } from "@/provider/audioPlayerProvider";
 
 /* 
   TODO: 

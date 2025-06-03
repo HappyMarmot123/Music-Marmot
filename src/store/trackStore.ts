@@ -1,4 +1,4 @@
-import { create } from "zustand";
+import { create, useStore } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import type { AudioPlayerState } from "@/type/dataType";
 import { CLAMP_VOLUME, mergeFunction } from "@/lib/util";
@@ -51,5 +51,10 @@ const useTrackStore = create<AudioPlayerState>()(
     }
   )
 );
+
+// useTrackStore.subscribe((state) => {
+//   console.log("상태 변경 감지 currentTrack:", state.currentTrack);
+//   console.log("상태 변경 감지 isPlaying:", state.isPlaying);
+// });
 
 export default useTrackStore;

@@ -6,11 +6,7 @@ import useStore from "@/store/cloudinaryStore";
 import type { CloudinaryResource } from "@/type/dataType";
 import { fetchCloudinary } from "@/lib/util";
 
-export function CloudinaryProvider({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export function useCloudinary() {
   const setCloudinaryData = useStore((state) => state.setCloudinaryData);
   const setCloudinaryError = useStore((state) => state.setCloudinaryError);
   const setIsLoadingCloudinary = useStore(
@@ -28,17 +24,17 @@ export function CloudinaryProvider({
 
   useEffect(() => {
     if (data) {
-      console.log("Cloudinary data loaded in layout:", data.length);
+      console.log("Cloudinary data loaded via hook:", data.length);
       setCloudinaryData(data);
     }
   }, [data, setCloudinaryData]);
 
   useEffect(() => {
     if (error) {
-      console.error("Error fetching Cloudinary in layout:", error);
+      console.error("Error fetching Cloudinary via hook:", error);
       setCloudinaryError(error);
     }
   }, [error, setCloudinaryError]);
 
-  return <>{children}</>;
+  return { data, error, isLoading };
 }

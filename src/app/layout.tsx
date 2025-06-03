@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
 import "@/style/global.css?v=2";
-import { CloudinaryProvider } from "@/provider/cloudinaryProvider";
 import { TanstackProvider } from "@/provider/tanstackProvider";
 import Script from "next/script";
 import { AuthProvider } from "@/provider/authProvider";
 import { ToggleProvider } from "@/store/toggleStore";
-import LenisProvider from "@/provider/lenisProvider";
+import { AudioPlayerProvider } from "@/provider/audioPlayerProvider";
+import { DataLoader } from "@/lib/dataLoader";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://edmm.vercel.app"),
@@ -57,13 +57,14 @@ const RootLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
       <body>
         <AuthProvider>
           <TanstackProvider>
-            <CloudinaryProvider>
+            <AudioPlayerProvider>
               <ToggleProvider>
+                <DataLoader />
                 {/* <LenisProvider> */}
                 {children}
                 {/* </LenisProvider> */}
               </ToggleProvider>
-            </CloudinaryProvider>
+            </AudioPlayerProvider>
           </TanstackProvider>
         </AuthProvider>
       </body>

@@ -79,12 +79,12 @@ export const setupAudioEventListeners = (
     actions.storeSetIsBuffering(false);
   };
 
-  const handleCanPlayThrough = () => {
-    if (isSeekingRef.current) {
-      isSeekingRef.current = false;
-    }
-    actions.storeSetIsBuffering(false);
-  };
+  //   const handleCanPlayThrough = () => {
+  //     if (isSeekingRef.current) {
+  //       isSeekingRef.current = false;
+  //     }
+  //     actions.storeSetIsBuffering(false);
+  //   };
 
   const handleSeeked = () => {
     isSeekingRef.current = false;
@@ -97,7 +97,7 @@ export const setupAudioEventListeners = (
   audio.addEventListener("error", handleError);
   audio.addEventListener("waiting", handleWaiting);
   audio.addEventListener("playing", handlePlaying);
-  audio.addEventListener("canplaythrough", handleCanPlayThrough);
+  //   audio.addEventListener("canplaythrough", handleCanPlayThrough);
   audio.addEventListener("seeked", handleSeeked);
 
   return () => {
@@ -108,7 +108,7 @@ export const setupAudioEventListeners = (
     audio.removeEventListener("error", handleError);
     audio.removeEventListener("waiting", handleWaiting);
     audio.removeEventListener("playing", handlePlaying);
-    audio.removeEventListener("canplaythrough", handleCanPlayThrough);
+    // audio.removeEventListener("canplaythrough", handleCanPlayThrough);
     audio.removeEventListener("seeked", handleSeeked);
   };
 };

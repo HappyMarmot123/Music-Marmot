@@ -15,7 +15,6 @@ import useCloudinaryStore from "@/store/cloudinaryStore";
 import { CloudinaryResource } from "@/type/dataType";
 import ModalMusicList from "@/component/modalMusicList";
 import { likeType } from "@/type/dataType";
-import { useAudioPlayer } from "@/hooks/useAudioPlayer";
 import clsx from "clsx";
 import { CldImage } from "next-cloudinary";
 import OnclickEffect from "@/component/onclickEffect";
@@ -29,6 +28,7 @@ import { useFavorites } from "@/hooks/useFavorites";
 import MyTooltip from "@/component/myTooltip";
 import { useListModal } from "@/hooks/useListModal";
 import { User } from "@/db/userQuery";
+import { useAudioPlayer } from "@/provider/audioPlayerProvider";
 
 /*
   TODO:

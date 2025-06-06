@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useAuth } from "@/app/providers/authProvider";
-import AuthButtons from "@/shared/components/authButtons";
+import AuthButtons from "@/features/listModal/components/authButtons";
 import { useToggle } from "@/app/providers/toggleProvider";
 import { Menu } from "lucide-react";
 

@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
-import "@/style/global.css?v=2";
-import { TanstackProvider } from "@/provider/tanstackProvider";
+import "@/shared/styles/global.css?v=2";
+import { TanstackProvider } from "@/app/providers/tanstackProvider";
 import Script from "next/script";
-import { AuthProvider } from "@/provider/authProvider";
-import { ToggleProvider } from "@/store/toggleStore";
-import { AudioPlayerProvider } from "@/provider/audioPlayerProvider";
-import { CloudinaryProvider } from "@/provider/cloudinaryProvider";
+import { AuthProvider } from "@/app/providers/authProvider";
+import { ToggleProvider } from "@/app/providers/toggleProvider";
+import { AudioPlayerProvider } from "@/app/providers/audioPlayerProvider";
+import { CloudinaryProvider } from "@/app/providers/cloudinaryProvider";
 import { Suspense } from "react";
-import { DataLoader } from "@/lib/dataLoader";
+import { DataLoader } from "@/shared/lib/dataLoader";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://edmm.vercel.app"),

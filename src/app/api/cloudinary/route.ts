@@ -1,7 +1,7 @@
 import { v2 as cloudinary } from "cloudinary";
 import { NextResponse } from "next/server";
-import { CloudinaryResource } from "@/type/dataType";
-import { replaceKeyName } from "@/lib/util";
+import { CloudinaryResource } from "@/shared/types/dataType";
+import { replaceKeyName } from "@/shared/lib/util";
 
 /*
 TODO: 체이닝메소드 공식문서

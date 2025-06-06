@@ -8,7 +8,7 @@ import {
   type Subscription,
 } from "@supabase/supabase-js";
 import { supabaseClient } from "@/app/api/supabase/supabaseClient";
-import { useAuthActions } from "@/features/Auth/hooks/useAuthActions";
+import { useAuthActions } from "@/features/auth/hooks/useAuthActions";
 import { AuthProviderProps, AuthContextType } from "@/shared/types/dataType";
 
 /* 

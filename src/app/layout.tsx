@@ -5,9 +5,9 @@ import Script from "next/script";
 import { AuthProvider } from "@/app/providers/authProvider";
 import { ToggleProvider } from "@/app/providers/toggleProvider";
 import { AudioPlayerProvider } from "@/app/providers/audioPlayerProvider";
-import { CloudinaryProvider } from "@/app/providers/cloudinaryProvider";
 import { Suspense } from "react";
-import { DataLoader } from "@/shared/lib/dataLoader";
+import { DataLoader } from "./api/dataLoader";
+import TrackService from "@/features/track/services/TrackService";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://edmm.vercel.app"),
@@ -49,7 +49,9 @@ export const metadata: Metadata = {
   },
 };
 
-const RootLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+const RootLayout = async ({ children }: { children: React.ReactNode }) => {
+  const tracks = await DataLoader();
+
   return (
     <html lang="en" suppressHydrationWarning={true}>
       <Script
@@ -57,18 +59,12 @@ const RootLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
         strategy="afterInteractive"
       />
       <body>
+        <TrackService tracks={tracks} />
         <AuthProvider>
           <TanstackProvider>
             <AudioPlayerProvider>
               <ToggleProvider>
-                <Suspense fallback={<div>Loading...</div>}>
-                  <DataLoader />
-                  {/* <CloudinaryProvider> */}
-                  {/* <LenisProvider> */}
-                  {children}
-                  {/* </LenisProvider> */}
-                  {/* </CloudinaryProvider> */}
-                </Suspense>
+                <Suspense fallback={<div>Loading...</div>}>{children}</Suspense>
               </ToggleProvider>
             </AudioPlayerProvider>
           </TanstackProvider>

@@ -74,11 +74,10 @@ features/            // FSD 'features' layer: User stories, specific functionali
   // Cart/ (example from user, adjust based on actual features)
 
 entities/            // FSD 'entities' layer: Business domain models
-  ├── User/            // User model, UserCard component, user-related hooks/types
-  ├── Track/           // Track model, TrackItem component, track-related types
-  ├── Album/
-  ├── Artist/
-  // Product/ (example from user, adjust based on actual entities)
+  ├── User/            // User model, UserCard component, user-related hooks/types, user services
+  ├── Track/           // Track model, TrackItem component, track-related types, track services
+  ├── Album/           // Album model, AlbumCard component, album-related types, album services
+  // 각 엔티티는 관련된 서비스 파일들을 포함해야 합니다 (예: userService.ts, trackService.ts)
 
 shared/              // FSD 'shared' layer: Cross-cutting concerns, no business logic
   ├── db/              // DrizzleORM setup and database connection management

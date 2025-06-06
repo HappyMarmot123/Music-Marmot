@@ -30,14 +30,6 @@ export function replaceKeyName(resource: CloudinaryResource) {
   };
 }
 
-export const fetchCloudinary = async (): Promise<CloudinaryResource[]> => {
-  const response = await fetch("/api/cloudinary");
-  if (!response.ok) {
-    throw new Error("Network response was not ok");
-  }
-  return response.json();
-};
-
 export const handleOnLike = async (
   trackAssetId: string,
   userId: string | undefined,

@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { createUser, User as DbUser } from "@/db/userQuery";
-import { CustomUserMetadata } from "@/type/dataType";
+import { createUser, User as DbUser } from "@/entities/User/userQuery";
+import { CustomUserMetadata } from "@/shared/types/dataType";
 
 export async function POST(request: Request) {
   try {

@@ -1,57 +1,15 @@
-// Next.js App Router .cursorrules
+// .cursorrules - Feature-Sliced Design (FSD) 적용
 
-// Next.js App Router best practices
-
-const nextjsAppRouterBestPractices = [
-  "Use server components by default",
-  "Implement client components only when necessary",
-  "Utilize the new file-based routing system",
-  "Use layout.js for shared layouts",
-  "Implement loading.js for loading states",
-  "Use error.js for error handling",
-  "Utilize route handlers for API routes",
-];
-
-// Folder structure
-
-const folderStructure = `app/
-  layout.js
-  page.js
-  api/
-  component/
-  layout/
-  lib/
-  provider/
-  store/
-  style/
-  type/
-public/`;
-
-// Additional instructions
-
-const additionalInstructions = `
-
-1. Use TypeScript for type safety
-2. Implement proper metadata for SEO
-3. Utilize Next.js Image component for optimized images
-4. Use Tailwind CSS for styling
-5. Implement proper error boundaries
-6. Follow Next.js naming conventions for special files
-7. Use environment variables for configuration
-8. When creating a file, the first character must be lowercase, not uppercase.
-   `;
-
-// Project Overview
+// --- Project Overview & Key Features ---
 const projectOverview = `This project is a music streaming website where users can listen to music.`;
 
-// Key Features
 const keyFeatures = [
   "Music playback",
   "Search for songs, artists, albums",
   "Visual site using animations",
 ];
 
-// Technology Stack
+// --- Technology Stack ---
 const techStack = [
   "Next.js (App Router)",
   "TypeScript",
@@ -61,4 +19,106 @@ const techStack = [
   "Tanstack Query (React Query) (for data fetching and caching)",
   "Docker (for containerization)",
   "Cloudinary (for media management, e.g., album art)",
+];
+
+// --- Feature-Sliced Design (FSD) Principles ---
+const fsdPrinciples = [
+  "Layer Reference Rules: Strictly enforce how layers can depend on each other.",
+  "Feature-Centric Code Splitting: Organize code primarily around user-facing features.",
+  "Domain-Driven Management: Manage code in domain units, allowing modifications to a specific feature when business requirements change.",
+  "Unidirectional Dependency Flow: Components in a layer must only reference components from layers below it (e.g., 'pages' can reference 'widgets', but not vice-versa). This aims to reduce code coupling and improve maintainability.",
+];
+
+// --- FSD Layer Structure (6 Layers) ---
+const fsdLayerStructure = {
+  app: "The app's entry point, managing global configurations, providers, and styles. Initializes the rest of the application.",
+  pages:
+    "Composes multiple widgets and features to form complete application pages. Each page corresponds to a route.",
+  widgets:
+    "Larger, independent functional units within a page (e.g., Navbar, Sidebar). Can combine multiple features and entities.",
+  features:
+    "Specific user interactions or business logic (e.g., authentication, search functionality). Designed to be reusable across widgets or pages.",
+  entities:
+    "Business entities or data models (e.g., User, Product, Song). Contains components, types, and logic related to a specific domain entity.",
+  shared:
+    "Reusable utilities, UI components, hooks, configurations, and types that are used across the entire application and have no business logic specific to any feature or entity.",
+};
+
+// --- FSD Directory Structure ---
+// Note: Next.js App Router conventions (like app/layout.js, app/page.js for root) should be integrated within this FSD structure.
+// For example, a top-level page.js might reside in app/, but specific page components would be in pages/HomePage/HomePage.tsx etc.
+const folderStructure = `
+app/                 // FSD 'app' layer: Entry point, global providers, root layouts, global styles
+  ├── api/             // API client instances, base query functions
+  ├── providers/       // Global context providers
+  ├── store/           // Global state management (e.g., Zustand stores not specific to a feature)
+  // layout.js, page.js, loading.js, error.js for root routes (Next.js specific)
+
+pages/               // FSD 'pages' layer: Route components, composing widgets and features
+  ├── HomePage/        // Example page structure
+  │   └── index.tsx    // Or HomePage.tsx
+  ├── ProfilePage/
+  ├── SettingsPage/
+  // ... other pages
+
+widgets/             // FSD 'widgets' layer: Larger UI blocks composed of features and entities
+  ├── Navbar/
+  ├── Sidebar/
+  ├── PlayerWidget/    // Example for a music player
+  ├── Footer/
+
+features/            // FSD 'features' layer: User stories, specific functionalities
+  ├── Auth/            // e.g., LoginButton, SignUpForm, useAuth hook
+  ├── SearchTrack/     // e.g., SearchBar, SearchResults components
+  ├── PlaylistManagement/ // e.g., AddToPlaylistButton, CreatePlaylistModal
+  // Cart/ (example from user, adjust based on actual features)
+
+entities/            // FSD 'entities' layer: Business domain models
+  ├── User/            // User model, UserCard component, user-related hooks/types
+  ├── Track/           // Track model, TrackItem component, track-related types
+  ├── Album/
+  ├── Artist/
+  // Product/ (example from user, adjust based on actual entities)
+
+shared/              // FSD 'shared' layer: Cross-cutting concerns, no business logic
+  ├── db/              // DrizzleORM setup and database connection management
+  ├── components/      // Generic UI components (Button, Input, Modal)
+  ├── config/          // Global app configuration, environment variables
+  ├── hooks/           // Generic custom hooks (useDebounce, useLocalStorage)
+  ├── lib/             // Utility functions, helpers (formatDate, validation)
+  ├── router/          // Routing configuration or helpers (if needed beyond Next.js)
+  ├── styles/          // Global styles, theme configurations
+  ├── types/           // Global TypeScript types and interfaces
+`;
+
+// --- Next.js App Router Best Practices (to be applied within FSD context) ---
+const nextjsAppRouterBestPractices = [
+  "Use server components by default (can reside in any FSD layer, decision based on data needs and interactivity)",
+  "Implement client components only when necessary (often in 'features', 'entities', or 'shared/components')",
+  "Utilize the new file-based routing system (primarily concerns 'app/' and 'pages/' layers for route definitions)",
+  "Use layout.js for shared layouts (in 'app/' for root, or within specific page/widget structures if applicable)",
+  "Implement loading.js for loading states (Next.js specific, often at 'app/' or 'pages/' level)",
+  "Use error.js for error handling (Next.js specific, often at 'app/' or 'pages/' level)",
+  "Utilize route handlers for API routes (can be organized within 'app/api/' or a dedicated 'shared/api' if interacting with FSD layers)",
+];
+
+// --- Additional General Instructions (to be applied within FSD context) ---
+const additionalInstructions = [
+  "Use TypeScript for type safety (applies to all layers).",
+  "Implement proper metadata for SEO (primarily in 'app/' and 'pages/' layers).",
+  "Utilize Next.js Image component for optimized images (within components in any layer).",
+  "Use Tailwind CSS for styling (applies to all layers).",
+  "Implement proper error boundaries (can wrap components in any layer, or at 'pages'/'widgets' level).",
+  "Follow Next.js naming conventions for special files (e.g., layout.js, page.js) within the 'app/' and 'pages/' FSD layers.",
+  "Use environment variables for configuration (managed via 'shared/config/' or Next.js runtime env vars).",
+  "When creating a file or directory, the first character must be lowercase, not uppercase (e.g., 'homePage' not 'HomePage' for a directory, but component files like 'HomePage.tsx' are fine).",
+];
+
+// --- Development Guidelines specific to FSD ---
+const fsdDevelopmentGuidelines = [
+  "Strictly adhere to the Unidirectional Dependency Flow: Higher layers can use lower layers, but not vice-versa. (e.g., 'features' can use 'entities' and 'shared', but 'entities' cannot use 'features').",
+  "Isolate Features: Features should be self-contained and not directly depend on other features. If interaction is needed, it should be orchestrated by a higher layer (widget or page).",
+  "Entities are Business Logic Dumb: Entities should represent data and basic related logic/components, but not complex feature-specific operations.",
+  "Shared is Generic: Code in 'shared' must not contain any business logic or be tied to specific features/entities. It should be universally applicable.",
+  "Public API for Slices: Each slice (feature, entity, widget, page) should ideally expose a public API (e.g., through an index.ts barrel file) for other layers to consume, hiding internal implementation details.",
 ];

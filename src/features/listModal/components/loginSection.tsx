@@ -1,8 +1,8 @@
 import { useAuth } from "@/app/providers/authProvider";
 import { useState } from "react";
-import LoginModal from "./loginModal";
-import ShareModal from "./shareModal";
-import ReusableTooltip from "./myTooltip";
+import LoginModal from "../../../shared/components/loginModal";
+import ShareModal from "../../../shared/components/shareModal";
+import ReusableTooltip from "../../../shared/components/myTooltip";
 
 export default function LoginSection() {
   const { user, isLoadingSession, authActions } = useAuth();

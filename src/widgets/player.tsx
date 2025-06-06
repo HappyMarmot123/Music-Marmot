@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import PlayerTrackDetails from "@/shared/components/playerTrackDetails";
-import PlayerControlsSection from "@/shared/components/playerControlsSection";
+import PlayerTrackDetails from "@/features/audio/components/playerTrackDetails";
+import PlayerControlsSection from "@/features/audio/components/playerControlsSection";
 import useTrackStore from "@/app/store/trackStore";
 import useCloudinaryStore from "@/app/store/cloudinaryStore";
 import {

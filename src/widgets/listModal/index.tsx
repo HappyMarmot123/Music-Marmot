@@ -16,16 +16,16 @@ import { CloudinaryResource, likeType } from "@/shared/types/dataType";
 import { CldImage } from "next-cloudinary";
 import clsx from "clsx";
 import { motion } from "framer-motion";
-import AudioVisualizer from "@/shared/components/audioVisualizer";
-import ModalPlayerTrackDetails from "@/shared/components/modalPlayerTrackDetails";
-import LoginSection from "@/shared/components/loginSection";
+import AudioVisualizer from "@/features/listModal/components/audioVisualizer";
+import ModalPlayerTrackDetails from "@/features/listModal/components/modalPlayerTrackDetails";
+import LoginSection from "@/features/listModal/components/loginSection";
 import MyTooltip from "@/shared/components/myTooltip";
 import OnclickEffect from "@/shared/components/onclickEffect";
 import { listModalRootClassName } from "@/shared/lib/util";
-import ModalMusicList from "@/shared/components/modalMusicList";
+import ModalMusicList from "@/features/listModal/components/modalMusicList";
 import useCloudinaryStore from "@/app/store/cloudinaryStore";
-import { useFavorites } from "@/shared/hooks/useFavorites";
-import { useListModal } from "@/shared/hooks/useListModal";
+import { useFavorites } from "@/features/listModal/hook/useFavorites";
+import { useListModal } from "@/features/listModal/hook/useListModal";
 import { User } from "@supabase/supabase-js";
 
 /*

@@ -1,9 +1,9 @@
 "use client";
 
 import { useState, useRef, MouseEvent, useEffect } from "react";
-import PlayerTrackDetails from "@/shared/components/playerTrackDetails";
-import PlayerControlsSection from "@/shared/components/playerControlsSection";
-import AlbumArtwork from "@/shared/components/albumArtwork";
+import PlayerTrackDetails from "@/features/audio/components/playerTrackDetails";
+import PlayerControlsSection from "@/features/audio/components/playerControlsSection";
+import AlbumArtwork from "@/features/audio/components/albumArtwork";
 import Draggable, {
   DraggableEvent,
   type DraggableBounds,

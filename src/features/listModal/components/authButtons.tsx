@@ -1,6 +1,5 @@
 "use client"; // 클라이언트 컴포넌트로 명시
 
-import { GoogleAuthStrategy } from "@/features/Auth/hooks/useAuthActions";
 import { useAuth } from "@/app/providers/authProvider";
 
 export default function AuthButtons() {

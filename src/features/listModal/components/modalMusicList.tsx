@@ -8,11 +8,11 @@ import { Heart } from "lucide-react";
 import Image from "next/image";
 import clsx from "clsx";
 import { SetStateAction, useState, useCallback } from "react";
-import OnclickEffect from "./onclickEffect";
+import OnclickEffect from "../../../shared/components/onclickEffect";
 import { handleOnLike } from "@/shared/lib/util";
 import useTrackStore from "@/app/store/trackStore";
 import { useAuth } from "@/app/providers/authProvider";
-import MyTooltip from "./myTooltip";
+import MyTooltip from "../../../shared/components/myTooltip";
 import useCloudinaryStore from "@/app/store/cloudinaryStore";
 import { setFindNewTrack } from "@/shared/lib/audioPlayerUtil";
 

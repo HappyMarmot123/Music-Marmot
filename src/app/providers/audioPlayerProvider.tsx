@@ -93,7 +93,7 @@ function useAudioPlayerLogic() {
   const togglePlayPause = useCallback(async () => {
     if (!currentTrack && !isPlaying) return;
     await togglePlayPauseLogic({ audioContext, storeTogglePlayPause });
-  }, [currentTrack, isPlaying]);
+  }, [currentTrack, isPlaying, audioContext]);
 
   const seek = useCallback(
     (time: number) => {

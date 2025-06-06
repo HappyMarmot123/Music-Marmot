@@ -7,7 +7,7 @@ import {
   GoogleAuthStrategy,
   KakaoAuthStrategy,
 } from "@/features/auth/hooks/useAuthActions";
-
+//
 interface LoginModalProps {
   setShowLoginModal: (show: boolean) => void;
 }

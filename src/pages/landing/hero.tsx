@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Github } from "lucide-react";
+import Github from "@/shared/components/github";
 import Earth from "@/shared/components/earth";
 
 export default function Hero() {

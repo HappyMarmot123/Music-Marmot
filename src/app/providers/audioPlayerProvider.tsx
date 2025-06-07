@@ -17,7 +17,6 @@ import {
   setFindNewTrack,
 } from "@/shared/lib/audioPlayerUtil";
 import { setupAudioEventListeners } from "@/shared/lib/audioEventManager";
-import loadTrackInWaveSurfer from "@/shared/lib/wavesurferUtil";
 
 type AudioPlayerLogicReturnType = ReturnType<typeof useAudioPlayerLogic>;
 
@@ -59,7 +58,6 @@ function useAudioPlayerLogic() {
     if (isTrackChanged) {
       audio.src = currentTrack.url;
       storeSetCurrentTime(0);
-      loadTrackInWaveSurfer(currentTrack.url);
     }
   }, [currentTrack, audio, storeSetCurrentTime]);
 

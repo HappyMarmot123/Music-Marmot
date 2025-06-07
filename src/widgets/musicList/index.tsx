@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect } from "react";
-import Horizontal from "@/shared/components/horizontal";
+import Horizontal from "@/features/landing/components/horizontal";
 import useStore from "@/app/store/cloudinaryStore";
 
 export default function MusicList() {

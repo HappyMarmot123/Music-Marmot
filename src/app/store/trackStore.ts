@@ -17,7 +17,14 @@ const partializeFunction = (state: AudioPlayerState) => ({
 const useTrackStore = create<AudioPlayerState>()(
   persist(
     (set: zustandPersistSet) => ({
-      currentTrack: null,
+      currentTrack: {
+        assetId: "none",
+        album: "Unknown Album",
+        name: "Unknown Track",
+        artworkId: "none",
+        url: "Unknown URL",
+        producer: "Unknown Producer",
+      },
       isPlaying: false,
       currentTime: 0,
       duration: 0,
@@ -25,7 +32,7 @@ const useTrackStore = create<AudioPlayerState>()(
       volume: 0.7,
       isMuted: false,
 
-      setTrack: (track: TrackInfo | null, playImmediately = false) =>
+      setTrack: (track: TrackInfo, playImmediately = false) =>
         setTrackFunction(track, playImmediately, set),
 
       togglePlayPause: () => set((state) => ({ isPlaying: !state.isPlaying })),

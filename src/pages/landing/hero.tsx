@@ -1,53 +1,51 @@
 import { motion } from "framer-motion";
-import Github from "@/shared/components/github";
-import Earth from "@/shared/components/earth";
+import Github from "@/features/landing/components/github";
+import Earth from "@/features/landing/components/earth";
 
 export default function Hero() {
   return (
-    <section className="min-h-screen h-screen">
-      <div className="flex justify-around">
-        <h1 className="text-5xl md:text-7xl lg:text-9xl font-bold leading-[0.9]">
+    <section className="min-h-screen flex flex-col justify-between p-4 sm:p-6 md:p-8 overflow-x-hidden">
+      <div className="flex flex-col md:flex-row justify-between items-center w-full max-w-screen-xl mx-auto">
+        <h1 className="text-7xl sm:text-8xl md:text-9xl font-bold leading-none text-center md:text-left">
           EDMM
         </h1>
-        <span className="flex flex-col text-end grid-cols-[2/-1] mt-[2.1vw]">
+        <div className="flex flex-col text-center md:text-right mt-4 md:mt-0">
           <motion.p
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
-            className="font-[900] uppercase leading-[100%] text-xl sm:text-2xl md:text-3xl lg:text-4xl tracking-[0.1em]"
+            className="font-black uppercase text-2xl sm:text-3xl lg:text-4xl tracking-widest"
           >
             EDM Marmot
           </motion.p>
           <motion.p
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
-            className="text-[rgb(176,176,176)] text-lg sm:text-xl md:text-2xl lg:text-3xl font-[600] uppercase"
+            className="text-gray-400 text-xl sm:text-2xl lg:text-3xl font-semibold uppercase"
           >
             © 2025 HappyMarmot
           </motion.p>
-        </span>
-      </div>
-      <div className="w-full flex justify-center items-center">
-        <Earth width={500} height={500} />
-      </div>
-      <div className="grid grid-cols-[1fr_2fr_4fr] items-center justify-between leading-[0.9] px-[2vw] h-[12vw]">
-        <div className="text-left">
-          <p className="font-[900] text-[clamp(1rem,1.8vw,2.5rem)]">
-            scroll to
-          </p>
-          <p className="font-[900] text-[clamp(1rem,1.8vw,2.5rem)]">explore</p>
         </div>
-        <div className="text-left">
-          <p className="font-[600] tracking-[-0.01em] uppercase text-[clamp(0.8rem,1.3vw,1.8rem)]">
-            Smooth Scroll
+      </div>
+
+      <div className="w-full flex justify-center items-center flex-shrink-0">
+        <div className="w-[500px] h-[500px] scale-[0.6] sm:scale-[0.8] md:scale-100 transition-transform duration-300 flex items-center justify-center z-10">
+          <Earth width={500} height={500} />
+        </div>
+      </div>
+
+      <div className="flex flex-col md:flex-row items-center justify-between gap-8 md:gap-4 w-full max-w-screen-xl mx-auto pb-8 md:pb-4">
+        <div className="text-center md:text-left my-4 md:my-0">
+          <p className="font-semibold tracking-tighter uppercase text-base sm:text-lg lg:text-xl">
+            Portfolio Production
           </p>
-          <p className="font-[600] tracking-[-0.01em] uppercase text-[clamp(0.8rem,1.3vw,1.8rem)]">
-            Framer Motion Animate
+          <p className="font-semibold tracking-tighter uppercase text-base sm:text-lg lg:text-xl">
+            Designed by HappyMarmot123
           </p>
-          <p className="font-[600] tracking-[-0.01em] uppercase text-[clamp(0.8rem,1.3vw,1.8rem)]">
-            Website designed by Happy marmot
+          <p className="font-semibold tracking-tighter uppercase text-base sm:text-lg lg:text-xl">
+            Have Fun Enjoy It
           </p>
         </div>
-        <div className="text-end">
+        <div className="flex justify-center md:justify-end">
           <Github />
         </div>
       </div>

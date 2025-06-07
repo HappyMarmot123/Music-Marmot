@@ -23,12 +23,21 @@ const PlayerTrackDetails: React.FC<PlayerTrackDetailsProps> = ({
     seek(seekTime);
   };
 
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLElement>) => {
+    if (!duration) return;
+    if (event.key === "ArrowLeft") {
+      seek(Math.max(0, currentTime - 5));
+    } else if (event.key === "ArrowRight") {
+      seek(Math.min(duration, currentTime + 5));
+    }
+  };
+
   return (
     <div
       id="player-track"
       className={clsx(
-        "absolute right-[15px] left-[15px] pt-[6px] pr-[22px] pb-[16px] pl-[147px] bg-white rounded-t-[15px] transition-all duration-300 ease-[ease] z-[1]",
-        isPlaying ? "top-[-40px]" : "top-0"
+        "absolute right-[15px] left-[15px] pt-[6px] pr-[22px] pb-[16px] pl-[147px] bg-white rounded-t-[15px] transition-transform duration-300 ease-in-out z-[1]",
+        isPlaying ? "translate-y-[-40px]" : "translate-y-0"
       )}
     >
       <section
@@ -38,17 +47,19 @@ const PlayerTrackDetails: React.FC<PlayerTrackDetailsProps> = ({
           (isPlaying || currentTime > 0) &&
             "active [&>div]:text-[#f86d92] [&>div]:bg-transparent"
         )}
+        aria-label="Track progress"
       >
         <div
           id="current-time"
-          className="text-transparent text-[11px] bg-[#ffe8ee] rounded-[10px] transition-all duration-300 ease-[ease] px-1"
+          className="text-transparent text-[11px] bg-[#ffe8ee] rounded-[10px] transition-colors,background-color duration-300 ease-in-out px-1"
+          aria-live="polite"
         >
           {formatTime(currentTime)}
         </div>
         <section
           id="seek-bar-container"
           ref={seekBarContainerRef}
-          className="no-drag relative h-[8px] rounded-[4px] bg-[#ffe8ee] cursor-pointer group mx-2 flex-grow"
+          className="no-drag relative h-[8px] rounded-[4px] bg-[#ffe8ee] cursor-pointer group mx-2 flex-grow focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#fd6d94]"
           onClick={handleSeekInteraction}
           onMouseMove={(e) =>
             handleMouseMove(
@@ -61,6 +72,15 @@ const PlayerTrackDetails: React.FC<PlayerTrackDetailsProps> = ({
           onMouseOut={() =>
             handleMouseOut(seekTimeTooltipRef, seekBarContainerRef)
           }
+          role="slider"
+          aria-valuemin={0}
+          aria-valuemax={duration || 0}
+          aria-valuenow={currentTime}
+          aria-valuetext={`${formatTime(currentTime)} of ${formatTime(
+            duration
+          )}`}
+          tabIndex={0}
+          onKeyDown={handleKeyDown}
         >
           <div
             id="seek-time"
@@ -69,13 +89,13 @@ const PlayerTrackDetails: React.FC<PlayerTrackDetailsProps> = ({
           ></div>
           <div
             id="seek-bar"
-            className="absolute inset-0 left-0 h-full w-0 bg-[#fd6d94] rounded-[4px] transition-width duration-200 ease-[ease] z-[1] pointer-events-none"
+            className="absolute inset-0 left-0 h-full w-0 bg-[#fd6d94] rounded-[4px] transition-width duration-200 ease-in-out z-[1] pointer-events-none"
             style={{ width: `${currentProgress}%` }}
           ></div>
         </section>
         <div
           id="track-length"
-          className="text-transparent text-[11px] bg-[#ffe8ee] rounded-[10px] transition-all duration-300 ease-[ease] px-1"
+          className="text-transparent text-[11px] bg-[#ffe8ee] rounded-[10px] transition-colors,background-color duration-300 ease-in-out px-1"
         >
           {formatTime(duration)}
         </div>

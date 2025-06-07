@@ -1,4 +1,5 @@
 import type { Session, User, UserMetadata } from "@supabase/supabase-js";
+import { LucideProps } from "lucide-react";
 import type { RefObject, MouseEvent, ReactNode } from "react";
 
 export interface SpotifyTokenResponse {
@@ -134,20 +135,20 @@ export interface PlayerTrackDetailsProps {
 export interface AlbumArtworkProps {
   isPlaying: boolean;
   isBuffering: boolean;
-  currentTrackInfo: TrackInfo | null;
+  currentTrackInfo: TrackInfo;
 }
 
 export interface PlayerControlsSectionProps {
-  currentTrackInfo: TrackInfo | null;
+  currentTrackInfo: TrackInfo;
 }
 
 export interface TrackInfo {
   assetId: string;
   album: string;
   name: string;
-  artworkId: string | null;
+  artworkId: string;
   url: string;
-  producer: string | null;
+  producer: string;
 }
 
 export interface CloudinaryResource {
@@ -206,7 +207,7 @@ export interface EarthProps {
 }
 
 export interface AudioPlayerState {
-  currentTrack: TrackInfo | null;
+  currentTrack: TrackInfo;
   isPlaying: boolean;
   currentTime: number;
   duration: number;
@@ -215,7 +216,7 @@ export interface AudioPlayerState {
   isMuted: boolean;
 
   // Actions
-  setTrack: (track: TrackInfo | null, playImmediately?: boolean) => void;
+  setTrack: (track: TrackInfo, playImmediately?: boolean) => void;
   togglePlayPause: () => void;
   setIsPlaying: (playing: boolean) => void;
   setCurrentTime: (time: number) => void;
@@ -250,7 +251,7 @@ export type TogglePlayPauseLogicParams = {
 
 export type SeekLogicParams = {
   audio: HTMLAudioElement | null;
-  currentTrack: TrackInfo | null;
+  currentTrack: TrackInfo;
   duration: number | null;
   time: number;
   storeSeekTo: (time: number) => void;
@@ -259,15 +260,15 @@ export type SeekLogicParams = {
 
 export type PlayNextTrackLogicParams = {
   cloudinaryData: CloudinaryResource[];
-  currentTrack: TrackInfo | null;
-  setTrack: (track: TrackInfo | null, playImmediately: boolean) => void;
+  currentTrack: TrackInfo;
+  setTrack: (track: TrackInfo, playImmediately: boolean) => void;
   isPlaying: boolean;
 };
 
 export type PlayPrevTrackLogicParams = {
   cloudinaryData: CloudinaryResource[];
-  currentTrack: TrackInfo | null;
-  setTrack: (track: TrackInfo | null, playImmediately: boolean) => void;
+  currentTrack: TrackInfo;
+  setTrack: (track: TrackInfo, playImmediately: boolean) => void;
   isPlaying: boolean;
 };
 
@@ -284,7 +285,7 @@ export interface AudioStoreActions {
   storeSetCurrentTime: (time: number) => void;
   storeSetDuration: (duration: number) => void;
   storeSetIsBuffering: (isBuffering: boolean) => void;
-  setTrack: (track: TrackInfo | null, playImmediately?: boolean) => void;
+  setTrack: (track: TrackInfo, playImmediately?: boolean) => void;
 }
 
 export type AuthProviderProps = {
@@ -308,3 +309,13 @@ export type AuthContextType = {
     KakaoAuthStrategy: AuthStrategy;
   };
 };
+
+export interface IconToggleButtonProps {
+  id: string;
+  condition: boolean;
+  IconOnTrue: React.ComponentType<LucideProps>;
+  IconOnFalse: React.ComponentType<LucideProps>;
+  onClick: () => void;
+  label: string;
+  iconProps?: Omit<LucideProps, "ref">;
+}

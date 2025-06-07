@@ -38,7 +38,7 @@ export default function Horizontal({ data, swiperId }: HorizontalProps) {
           data.map((item) => (
             <SwiperSlide
               key={item.asset_id}
-              className="!select-none !w-auto !pr-8"
+              className="!select-none !w-auto !pr-4 md:!pr-8"
             >
               <Card card={item} />
             </SwiperSlide>

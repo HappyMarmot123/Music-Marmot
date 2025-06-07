@@ -1,15 +1,11 @@
-import { useAuth } from "@/app/providers/authProvider";
 import {
   AudioPlayerState,
   CloudinaryResource,
   likeType,
-  TrackInfo,
-  zustandPersistSet,
 } from "@/shared/types/dataType";
 import { SetStateAction } from "react";
 import { Dispatch, MouseEvent, RefObject } from "react";
 import clsx from "clsx";
-import useRecentPlayStore from "@/app/store/recentPlayStore";
 
 export function formatTime(seconds: number): string {
   if (isNaN(seconds) || seconds < 0) {
@@ -193,15 +189,6 @@ export const albumArtClassName = (isPlaying: boolean, isBuffering: boolean) => {
       "[&>img.active]:blur-sm",
       "[&_#buffer-box]:opacity-100",
     ]
-  );
-};
-
-export const listModalRootClassName = () => {
-  return clsx(
-    "grid grid-cols-4 fixed inset-0 m-auto w-[90%] h-[90%]",
-    "bg-[#483544aa] text-white backdrop-blur-lg",
-    "border border-white/50 rounded-2xl shadow-[0_0.5px_0_1px_rgba(255,255,255,0.2)_inset,0_1px_0_0_rgba(255,255,255,0.6)_inset,0_4px_16px_rgba(0,0,0,0.1)]   overflow-hidden",
-    "z-40"
   );
 };
 

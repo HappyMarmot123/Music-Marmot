@@ -105,7 +105,7 @@ export const playPrevTrackLogic = ({
 export const setFindNewTrack = (
   cloudinaryData: CloudinaryResource[],
   assetId: string,
-  setTrack: (track: TrackInfo | null, playImmediately: boolean) => void,
+  setTrack: (track: TrackInfo, playImmediately: boolean) => void,
   isPlaying?: boolean
 ) => {
   if (isEmpty(cloudinaryData)) {
@@ -124,28 +124,28 @@ export const setFindNewTrack = (
 
   const newTrackInfo: TrackInfo = {
     assetId: findTrackInData.asset_id,
-    album: findTrackInData.context?.caption || "Unknown Album",
-    name: findTrackInData.title || "Unknown Track",
-    artworkId: findTrackInData.album_secure_url || null,
-    url: findTrackInData.secure_url || "",
-    producer: findTrackInData.producer || "Unknown Artist",
+    album: findTrackInData.context?.caption,
+    name: findTrackInData.title,
+    artworkId: findTrackInData.album_secure_url,
+    url: findTrackInData.secure_url,
+    producer: findTrackInData.producer,
   };
   setTrack(newTrackInfo, isPlaying || false);
 };
 
 export const setTrackFunction = (
-  track: TrackInfo | null,
+  track: TrackInfo,
   playImmediately: boolean,
   set: zustandPersistSet
 ) => {
-  if (track && track.assetId) {
+  if (track.assetId) {
     useRecentPlayStore.getState().addRecentAssetId(track.assetId);
   }
   set((state: AudioPlayerState) => ({
     currentTrack: track,
     currentTime: 0,
-    isPlaying: !!track && playImmediately,
-    isBuffering: !!track,
+    isPlaying: playImmediately,
+    isBuffering: track.assetId !== "none",
   }));
 };
 

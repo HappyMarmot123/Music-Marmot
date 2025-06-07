@@ -12,6 +12,10 @@
     "db:migrate": "tsx ./src/db/migrate.ts",
     "db:studio": "drizzle-kit studio"
   },
+  "browserslist": [
+    "defaults",
+    "not IE 11"
+  ],
   "dependencies": {
     "@nextui-org/react": "^2.6.11",
     "@radix-ui/react-tooltip": "^1.2.7",
@@ -21,7 +25,6 @@
     "@types/lodash.isempty": "^4.4.9",
     "@types/lodash.isnumber": "^3.0.9",
     "@vercel/postgres": "^0.10.0",
-    "@wavesurfer/react": "^1.0.11",
     "axios": "^1.9.0",
     "cloudinary": "^2.6.1",
     "clsx": "^2.1.1",
@@ -39,7 +42,6 @@
     "react-dom": "^19.0.0",
     "react-draggable": "^4.4.6",
     "swiper": "^11.2.6",
-    "wavesurfer.js": "^7.9.5",
     "zustand": "^5.0.4"
   },
   "devDependencies": {

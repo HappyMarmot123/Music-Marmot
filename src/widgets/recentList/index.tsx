@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect } from "react";
-import Horizontal from "@/shared/components/horizontal";
+import Horizontal from "@/features/landing/components/horizontal";
 import useCloudinaryStore from "@/app/store/cloudinaryStore";
 import useRecentPlayStore from "@/app/store/recentPlayStore";
 import { CloudinaryResource } from "@/shared/types/dataType";

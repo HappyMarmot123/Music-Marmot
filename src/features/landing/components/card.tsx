@@ -30,7 +30,7 @@ const Card = ({ card }: { card: CloudinaryResource }) => {
         openToggle();
       }}
       rel="noopener noreferrer"
-      className="group relative h-48 w-48 md:h-64 md:w-64 lg:h-72 lg:w-72 p-3 md:p-4 overflow-hidden bg-neutral-800/50 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 flex flex-col justify-between flex-shrink-0"
+      className="group relative h-48 w-40 sm:w-48 md:h-64 md:w-56 lg:h-72 lg:w-64 p-3 md:p-4 overflow-hidden bg-neutral-800/50 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 flex flex-col justify-between flex-shrink-0"
     >
       {/* 앨범 아트 표시 */}
       {imageUrl ? (
@@ -41,6 +41,7 @@ const Card = ({ card }: { card: CloudinaryResource }) => {
           loading="lazy"
           width={256}
           height={256}
+          style={{ width: "auto", height: "auto" }}
         />
       ) : (
         <div className="absolute inset-0 bg-neutral-700 flex items-center justify-center">

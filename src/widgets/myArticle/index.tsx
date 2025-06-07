@@ -1,7 +1,7 @@
 "use client";
 
 import Cursor from "@/shared/components/cursor";
-import DustySnow from "@/shared/components/dustySnow";
+import DustySnow from "@/features/landing/components/dustySnow";
 import { motion, useScroll, useSpring, useTransform } from "framer-motion";
 import { useRef } from "react";
 

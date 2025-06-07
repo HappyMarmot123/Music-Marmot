@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, MouseEvent, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import PlayerTrackDetails from "@/features/audio/components/playerTrackDetails";
 import PlayerControlsSection from "@/features/audio/components/playerControlsSection";
 import AlbumArtwork from "@/features/audio/components/albumArtwork";
@@ -9,7 +9,6 @@ import Draggable, {
   DraggableData,
   type DraggableBounds,
 } from "react-draggable";
-import { handleSeekInteraction } from "@/shared/lib/util";
 import { useToggle } from "@/app/providers/toggleProvider";
 import { useAudioPlayer } from "@/app/providers/audioPlayerProvider";
 
@@ -36,27 +35,15 @@ export default function AudioPlayer() {
   const { currentTrack, isPlaying, isBuffering, currentTime, duration, seek } =
     useAudioPlayer();
 
-  const seekBarContainerRef = useRef<HTMLDivElement>(null);
+  const { openToggle } = useToggle();
 
+  const seekBarContainerRef = useRef<HTMLDivElement>(null);
   const isDragging = useRef(false);
   const draggableRef = useRef<HTMLDivElement>(null);
+
   const [bounds, setBounds] = useState<DraggableBounds | undefined>(undefined);
   const defaultPositionRef = useRef({ x: 100, y: 640 });
-  // const defaultPositionRef = useRef({ x: 0, y: 0 });
-  // useEffect(() => {
-  //   const playerWidth = 344;
-  //   const playerHeight = 80;
-  //   const margin = 20;
-  //   defaultPositionRef.current = {
-  //     x: window.innerWidth - playerWidth - margin,
-  //     y: window.innerHeight - playerHeight - margin,
-  //   };
-
-  //   setDraggableKey(Date.now());
-  // }, []);
   const [draggableKey, setDraggableKey] = useState(Date.now());
-
-  const { openToggle } = useToggle();
 
   const currentProgress = duration > 0 ? (currentTime / duration) * 100 : 0;
 

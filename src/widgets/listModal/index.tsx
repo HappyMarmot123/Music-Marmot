@@ -1,9 +1,7 @@
-import { motion } from "framer-motion";
-import { listModalRootClassName } from "@/shared/lib/util";
+import { motion, Variants } from "framer-motion";
 import ModalPlayer from "./components/modalPlayer";
 import ModalTrackList from "./components/modalTrackList";
-import { useState } from "react";
-import ModalViewToggle from "./components/modalViewToggle";
+import clsx from "clsx";
 
 /*
   TODO:
@@ -11,35 +9,28 @@ import ModalViewToggle from "./components/modalViewToggle";
   https://www.npmjs.com/package/tippy.js
 */
 
-export default function ListModal({
-  closeToggle,
-}: {
+interface ListModalProps {
+  isOpen: boolean;
   closeToggle: () => void;
-}) {
-  const [currentView, setCurrentView] = useState<"player" | "list">("player");
+}
 
+export default function ListModal({ isOpen, closeToggle }: ListModalProps) {
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.95 }}
       transition={{ duration: 0.3, ease: "easeInOut" }}
-      className={listModalRootClassName()}
+      className={clsx(
+        "grid grid-cols-1 md:grid-cols-5 fixed inset-0 m-auto w-[95%] md:w-[90%] h-[90%]",
+        "bg-[#483544aa] text-white backdrop-blur-lg",
+        "border border-white/50 rounded-2xl shadow-[0_0.5px_0_1px_rgba(255,255,255,0.2)_inset,0_1px_0_0_rgba(255,255,255,0.6)_inset,0_4px_16px_rgba(0,0,0,0.1)]",
+        "overflow-y-auto md:overflow-hidden custom-scrollbar",
+        "z-40"
+      )}
     >
-      <div className="hidden md:block">
-        {currentView === "player" && <ModalPlayer />}
-        {currentView === "list" && <ModalTrackList closeToggle={closeToggle} />}
-      </div>
-
-      <div className="md:hidden">
-        {currentView === "player" && <ModalPlayer />}
-        {currentView === "list" && <ModalTrackList closeToggle={closeToggle} />}
-      </div>
-
-      <ModalViewToggle
-        currentView={currentView}
-        setCurrentView={setCurrentView}
-      />
+      <ModalPlayer />
+      <ModalTrackList closeToggle={closeToggle} />
     </motion.div>
   );
 }

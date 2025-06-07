@@ -79,7 +79,7 @@ const PlayerControlsSection: React.FC<PlayerControlsSectionProps> = ({
   return (
     <div
       id="player-controls"
-      className="pl-28 flex flex-col justify-center items-center gap-1 h-full flex-grow overflow-hidden pr-4"
+      className="pl-40 flex flex-col justify-center items-center gap-1 h-full flex-grow overflow-hidden pr-4"
     >
       <section
         className="flex flex-col w-full overflow-hidden"
@@ -133,7 +133,7 @@ const PlayerControlsSection: React.FC<PlayerControlsSectionProps> = ({
             aria-hidden="true"
           />
         </PlayerControlButton>
-        <div className="flex items-center gap-2 flex-grow justify-end">
+        <div className="flex items-center gap-2 justify-end">
           <IconToggleButton
             id="volume-control"
             condition={isMuted}

@@ -16,7 +16,7 @@ const Page: React.FC = () => {
       {/* <Test /> */}
       <MyArticle>
         {!isOpen && <AudioPlayer />}
-        {isOpen && <ListModal closeToggle={closeToggle} />}
+        {isOpen && <ListModal isOpen={isOpen} closeToggle={closeToggle} />}
         <Hero />
         <BodySection />
       </MyArticle>

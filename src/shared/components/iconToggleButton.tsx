@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import { PlayerControlButton } from "./playerControlBtn";
 import { IconToggleButtonProps } from "@/shared/types/dataType";

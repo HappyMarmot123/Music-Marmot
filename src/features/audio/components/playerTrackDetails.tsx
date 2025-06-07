@@ -1,7 +1,7 @@
 import React from "react";
 import { PlayerTrackDetailsProps } from "@/shared/types/dataType";
 import clsx from "clsx";
-import { formatTime } from "@/shared/lib/util";
+import { formatTime, handleMouseMove, handleMouseOut } from "@/shared/lib/util";
 
 const PlayerTrackDetails: React.FC<PlayerTrackDetailsProps> = ({
   isPlaying,
@@ -9,11 +9,20 @@ const PlayerTrackDetails: React.FC<PlayerTrackDetailsProps> = ({
   duration,
   currentProgress,
   seekBarContainerRef,
-  handleSeek,
-  handleSeekMouseOut,
-  seekHoverTime,
-  seekHoverPosition,
+  seek,
 }) => {
+  const seekTimeTooltipRef = React.useRef<HTMLDivElement>(null);
+
+  const handleSeekInteraction = (event: React.MouseEvent<HTMLElement>) => {
+    if (!seekBarContainerRef.current || !duration) return;
+
+    const rect = seekBarContainerRef.current.getBoundingClientRect();
+    const clickPosition = event.clientX - rect.left;
+    const seekFraction = clickPosition / rect.width;
+    const seekTime = seekFraction * duration;
+    seek(seekTime);
+  };
+
   return (
     <div
       id="player-track"
@@ -40,23 +49,23 @@ const PlayerTrackDetails: React.FC<PlayerTrackDetailsProps> = ({
           id="seek-bar-container"
           ref={seekBarContainerRef}
           className="no-drag relative h-[8px] rounded-[4px] bg-[#ffe8ee] cursor-pointer group mx-2 flex-grow"
-          onClick={handleSeek}
-          onMouseMove={handleSeek}
-          onMouseOut={handleSeekMouseOut}
+          onClick={handleSeekInteraction}
+          onMouseMove={(e) =>
+            handleMouseMove(
+              e,
+              seekBarContainerRef,
+              seekTimeTooltipRef,
+              duration
+            )
+          }
+          onMouseOut={() =>
+            handleMouseOut(seekTimeTooltipRef, seekBarContainerRef)
+          }
         >
-          {seekHoverTime !== null && (
-            <div
-              id="seek-time"
-              className="absolute bottom-[10px] text-white text-[12px] whitespace-pre p-[5px] rounded-[4px] bg-[#3b3d50] transform -translate-x-1/2 z-10 pointer-events-none"
-              style={{ left: `${seekHoverPosition}px` }}
-            >
-              {formatTime(seekHoverTime)}
-            </div>
-          )}
           <div
-            id="s-hover"
-            className="absolute inset-0 left-0 h-full opacity-20 z-[2] bg-[#3b3d50] pointer-events-none"
-            style={{ width: `${seekHoverPosition}px` }}
+            id="seek-time"
+            ref={seekTimeTooltipRef}
+            className="absolute bottom-[10px] text-white text-[12px] whitespace-pre p-[5px] rounded-[4px] bg-[#3b3d50] transform -translate-x-1/2 z-10 pointer-events-none opacity-0 transition-opacity"
           ></div>
           <div
             id="seek-bar"

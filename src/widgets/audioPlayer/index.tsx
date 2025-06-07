@@ -32,26 +32,9 @@ import { useAudioPlayer } from "@/app/providers/audioPlayerProvider";
 
 // Root here
 export default function AudioPlayer() {
-  const {
-    currentTrack,
-    isPlaying,
-    isBuffering,
-    currentTime,
-    duration,
-    volume,
-    setVolume,
-    togglePlayPause,
-    nextTrack,
-    prevTrack,
-    seek,
-    isMuted,
-    toggleMute,
-    isLoadingCloudinary,
-  } = useAudioPlayer();
+  const { currentTrack, isPlaying, isBuffering, currentTime, duration, seek } =
+    useAudioPlayer();
 
-  // PlayerTrackDetails에 필요한 로컬 UI 상태 (seek hover 관련)
-  const [seekHoverTime, setSeekHoverTime] = useState<number | null>(null);
-  const [seekHoverPosition, setSeekHoverPosition] = useState(0);
   const seekBarContainerRef = useRef<HTMLDivElement>(null);
 
   const isDragging = useRef(false);
@@ -101,21 +84,6 @@ export default function AudioPlayer() {
     }
   }, []);
 
-  const handleLocalSeek = (event: MouseEvent<HTMLDivElement>) => {
-    handleSeekInteraction(
-      event,
-      seekBarContainerRef,
-      duration,
-      seek,
-      setSeekHoverTime,
-      setSeekHoverPosition
-    );
-  };
-
-  const handleLocalSeekMouseOut = () => {
-    setSeekHoverTime(null);
-  };
-
   const handleDrag = (e: DraggableEvent) => {
     isDragging.current = true;
 
@@ -156,10 +124,7 @@ export default function AudioPlayer() {
             duration={duration}
             currentProgress={currentProgress}
             seekBarContainerRef={seekBarContainerRef}
-            handleSeek={handleLocalSeek}
-            handleSeekMouseOut={handleLocalSeekMouseOut}
-            seekHoverTime={seekHoverTime}
-            seekHoverPosition={seekHoverPosition}
+            seek={seek}
           />
           <div
             id="player-content"
@@ -175,17 +140,7 @@ export default function AudioPlayer() {
                 }
               }}
             />
-            <PlayerControlsSection
-              currentTrackInfo={currentTrack}
-              prevTrack={prevTrack}
-              togglePlayPause={togglePlayPause}
-              nextTrack={nextTrack}
-              isPlaying={isPlaying}
-              volume={volume}
-              setVolume={setVolume}
-              isMuted={isMuted}
-              toggleMute={toggleMute}
-            />
+            <PlayerControlsSection currentTrackInfo={currentTrack} />
           </div>
         </div>
       </div>

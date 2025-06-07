@@ -5,7 +5,7 @@ import Earth from "@/features/landing/components/earth";
 export default function Hero() {
   return (
     <section className="min-h-screen flex flex-col justify-between p-4 sm:p-6 md:p-8 overflow-x-hidden">
-      <div className="flex flex-col md:flex-row justify-between items-center w-full max-w-screen-xl mx-auto pt-8 md:pt-16">
+      <div className="flex flex-col md:flex-row justify-between items-center w-full max-w-screen-xl mx-auto">
         <h1 className="text-7xl sm:text-8xl md:text-9xl font-bold leading-none text-center md:text-left">
           EDMM
         </h1>
@@ -27,28 +27,22 @@ export default function Hero() {
         </div>
       </div>
 
-      <div className="w-full flex justify-center items-center my-8 flex-shrink-0">
-        <div className="w-[500px] h-[500px] scale-[0.6] sm:scale-[0.8] md:scale-100 transition-transform duration-300 flex items-center justify-center">
+      <div className="w-full flex justify-center items-center flex-shrink-0">
+        <div className="w-[500px] h-[500px] scale-[0.6] sm:scale-[0.8] md:scale-100 transition-transform duration-300 flex items-center justify-center z-10">
           <Earth width={500} height={500} />
         </div>
       </div>
 
       <div className="flex flex-col md:flex-row items-center justify-between gap-8 md:gap-4 w-full max-w-screen-xl mx-auto pb-8 md:pb-4">
-        <div className="text-center md:text-left">
-          <p className="font-black text-xl sm:text-2xl lg:text-3xl">
-            scroll to
-          </p>
-          <p className="font-black text-xl sm:text-2xl lg:text-3xl">explore</p>
-        </div>
         <div className="text-center md:text-left my-4 md:my-0">
           <p className="font-semibold tracking-tighter uppercase text-base sm:text-lg lg:text-xl">
-            Smooth Scroll
+            Portfolio Production
           </p>
           <p className="font-semibold tracking-tighter uppercase text-base sm:text-lg lg:text-xl">
-            Framer Motion Animate
+            Designed by HappyMarmot123
           </p>
           <p className="font-semibold tracking-tighter uppercase text-base sm:text-lg lg:text-xl">
-            Website designed by Happy marmot
+            Have Fun Enjoy It
           </p>
         </div>
         <div className="flex justify-center md:justify-end">

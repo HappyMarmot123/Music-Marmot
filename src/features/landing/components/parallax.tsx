@@ -49,12 +49,12 @@ export default function Parallax({
   });
 
   return (
-    <div className="parallax relative">
+    <div className="relative parallax">
       <motion.div className="scroller" style={{ x }}>
         {Array.from({ length: 8 }).map((_, index) => (
           <span
             key={index}
-            className="text-white text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-bold whitespace-nowrap px-4"
+            className="text-white text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold whitespace-nowrap px-4"
           >
             {children}
           </span>

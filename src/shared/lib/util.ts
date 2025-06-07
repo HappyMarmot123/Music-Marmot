@@ -1,15 +1,11 @@
-import { useAuth } from "@/app/providers/authProvider";
 import {
   AudioPlayerState,
   CloudinaryResource,
   likeType,
-  TrackInfo,
-  zustandPersistSet,
 } from "@/shared/types/dataType";
 import { SetStateAction } from "react";
 import { Dispatch, MouseEvent, RefObject } from "react";
 import clsx from "clsx";
-import useRecentPlayStore from "@/app/store/recentPlayStore";
 
 export function formatTime(seconds: number): string {
   if (isNaN(seconds) || seconds < 0) {

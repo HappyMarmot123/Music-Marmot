@@ -146,9 +146,9 @@ export interface TrackInfo {
   assetId: string;
   album: string;
   name: string;
-  artworkId: string | null;
+  artworkId: string;
   url: string;
-  producer: string | null;
+  producer: string;
 }
 
 export interface CloudinaryResource {

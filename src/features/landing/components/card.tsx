@@ -41,6 +41,7 @@ const Card = ({ card }: { card: CloudinaryResource }) => {
           loading="lazy"
           width={256}
           height={256}
+          style={{ width: "auto", height: "auto" }}
         />
       ) : (
         <div className="absolute inset-0 bg-neutral-700 flex items-center justify-center">

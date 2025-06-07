@@ -7,6 +7,7 @@ import BodySection from "@/pages/landing/bodySection";
 import { useToggle } from "@/app/providers/toggleProvider";
 import AudioPlayer from "@/widgets/audioPlayer";
 import ListModal from "@/widgets/listModal";
+import { AnimatePresence } from "framer-motion";
 
 const Page: React.FC = () => {
   const { isOpen, closeToggle } = useToggle();
@@ -16,7 +17,9 @@ const Page: React.FC = () => {
       {/* <Test /> */}
       <MyArticle>
         {!isOpen && <AudioPlayer />}
-        {isOpen && <ListModal isOpen={isOpen} closeToggle={closeToggle} />}
+        <AnimatePresence>
+          {isOpen && <ListModal isOpen={isOpen} closeToggle={closeToggle} />}
+        </AnimatePresence>
         <Hero />
         <BodySection />
       </MyArticle>

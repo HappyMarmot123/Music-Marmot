@@ -37,7 +37,7 @@ export const handleOnLike = async (
   setIsLiked: (updateFn: (prevLiked: likeType[]) => likeType[]) => void
 ): Promise<void> => {
   try {
-    const response = await fetch("/api/like", {
+    const response = await fetch("/api/supabase", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -129,6 +129,45 @@ export const handleSeekInteraction = (
   } else {
     setSeekHoverTime(time);
     setSeekHoverPosition(offsetX);
+  }
+};
+
+export const handleMouseMove = (
+  e: React.MouseEvent<HTMLElement>,
+  seekBarContainerRef: RefObject<HTMLDivElement | null>,
+  seekTimeTooltipRef: RefObject<HTMLDivElement | null>,
+  duration: number | undefined
+) => {
+  if (!seekBarContainerRef.current || !seekTimeTooltipRef.current || !duration)
+    return console.warn(
+      "seekBarContainerRef, seekTimeTooltipRef, duration is required"
+    );
+
+  const seekBar = seekBarContainerRef.current;
+  const tooltip = seekTimeTooltipRef.current;
+  tooltip.style.opacity = "1";
+
+  const rect = seekBar.getBoundingClientRect();
+  let hoverPosition = e.clientX - rect.left;
+  hoverPosition = Math.max(0, Math.min(hoverPosition, rect.width));
+
+  seekBar.style.setProperty("--seek-hover-width", `${hoverPosition}px`);
+  tooltip.style.left = `${hoverPosition}px`;
+
+  const hoverFraction = hoverPosition / rect.width;
+  const hoverTime = hoverFraction * duration;
+  tooltip.setAttribute("data-seek-time", formatTime(hoverTime));
+};
+
+export const handleMouseOut = (
+  seekTimeTooltipRef: RefObject<HTMLDivElement | null>,
+  seekBarContainerRef: RefObject<HTMLDivElement | null>
+) => {
+  if (seekTimeTooltipRef.current) {
+    seekTimeTooltipRef.current.style.opacity = "0";
+  }
+  if (seekBarContainerRef.current) {
+    seekBarContainerRef.current.style.setProperty("--seek-hover-width", "0px");
   }
 };
 

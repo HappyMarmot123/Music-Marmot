@@ -27,6 +27,7 @@ import useCloudinaryStore from "@/app/store/cloudinaryStore";
 import { useFavorites } from "@/features/listModal/hook/useFavorites";
 import { useListModal } from "@/features/listModal/hook/useListModal";
 import { User } from "@supabase/supabase-js";
+import { useVolumeControl } from "@/features/player/hook/useVolumeControl";
 
 /*
   TODO:
@@ -57,6 +58,7 @@ export default function ListModal({
     prevTrack,
     seek,
     setVolume,
+    setLiveVolume,
     toggleMute,
     handleSelectTrack,
     analyserNode,
@@ -78,7 +80,6 @@ export default function ListModal({
 
   const [searchTerm, setSearchTerm] = useState("");
   const [isLiked, setIsLiked] = useState<likeType[]>([]);
-  const [showVolumeSlider, setShowVolumeSlider] = useState(false);
 
   // TODO: 클라디나리에서 트랙스토어에 데이터 저장하는 부분
   useEffect(() => {
@@ -158,21 +159,22 @@ export default function ListModal({
     return displayedTrackList;
   }, [displayedTrackList, searchTerm]);
 
-  const {
-    toggleLike,
-    handleVolumeChange,
-    handleVolumeMouseEnter,
-    handleVolumeMouseLeave,
-  } = useListModal(
+  const { toggleLike } = useListModal(
     currentTrack?.assetId as string,
     user as unknown as User,
     isLiked,
     setIsLiked,
-    setAnimateLikeForAssetId,
-    volume,
-    setVolume,
-    setShowVolumeSlider
+    setAnimateLikeForAssetId
   );
+
+  const {
+    localVolume,
+    showVolumeSlider,
+    handleVolumeChange,
+    handleVolumeChangeEnd,
+    handleVolumeMouseEnter,
+    handleVolumeMouseLeave,
+  } = useVolumeControl(volume, setVolume, setLiveVolume, isMuted, toggleMute);
 
   return (
     <motion.div
@@ -263,7 +265,6 @@ export default function ListModal({
             <ModalPlayerTrackDetails
               currentTime={currentTime}
               duration={duration}
-              seek={seek}
             />
 
             <section aria-label="재생 컨트롤" className="mt-6">
@@ -339,7 +340,7 @@ export default function ListModal({
                 </div>
 
                 <div
-                  className="flex items-center relative"
+                  className="flex items-center relative z-50"
                   onMouseEnter={handleVolumeMouseEnter}
                   onMouseLeave={handleVolumeMouseLeave}
                 >
@@ -374,8 +375,10 @@ export default function ListModal({
                         min="0"
                         max="1"
                         step="0.01"
-                        value={isMuted ? 0 : volume}
+                        value={isMuted ? 0 : localVolume}
                         onChange={handleVolumeChange}
+                        onMouseUp={handleVolumeChangeEnd}
+                        onTouchEnd={handleVolumeChangeEnd}
                         className="w-[80px] h-1.5 bg-white/20 rounded-lg appearance-none cursor-pointer origin-center transform -rotate-90 
                                  [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white/50 [&::-webkit-slider-thumb]:cursor-pointer 
                                  [&::-moz-range-thumb]:h-3 [&::-moz-range-thumb]:w-3 [&::-moz-range-thumb]:appearance-none [&::-moz-range-thumb]:border-0 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-white/50 [&::-moz-range-thumb]:cursor-pointer"

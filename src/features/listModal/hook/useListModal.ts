@@ -1,20 +1,14 @@
 import { type User } from "@supabase/supabase-js";
 import { handleOnLike } from "@/shared/lib/util";
 import { likeType } from "@/shared/types/dataType";
-import { SetStateAction, useRef, useState } from "react";
 
 export function useListModal(
   trackAssetId: string,
   user: User,
   isLiked: likeType[],
   setIsLiked: (updateFn: (prevLiked: likeType[]) => likeType[]) => void,
-  setAnimateLikeForAssetId: (assetId: string) => void,
-  volume: number,
-  setVolume: (volume: number) => void,
-  setShowVolumeSlider: (showVolumeSlider: boolean) => void
+  setAnimateLikeForAssetId: (assetId: string) => void
 ) {
-  const volumeSliderTimeoutId = useRef<NodeJS.Timeout | null>(null);
-
   const toggleLike = async () => {
     if (!trackAssetId) throw new Error("asset id is required");
     if (!user) throw new Error("need login");
@@ -35,29 +29,7 @@ export function useListModal(
     }
   };
 
-  const handleVolumeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newVolume = parseFloat(event.target.value);
-    setVolume(newVolume);
-  };
-
-  const handleVolumeMouseEnter = () => {
-    if (volumeSliderTimeoutId.current) {
-      clearTimeout(volumeSliderTimeoutId.current);
-      volumeSliderTimeoutId.current = null;
-    }
-    setShowVolumeSlider(true);
-  };
-
-  const handleVolumeMouseLeave = () => {
-    volumeSliderTimeoutId.current = setTimeout(() => {
-      setShowVolumeSlider(false);
-    }, 1000);
-  };
-
   return {
     toggleLike,
-    handleVolumeChange,
-    handleVolumeMouseEnter,
-    handleVolumeMouseLeave,
   };
 }

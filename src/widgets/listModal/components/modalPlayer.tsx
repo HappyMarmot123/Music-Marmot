@@ -11,11 +11,12 @@ import { CldImage } from "next-cloudinary";
 import clsx from "clsx";
 import { motion } from "framer-motion";
 import AudioVisualizer from "@/features/listModal/components/audioVisualizer";
-import ModalPlayerTrackDetails from "@/features/listModal/components/modalPlayerTrackDetails";
 import LoginSection from "@/features/listModal/components/loginSection";
 import MyTooltip from "@/shared/components/myTooltip";
 import OnclickEffect from "@/shared/components/onclickEffect";
 import { useListModal } from "@/features/listModal/hook/useListModal";
+import { useAudioPlayer } from "@/app/providers/audioPlayerProvider";
+import TrackSeekBar from "@/shared/components/trackSeekBar";
 
 export default function ModalPlayer() {
   const {
@@ -42,6 +43,7 @@ export default function ModalPlayer() {
     handleVolumeMouseLeave,
     toggleMute,
   } = useListModal();
+  const { seek } = useAudioPlayer();
 
   return (
     <div className="h-full p-4 sm:p-8 flex flex-col items-center border-r border-white/10 md:col-span-2">
@@ -80,7 +82,7 @@ export default function ModalPlayer() {
                 />
               </div>
             )}
-            {isBuffering || !currentTrack?.artworkId ? (
+            {isBuffering || currentTrack.artworkId === "none" ? (
               <div className="grid place-items-center w-56 h-56 bg-white/10 animate-pulse rounded-xl">
                 <div className="w-8 h-8 border-4  border-white border-t-transparent rounded-full animate-spin" />
               </div>
@@ -133,9 +135,10 @@ export default function ModalPlayer() {
             {currentTrack?.producer}
           </motion.h3>
 
-          <ModalPlayerTrackDetails
+          <TrackSeekBar
             currentTime={currentTime}
             duration={duration}
+            seek={seek}
           />
 
           <section aria-label="재생 컨트롤" className="mt-6">

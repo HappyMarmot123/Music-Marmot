@@ -1,4 +1,5 @@
 import React from "react";
+import { useAudioPlayer } from "@/app/providers/audioPlayerProvider";
 import { PlayerControlsSectionProps } from "@/shared/types/dataType";
 import {
   SkipBack,
@@ -8,6 +9,7 @@ import {
   Volume2,
   VolumeX,
 } from "lucide-react";
+import { useVolumeControl } from "@/features/player/hook/useVolumeControl";
 
 const PlayerControlButton: React.FC<{
   id: string;
@@ -29,19 +31,20 @@ const PlayerControlButton: React.FC<{
 
 const PlayerControlsSection: React.FC<PlayerControlsSectionProps> = ({
   currentTrackInfo,
-  prevTrack,
-  togglePlayPause,
-  nextTrack,
-  isPlaying,
-  volume,
-  setVolume,
-  isMuted,
-  toggleMute,
 }) => {
-  const handleVolumeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newVolume = parseFloat(event.target.value);
-    setVolume(newVolume);
-  };
+  const {
+    isPlaying,
+    volume,
+    isMuted,
+    togglePlayPause,
+    nextTrack,
+    prevTrack,
+    setVolume,
+    setLiveVolume,
+    toggleMute,
+  } = useAudioPlayer();
+  const { localVolume, handleVolumeChange, handleVolumeChangeEnd } =
+    useVolumeControl(volume, setVolume, setLiveVolume, isMuted, toggleMute);
 
   return (
     <div
@@ -136,8 +139,10 @@ const PlayerControlsSection: React.FC<PlayerControlsSectionProps> = ({
           min="0"
           max="1"
           step="0.01"
-          value={isMuted ? 0 : volume}
+          value={isMuted ? 0 : localVolume}
           onChange={handleVolumeChange}
+          onMouseUp={handleVolumeChangeEnd}
+          onTouchEnd={handleVolumeChangeEnd}
           className="no-drag w-1/4 h-1.5 bg-[#ffe8ee] rounded-lg appearance-none cursor-pointer [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-[#fd6d94] [&::-webkit-slider-thumb]:cursor-pointer [&::-moz-range-thumb]:h-3 [&::-moz-range-thumb]:w-3 [&::-moz-range-thumb]:appearance-none [&::-moz-range-thumb]:border-0 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-[#fd6d94] [&::-moz-range-thumb]:cursor-pointer"
         />
       </section>

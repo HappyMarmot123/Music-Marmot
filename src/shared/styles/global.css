@@ -2852,6 +2852,23 @@ circle {
   outline: none;
 }
 
+#seek-bar-container::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: var(--seek-hover-width, 0px);
+  background-color: #3b3d50;
+  opacity: 0.2;
+  z-index: 2;
+  pointer-events: none;
+}
+
+#seek-time::before {
+  content: attr(data-seek-time);
+}
+
 /* Album Art Pseudo-element */
 #album-art::before {
   content: "";

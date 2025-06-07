@@ -18,26 +18,24 @@ const useWaveSurferStore = create<WaveSurferStore>((set, get) => ({
   isLoading: false,
   initialize: (container, audio, onSeek) => {
     const { wavesurfer } = get();
-    // Re-initialization guard
-    if (wavesurfer) {
-      if (wavesurfer.getWrapper() !== container) {
-        wavesurfer.setOptions({ container });
-      }
+    if (wavesurfer && wavesurfer.getWrapper() !== container) {
+      wavesurfer.setOptions({ container });
       return;
     }
 
     set({ isLoading: true });
+
     const newWaveSurfer = WaveSurfer.create({
       container,
       media: audio,
-      waveColor: "rgb(253, 109, 148)",
-      progressColor: "rgb(255, 152, 162)",
+      waveColor: "rgb(200, 200, 200)",
+      progressColor: "rgb(253, 109, 148)",
       height: 30,
       barWidth: 2,
       barGap: 3,
       barRadius: 2,
       cursorWidth: 0,
-      interact: true, // Allow user interaction
+      interact: true,
     });
 
     newWaveSurfer.on("loading", (percent) => {
@@ -55,7 +53,6 @@ const useWaveSurferStore = create<WaveSurferStore>((set, get) => ({
       set({ isLoading: false });
     });
 
-    // Sync app state on user seek via click
     newWaveSurfer.on("click", onSeek);
 
     set({ wavesurfer: newWaveSurfer });

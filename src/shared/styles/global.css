@@ -93,8 +93,20 @@ h1 {
   background: var(--pink-main);
   box-shadow: 0 0 10px 2px var(--pink-shadow-1, 0.7),
     0 0 5px 1px var(--pink-shadow-1, 0.5);
-  animation: glow 1.5s infinite alternate;
+  animation: glow 1.5s infinite alternate,
+    fall var(--duration) var(--delay) linear infinite;
+  top: -10px;
+  left: var(--left-pos);
+  transform: scale(var(--scale));
+  opacity: var(--opacity);
 }
+
+@keyframes fall {
+  to {
+    transform: translateY(100vh) scale(var(--scale));
+  }
+}
+
 @keyframes glow {
   0% {
     box-shadow: 0 0 10px 2px var(--pink-shadow-1, 0.7),
@@ -2713,8 +2725,9 @@ h1 {
   overflow: hidden;
   transform: translate3d(0, 0, 0);
   position: fixed;
-  background: var(--pink-main);
-  mix-blend-mode: difference;
+  background-color: white; /* Changed from background */
+  filter: invert(1); /* Added for better cross-browser color inversion */
+  mix-blend-mode: difference; /* Kept as a progressive enhancement */
   transition: width 0.25s ease-in-out, height 0.25s ease-in-out;
 }
 .secondary-cursor.regular {
@@ -2934,7 +2947,7 @@ circle {
   /* Firefox */
   .custom-scrollbar {
     scrollbar-width: thin;
-    scrollbar-color: var(--scrollbar-pink-start) transparent;
+    scrollbar-color: var(--scrollbar-pink-end) transparent;
   }
 }
 

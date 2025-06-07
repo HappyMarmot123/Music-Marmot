@@ -12,6 +12,10 @@
     "db:migrate": "tsx ./src/db/migrate.ts",
     "db:studio": "drizzle-kit studio"
   },
+  "browserslist": [
+    "defaults",
+    "not IE 11"
+  ],
   "dependencies": {
     "@nextui-org/react": "^2.6.11",
     "@radix-ui/react-tooltip": "^1.2.7",

@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
-import Github from "@/shared/components/github";
-import Earth from "@/shared/components/earth";
+import Github from "@/features/landing/components/github";
+import Earth from "@/features/landing/components/earth";
 
 export default function Hero() {
   return (
@@ -31,19 +31,21 @@ export default function Hero() {
       </div>
       <div className="grid grid-cols-[1fr_2fr_4fr] items-center justify-between leading-[0.9] px-[2vw] h-[12vw]">
         <div className="text-left">
-          <p className="font-[900] text-[clamp(1rem,1.8vw,2.5rem)]">
+          <p className="font-black text-lg sm:text-xl md:text-2xl lg:text-3xl">
             scroll to
           </p>
-          <p className="font-[900] text-[clamp(1rem,1.8vw,2.5rem)]">explore</p>
+          <p className="font-black text-lg sm:text-xl md:text-2xl lg:text-3xl">
+            explore
+          </p>
         </div>
         <div className="text-left">
-          <p className="font-[600] tracking-[-0.01em] uppercase text-[clamp(0.8rem,1.3vw,1.8rem)]">
+          <p className="font-semibold tracking-tighter uppercase text-sm sm:text-base md:text-lg lg:text-xl">
             Smooth Scroll
           </p>
-          <p className="font-[600] tracking-[-0.01em] uppercase text-[clamp(0.8rem,1.3vw,1.8rem)]">
+          <p className="font-semibold tracking-tighter uppercase text-sm sm:text-base md:text-lg lg:text-xl">
             Framer Motion Animate
           </p>
-          <p className="font-[600] tracking-[-0.01em] uppercase text-[clamp(0.8rem,1.3vw,1.8rem)]">
+          <p className="font-semibold tracking-tighter uppercase text-sm sm:text-base md:text-lg lg:text-xl">
             Website designed by Happy marmot
           </p>
         </div>

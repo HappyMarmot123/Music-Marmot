@@ -23,22 +23,19 @@ const Waveform = () => {
         seek(seekTime);
       }
     },
-    [audioPlayer, seek]
+    [audioPlayer]
   );
 
   useEffect(() => {
     if (containerRef.current && audioPlayer) {
       initialize(containerRef.current, audioPlayer, handleSeek);
     }
-  }, [audioPlayer, initialize, handleSeek]);
+  }, [audioPlayer]);
 
-  // This effect synchronizes the global currentTime with the wavesurfer instance
   useEffect(() => {
     if (!wavesurfer || !audioPlayer?.duration) return;
-
     const wavesurferTime = wavesurfer.getCurrentTime();
 
-    // Only seek if there's a significant difference (more than 100ms)
     if (Math.abs(wavesurferTime - currentTime) > 0.1) {
       programmaticSeekRef.current = true;
       const progress = currentTime / audioPlayer.duration;

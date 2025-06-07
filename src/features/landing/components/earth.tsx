@@ -1,7 +1,7 @@
 "use client";
 
 import { EarthProps } from "@/shared/types/dataType";
-import useEarth from "@/shared/hooks/useEarth";
+import useEarth from "@/features/landing/hooks/useEarth";
 
 export default function Earth({
   width,

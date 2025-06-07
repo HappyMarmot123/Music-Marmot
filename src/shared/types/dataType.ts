@@ -128,11 +128,9 @@ export interface PlayerTrackDetailsProps {
   duration: number;
   currentProgress: number;
   seekBarContainerRef: RefObject<HTMLDivElement | null>;
-  handleSeek: (event: MouseEvent<HTMLDivElement>) => void;
-  handleSeekMouseOut: () => void;
-  seekHoverTime: number | null;
-  seekHoverPosition: number;
+  seek: (time: number) => void;
 }
+
 export interface AlbumArtworkProps {
   isPlaying: boolean;
   isBuffering: boolean;
@@ -141,14 +139,6 @@ export interface AlbumArtworkProps {
 
 export interface PlayerControlsSectionProps {
   currentTrackInfo: TrackInfo | null;
-  prevTrack: () => void;
-  togglePlayPause: () => void;
-  nextTrack: () => void;
-  isPlaying: boolean;
-  volume: number;
-  setVolume: (volume: number) => void;
-  isMuted: boolean;
-  toggleMute: () => void;
 }
 
 export interface TrackInfo {

@@ -17,6 +17,7 @@ import {
   setFindNewTrack,
 } from "@/shared/lib/audioPlayerUtil";
 import { setupAudioEventListeners } from "@/shared/lib/audioEventManager";
+import loadTrackInWaveSurfer from "@/shared/lib/wavesurferUtil";
 
 type AudioPlayerLogicReturnType = ReturnType<typeof useAudioPlayerLogic>;
 
@@ -58,6 +59,7 @@ function useAudioPlayerLogic() {
     if (isTrackChanged) {
       audio.src = currentTrack.url;
       storeSetCurrentTime(0);
+      loadTrackInWaveSurfer(currentTrack.url);
     }
   }, [currentTrack, audio, storeSetCurrentTime]);
 
@@ -108,7 +110,7 @@ function useAudioPlayerLogic() {
         isSeekingRef,
       });
     },
-    [currentTrack, isSeekingRef]
+    [currentTrack, audio, storeSeekTo]
   );
 
   const playNextTrack = () => {
@@ -122,6 +124,15 @@ function useAudioPlayerLogic() {
   const handleSelectTrack = useCallback((assetId: string) => {
     setFindNewTrack(cloudinaryData, assetId, setTrack);
   }, []);
+
+  const setLiveVolume = useCallback(
+    (newVolume: number) => {
+      if (isNumber(newVolume) && audio) {
+        audio.volume = newVolume;
+      }
+    },
+    [audio]
+  );
 
   // 오디오 이벤트 리스너 설정
   useEffect(() => {
@@ -160,6 +171,7 @@ function useAudioPlayerLogic() {
     prevTrack: playPrevTrack,
     handleSelectTrack,
     setVolume: storeSetVolume,
+    setLiveVolume,
     toggleMute: storeToggleMute,
     analyserNode,
     audioPlayer: audio,

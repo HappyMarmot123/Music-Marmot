@@ -6,6 +6,7 @@ import PlayerControlsSection from "@/features/audio/components/playerControlsSec
 import AlbumArtwork from "@/features/audio/components/albumArtwork";
 import Draggable, {
   DraggableEvent,
+  DraggableData,
   type DraggableBounds,
 } from "react-draggable";
 import { handleSeekInteraction } from "@/shared/lib/util";
@@ -102,6 +103,7 @@ export default function AudioPlayer() {
       defaultPosition={defaultPositionRef.current}
       nodeRef={draggableRef as React.RefObject<HTMLElement>}
       handle=".draggable-handle"
+      cancel=".no-drag"
       onDrag={handleDrag}
       onStop={(e) => {
         setTimeout(() => {
@@ -112,11 +114,15 @@ export default function AudioPlayer() {
       <div
         ref={draggableRef}
         id="player-container"
-        className="fixed w-[444px] h-[80px] mx-auto mt-[-4px] z-50 select-none"
+        className="fixed w-full max-w-md h-[80px] z-50 select-none"
+        aria-roledescription="Draggable audio player"
+        aria-label="Audio Player"
       >
         <div
           id="player"
           className="relative h-full z-[3] draggable-handle cursor-grab active:cursor-grabbing"
+          role="button"
+          aria-label="Drag to move player"
         >
           <PlayerTrackDetails
             isPlaying={isPlaying}
@@ -128,7 +134,7 @@ export default function AudioPlayer() {
           />
           <div
             id="player-content"
-            className="relative h-full bg-white shadow-[0_15px_40px_#656565] rounded-[15px] z-[2]"
+            className="relative h-full bg-white shadow-[0_15px_40px_rgba(0,0,0,0.2)] rounded-[15px] z-[2]"
           >
             <AlbumArtwork
               isPlaying={isPlaying}

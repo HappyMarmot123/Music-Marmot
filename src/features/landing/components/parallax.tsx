@@ -54,7 +54,7 @@ export default function Parallax({
         {Array.from({ length: 8 }).map((_, index) => (
           <span
             key={index}
-            className="text-[white] text-[clamp(1rem,5vw,6rem)]"
+            className="text-white text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-bold whitespace-nowrap px-4"
           >
             {children}
           </span>

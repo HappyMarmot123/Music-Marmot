@@ -2,6 +2,8 @@ import { motion } from "framer-motion";
 import { listModalRootClassName } from "@/shared/lib/util";
 import ModalPlayer from "./components/modalPlayer";
 import ModalTrackList from "./components/modalTrackList";
+import { useState } from "react";
+import ModalViewToggle from "./components/modalViewToggle";
 
 /*
   TODO:
@@ -14,6 +16,8 @@ export default function ListModal({
 }: {
   closeToggle: () => void;
 }) {
+  const [currentView, setCurrentView] = useState<"player" | "list">("player");
+
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.95 }}
@@ -22,8 +26,20 @@ export default function ListModal({
       transition={{ duration: 0.3, ease: "easeInOut" }}
       className={listModalRootClassName()}
     >
-      <ModalPlayer />
-      <ModalTrackList closeToggle={closeToggle} />
+      <div className="hidden md:block">
+        {currentView === "player" && <ModalPlayer />}
+        {currentView === "list" && <ModalTrackList closeToggle={closeToggle} />}
+      </div>
+
+      <div className="md:hidden">
+        {currentView === "player" && <ModalPlayer />}
+        {currentView === "list" && <ModalTrackList closeToggle={closeToggle} />}
+      </div>
+
+      <ModalViewToggle
+        currentView={currentView}
+        setCurrentView={setCurrentView}
+      />
     </motion.div>
   );
 }

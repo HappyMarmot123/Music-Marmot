@@ -44,9 +44,9 @@ export default function ModalPlayer() {
   } = useListModal();
 
   return (
-    <aside className="col-span-2 p-8 flex flex-col items-center border-r border-white/10">
+    <div className="h-full p-4 sm:p-8 flex flex-col items-center border-r border-white/10 md:col-span-2">
       <div className="flex flex-col items-center flex-grow w-full">
-        <section aria-label="현재 재생트랙" className="w-full mb-16">
+        <section aria-label="현재 재생트랙" className="w-full mb-8 sm:mb-16">
           <div
             className="relative flex flex-col items-center justify-center pt-8 overflow-hidden"
             style={
@@ -265,6 +265,6 @@ export default function ModalPlayer() {
         </div>
       </div>
       <LoginSection />
-    </aside>
+    </div>
   );
 }

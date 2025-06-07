@@ -25,7 +25,7 @@ export default function ModalTrackList({ closeToggle }: ModalTrackListProps) {
   } = useListModal();
 
   return (
-    <aside className="col-span-2 p-8 overflow-auto custom-scrollbar">
+    <div className="h-full p-4 sm:p-8 overflow-auto custom-scrollbar md:col-span-2">
       <section
         aria-label="재생 목록 컨트롤"
         className="mb-6 border-b border-white/10"
@@ -101,6 +101,6 @@ export default function ModalTrackList({ closeToggle }: ModalTrackListProps) {
           onTrackSelect={(assetId) => handleSelectTrack(assetId)}
         />
       </section>
-    </aside>
+    </div>
   );
 }

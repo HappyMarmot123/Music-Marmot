@@ -1,4 +1,20 @@
+"use client";
+
+import { useEffect, useState } from "react";
+
 export default function DustySnow() {
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setIsClient(true);
+    }
+  }, []);
+
+  if (!isClient) {
+    return null;
+  }
+
   return (
     <article className="fixed w-screen h-screen shadow-[0_0_10px_white] pointer-events-none z-10">
       {Array.from({ length: 150 }).map((_, index) => {

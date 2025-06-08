@@ -18,18 +18,10 @@ export const togglePlayPauseLogic = async ({
   audioContext,
   storeTogglePlayPause,
 }: TogglePlayPauseLogicParams) => {
-  if (!audioContext || audioContext.state === "suspended") {
-    console.error("AudioContext is suspended");
-    return;
-  }
-
-  try {
+  if (audioContext?.state === "suspended") {
     await audioContext.resume();
-  } catch (e) {
-    console.error("Failed to resume AudioContext", e);
-  } finally {
-    storeTogglePlayPause();
   }
+  storeTogglePlayPause();
 };
 
 export const seekLogic = ({

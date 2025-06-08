@@ -21,7 +21,7 @@ const AlbumArtwork: React.FC<ExtendedAlbumArtworkProps> = ({
       className={albumArtClassName(isPlaying, isBuffering)}
       aria-label="Toggle player details view"
     >
-      {currentTrackInfo ? (
+      {currentTrackInfo?.artworkId ? (
         <CldImage
           key={currentTrackInfo.artworkId}
           src={currentTrackInfo.artworkId}

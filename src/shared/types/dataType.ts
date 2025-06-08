@@ -135,11 +135,11 @@ export interface PlayerTrackDetailsProps {
 export interface AlbumArtworkProps {
   isPlaying: boolean;
   isBuffering: boolean;
-  currentTrackInfo: TrackInfo;
+  currentTrackInfo: TrackInfo | null;
 }
 
 export interface PlayerControlsSectionProps {
-  currentTrackInfo: TrackInfo;
+  currentTrackInfo: TrackInfo | null;
 }
 
 export interface TrackInfo {
@@ -207,7 +207,7 @@ export interface EarthProps {
 }
 
 export interface AudioPlayerState {
-  currentTrack: TrackInfo;
+  currentTrack: TrackInfo | null;
   isPlaying: boolean;
   currentTime: number;
   duration: number;
@@ -251,7 +251,7 @@ export type TogglePlayPauseLogicParams = {
 
 export type SeekLogicParams = {
   audio: HTMLAudioElement | null;
-  currentTrack: TrackInfo;
+  currentTrack: TrackInfo | null;
   duration: number | null;
   time: number;
   storeSeekTo: (time: number) => void;
@@ -260,14 +260,14 @@ export type SeekLogicParams = {
 
 export type PlayNextTrackLogicParams = {
   cloudinaryData: CloudinaryResource[];
-  currentTrack: TrackInfo;
+  currentTrack: TrackInfo | null;
   setTrack: (track: TrackInfo, playImmediately: boolean) => void;
   isPlaying: boolean;
 };
 
 export type PlayPrevTrackLogicParams = {
   cloudinaryData: CloudinaryResource[];
-  currentTrack: TrackInfo;
+  currentTrack: TrackInfo | null;
   setTrack: (track: TrackInfo, playImmediately: boolean) => void;
   isPlaying: boolean;
 };

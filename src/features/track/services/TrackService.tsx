@@ -15,10 +15,11 @@ interface TrackServiceProps {
 }
 
 function TrackService({ tracks }: TrackServiceProps) {
-  useCloudinaryStore.setState({
-    cloudinaryData: tracks,
-    isLoadingCloudinary: false,
-  });
+  const setCloudinaryData = useCloudinaryStore(
+    (state) => state.setCloudinaryData
+  );
+  setCloudinaryData(tracks);
+  console.log("cloudinary Data setGlobalState", tracks.length);
 
   return null;
 }

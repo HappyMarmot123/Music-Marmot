@@ -55,7 +55,7 @@ function useAudioPlayerLogic() {
   useEffect(() => {
     const isTrackChanged = currentTrack && audio.src !== currentTrack.url;
 
-    if (isTrackChanged) {
+    if (isTrackChanged && currentTrack.url) {
       audio.src = currentTrack.url;
       storeSetCurrentTime(0);
     }

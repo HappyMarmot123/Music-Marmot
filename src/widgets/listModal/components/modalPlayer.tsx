@@ -45,6 +45,8 @@ export default function ModalPlayer() {
   } = useListModal();
   const { seek } = useAudioPlayer();
 
+  if (!currentTrack) return null;
+
   return (
     <div className="h-full p-4 sm:p-8 flex flex-col items-center border-r border-white/10 md:col-span-2">
       <div className="flex flex-col items-center flex-grow w-full">
@@ -82,7 +84,7 @@ export default function ModalPlayer() {
                 />
               </div>
             )}
-            {isBuffering || currentTrack.artworkId === "none" ? (
+            {isBuffering ? (
               <div className="grid place-items-center w-56 h-56 bg-white/10 animate-pulse rounded-xl">
                 <div className="w-8 h-8 border-4  border-white border-t-transparent rounded-full animate-spin" />
               </div>

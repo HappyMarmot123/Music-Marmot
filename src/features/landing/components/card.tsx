@@ -13,10 +13,8 @@ const Card = ({ card }: { card: CloudinaryResource }) => {
   const currentTrack = useTrackStore((state) => state.currentTrack);
   const cloudinaryData = useCloudinaryStore((state) => state.cloudinaryData);
 
-  const artistName = card.producer || "Unknown Producer";
-
+  const artistName = card.producer;
   const imageUrl = card.album_secure_url;
-
   const itemName = card.title;
 
   return (
@@ -30,7 +28,7 @@ const Card = ({ card }: { card: CloudinaryResource }) => {
         openToggle();
       }}
       rel="noopener noreferrer"
-      className="group relative h-48 w-40 sm:w-48 md:h-64 md:w-56 lg:h-72 lg:w-64 p-3 md:p-4 overflow-hidden bg-neutral-800/50 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 flex flex-col justify-between flex-shrink-0"
+      className="group relative h-40 w-40 sm:w-48 md:h-56 md:w-56 lg:h-64 lg:w-64 p-3 md:p-4 overflow-hidden bg-neutral-800/50 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 flex flex-col justify-between flex-shrink-0"
     >
       {/* 앨범 아트 표시 */}
       {imageUrl ? (
@@ -41,7 +39,7 @@ const Card = ({ card }: { card: CloudinaryResource }) => {
           loading="lazy"
           width={256}
           height={256}
-          style={{ width: "auto", height: "auto" }}
+          style={{ height: "auto" }}
         />
       ) : (
         <div className="absolute inset-0 bg-neutral-700 flex items-center justify-center">

@@ -8,6 +8,7 @@ import { AudioPlayerProvider } from "@/app/providers/audioPlayerProvider";
 import { Suspense } from "react";
 import { DataLoader } from "./api/dataLoader";
 import TrackService from "@/features/track/services/TrackService";
+import Spinner from "@/shared/components/spinner";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://edmm.vercel.app"),
@@ -64,7 +65,7 @@ const RootLayout = async ({ children }: { children: React.ReactNode }) => {
           <TanstackProvider>
             <AudioPlayerProvider>
               <ToggleProvider>
-                <Suspense fallback={<div>Loading...</div>}>{children}</Suspense>
+                <Suspense fallback={<Spinner />}>{children}</Suspense>
               </ToggleProvider>
             </AudioPlayerProvider>
           </TanstackProvider>

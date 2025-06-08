@@ -124,7 +124,7 @@ export const setFindNewTrack = (
 
   const newTrackInfo: TrackInfo = {
     assetId: findTrackInData.asset_id,
-    album: findTrackInData.context?.caption,
+    album: findTrackInData.context.caption,
     name: findTrackInData.title,
     artworkId: findTrackInData.album_secure_url,
     url: findTrackInData.secure_url,

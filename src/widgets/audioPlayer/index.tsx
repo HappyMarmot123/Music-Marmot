@@ -37,6 +37,10 @@ export default function AudioPlayer() {
 
   const { openToggle } = useToggle();
 
+  if (!currentTrack) {
+    return null;
+  }
+
   const seekBarContainerRef = useRef<HTMLDivElement>(null);
   const isDragging = useRef(false);
   const draggableRef = useRef<HTMLDivElement>(null);

@@ -143,11 +143,11 @@ export interface PlayerControlsSectionProps {
 }
 
 export interface TrackInfo {
-  assetId: string;
+  assetId: string | null;
   album: string;
   name: string;
-  artworkId: string;
-  url: string;
+  artworkId: string | null;
+  url: string | null;
   producer: string;
 }
 

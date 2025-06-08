@@ -18,12 +18,12 @@ const useTrackStore = create<AudioPlayerState>()(
   persist(
     (set: zustandPersistSet) => ({
       currentTrack: {
-        assetId: "none",
+        assetId: null,
         album: "Unknown Album",
         name: "Unknown Track",
-        artworkId: "none",
-        url: "Unknown URL",
         producer: "Unknown Producer",
+        artworkId: null,
+        url: null,
       },
       isPlaying: false,
       currentTime: 0,

@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState, useMemo } from "react";
 import {
   type Session,
   type User,
@@ -20,7 +20,7 @@ import { AuthProviderProps, AuthContextType } from "@/shared/types/dataType";
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export const AuthProvider = ({ children }: AuthProviderProps) => {
+export function AuthProvider({ children }: AuthProviderProps) {
   const [session, setSession] = useState<Session | null>(null);
   const [user, setUser] = useState<User | null>(null);
   const [isLoadingSession, setIsLoadingSession] = useState(true);
@@ -28,74 +28,31 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   useEffect(() => {
     const { data: authListener } = supabaseClient.auth.onAuthStateChange(
-      async (event: AuthChangeEvent, currentSession: Session | null) => {
+      (event: AuthChangeEvent, currentSession: Session | null) => {
         setSession(currentSession);
-        setIsLoadingSession(true);
-        setUser(currentSession?.user || null);
-
-        try {
-          if (event === "SIGNED_IN" && currentSession?.user) {
-            const { id: uid, email, user_metadata } = currentSession.user;
-            if (!uid || !email) {
-              console.error(
-                "UID or Email is null from Supabase session on SIGNED_IN"
-              );
-              return;
-            }
-
-            const userToCreate = {
-              uid: uid,
-              avatar_url: user_metadata?.avatar_url,
-              email: email,
-              full_name: user_metadata?.full_name,
-            };
-
-            await fetch("/api/users", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify(userToCreate),
-            })
-              .then((response) => {
-                if (!response.ok) {
-                  throw new Error(`HTTP error! status: ${response.status}`);
-                }
-              })
-              .catch((error) => {
-                console.error("Failed to Insert User:", error);
-              });
-          }
-        } catch (apiError) {
-          console.error("Error calling user processing API:", apiError);
-        } finally {
-          setIsLoadingSession(false);
-        }
+        setUser(currentSession?.user ?? null);
+        setIsLoadingSession(false);
       }
     );
 
-    const authListenerSubscription: Subscription | undefined =
-      authListener?.subscription;
-
     return () => {
-      authListenerSubscription?.unsubscribe();
+      authListener?.subscription.unsubscribe();
     };
   }, []);
 
-  return (
-    <AuthContext.Provider
-      value={{
-        session,
-        user,
-        isLoadingSession,
-        setSession,
-        authActions,
-      }}
-    >
-      {children}
-    </AuthContext.Provider>
+  const value = useMemo(
+    () => ({
+      session,
+      user,
+      isLoadingSession,
+      setSession,
+      authActions,
+    }),
+    [session, user, isLoadingSession, setSession, authActions]
   );
-};
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+}
 
 export const useAuth = () => {
   const context = useContext(AuthContext);

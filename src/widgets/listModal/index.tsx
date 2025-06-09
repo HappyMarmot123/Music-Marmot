@@ -3,6 +3,7 @@ import ModalPlayer from "./components/modalPlayer";
 import ModalTrackList from "./components/modalTrackList";
 import clsx from "clsx";
 import { CSSProperties } from "react";
+import { listModalVariants } from "@/shared/lib/util";
 
 /*
   TODO:
@@ -16,29 +17,12 @@ interface ListModalProps {
 }
 
 export default function ListModal({ isOpen, closeToggle }: ListModalProps) {
-  const variants: Variants = {
-    open: {
-      opacity: 1,
-      scale: 1,
-      visibility: "visible" as CSSProperties["visibility"],
-      transition: { duration: 0.3, ease: "easeInOut" },
-    },
-    closed: {
-      opacity: 0,
-      scale: 0.95,
-      transition: { duration: 0.3, ease: "easeInOut" },
-      transitionEnd: {
-        visibility: "hidden" as CSSProperties["visibility"],
-      },
-    },
-  };
-
   return (
     <motion.div
       initial="closed"
       animate={isOpen ? "open" : "closed"}
       exit="closed"
-      variants={variants}
+      variants={listModalVariants}
       className={clsx(
         "grid grid-cols-1 md:grid-cols-5 fixed inset-0 m-auto w-[95%] md:w-[90%] h-[90%]",
         "bg-[#483544aa] text-white backdrop-blur-lg",

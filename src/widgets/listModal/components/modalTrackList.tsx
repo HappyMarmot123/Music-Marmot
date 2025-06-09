@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import clsx from "clsx";
 import ModalMusicList from "@/features/listModal/components/modalMusicList";
 import { useListModal } from "@/features/listModal/hook/useListModal";
+import CreateListButton from "@/features/listModal/components/tabButtonFactory";
 
 interface ModalTrackListProps {
   closeToggle: () => void;
@@ -56,38 +57,14 @@ export default function ModalTrackList({ closeToggle }: ModalTrackListProps) {
         <div className="flex items-center justify-between mt-6 mb-2">
           <h2 className="text-2xl font-bold">{listTitleText}</h2>
           <div className="flex flex-row space-x-4">
-            <MyTooltip tooltipText="You need to Login!" showTooltip={!user}>
-              <motion.button
-                disabled={!user}
-                whileTap={{ scale: 0.95 }}
-                transition={{ duration: 0.1 }}
-                onClick={() => setActiveButton("heart")}
-                className={clsx(
-                  "px-3 py-1 text-sm font-medium text-white rounded-lg transition-colors focus:outline-none flex items-center justify-center space-x-2 border border-white/20",
-                  activeButton === "heart"
-                    ? "bg-purple-600/80 hover:bg-purple-700/80 ring-1 ring-purple-500 ring-opacity-50"
-                    : "bg-purple-300/50 hover:bg-purple-500/60",
-                  !user && "cursor-not-allowed opacity-70"
-                )}
-              >
-                <Heart size={16} />
-                <span>Like</span>
-              </motion.button>
-            </MyTooltip>
-            <motion.button
-              whileTap={{ scale: 0.95 }}
-              transition={{ duration: 0.1 }}
-              onClick={() => setActiveButton("available")}
-              className={clsx(
-                "px-3 py-1 text-sm font-medium text-white rounded-lg transition-colors focus:outline-none flex items-center justify-center space-x-2 border border-white/20",
-                activeButton === "available"
-                  ? "bg-emerald-600/80 hover:bg-emerald-700/80 ring-1 ring-emerald-500 ring-opacity-50"
-                  : "bg-emerald-300/50 hover:bg-emerald-500/60"
-              )}
-            >
-              <LayoutList size={16} />
-              <span>List</span>
-            </motion.button>
+            <CreateListButton
+              type="heart"
+              props={{ user, activeButton, setActiveButton }}
+            />
+            <CreateListButton
+              type="available"
+              props={{ user, activeButton, setActiveButton }}
+            />
           </div>
         </div>
       </section>

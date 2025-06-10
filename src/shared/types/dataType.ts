@@ -170,16 +170,11 @@ export interface CloudinaryResource {
   album_secure_url: string;
 }
 
-export interface likeType {
-  asset_id: string;
-  isLike: boolean;
-}
-
 export interface ModalMusicListProps {
   loading: boolean | null;
   trackList: CloudinaryResource[];
-  isLiked: likeType[];
-  toggleLike: (assetId: string) => void;
+  isFavorite: Set<string>;
+  toggleFavorite: () => void;
   onTrackSelect?: (assetId: string) => void;
 }
 
@@ -323,6 +318,6 @@ export interface IconToggleButtonProps {
 export interface LikeButtonProps {
   track: CloudinaryResource;
   user: any;
-  isLiked: likeType[];
-  toggleLike: () => void;
+  isFavorite: Set<string>;
+  toggleFavorite: () => void;
 }

@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useAudioPlayer } from "@/app/providers/audioPlayerProvider";
 import { useAuth } from "@/app/providers/authProvider";
-import { CloudinaryResource, likeType } from "@/shared/types/dataType";
+import { CloudinaryResource } from "@/shared/types/dataType";
 import useCloudinaryStore from "@/app/store/cloudinaryStore";
 import { useFavorites } from "@/features/listModal/hook/useFavorites";
 import { useVolumeControl } from "@/features/player/hook/useVolumeControl";
@@ -46,7 +46,9 @@ export const useListModal = () => {
   >(null);
 
   const [searchTerm, setSearchTerm] = useState("");
-  const [isLiked, setIsLiked] = useState<likeType[]>([]);
+  const [favoriteAssetIds, setFavoriteAssetIds] = useState<Set<string>>(
+    favorites || new Set([])
+  );
 
   useEffect(() => {
     if (cloudinaryData) {
@@ -68,7 +70,7 @@ export const useListModal = () => {
   useEffect(() => {
     if (activeButton && user) {
       setListTitleText(
-        activeButton === "heart" ? "Your Liked" : "Available Now"
+        activeButton === "heart" ? "Your Favorites" : "Available Now"
       );
       localStorage.setItem("activeButtonKey", activeButton);
     }
@@ -86,24 +88,13 @@ export const useListModal = () => {
   }, [isCursorHidden]);
 
   useEffect(() => {
-    if (favorites) {
-      setIsLiked(
-        favorites.map((favorite) => ({
-          asset_id: favorite.asset_id,
-          isLike: true,
-        }))
-      );
-    }
-  }, [favorites]);
-
-  useEffect(() => {
     let newDisplayedList: CloudinaryResource[] = [];
 
     switch (activeButton) {
       case "heart":
-        const likedAssetIds = new Set(isLiked.map((like) => like.asset_id));
+        const assetIds = Array.from(favoriteAssetIds);
         newDisplayedList = trackList.filter(
-          (track) => track.asset_id && likedAssetIds.has(track.asset_id)
+          (track) => track.asset_id && assetIds.includes(track.asset_id)
         );
         break;
       case "available":
@@ -112,7 +103,7 @@ export const useListModal = () => {
     }
 
     setDisplayedTrackList(newDisplayedList);
-  }, [activeButton, trackList, isLiked]);
+  }, [activeButton, trackList, favoriteAssetIds]);
 
   const searchedTrackList = useMemo(() => {
     if (searchTerm) {
@@ -125,22 +116,22 @@ export const useListModal = () => {
     return displayedTrackList;
   }, [displayedTrackList, searchTerm]);
 
-  const toggleLike = async () => {
-    if (!currentTrack?.assetId) throw new Error("asset id is required");
+  const toggleFavorite = async () => {
+    if (!currentTrack) throw new Error("asset id is required");
     if (!user) throw new Error("need login");
 
-    const currentTrackLikeInfo = isLiked.find(
-      (item) => item.asset_id === currentTrack?.assetId
+    const currentTrackFavorite = [...favoriteAssetIds].find(
+      (item) => item === currentTrack?.assetId
     );
-    const currentIsLikedState = !!currentTrackLikeInfo;
+    const currentFavoriteState = !!currentTrackFavorite;
     await handleOnLike(
       currentTrack?.assetId,
       user.id.toString(),
-      currentIsLikedState,
-      setIsLiked
+      currentFavoriteState,
+      setFavoriteAssetIds
     );
 
-    if (!currentIsLikedState) {
+    if (!currentFavoriteState) {
       setAnimateLikeForAssetId(currentTrack?.assetId);
     }
   };
@@ -172,8 +163,8 @@ export const useListModal = () => {
     user,
     trackList: searchedTrackList,
     isLoading,
-    isLiked,
-    toggleLike,
+    favoriteAssetIds,
+    toggleFavorite,
     animateLikeForAssetId,
     setAnimateLikeForAssetId,
     activeButton,

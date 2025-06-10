@@ -30,8 +30,8 @@ export default function ModalPlayer() {
     nextTrack,
     prevTrack,
     user,
-    isLiked,
-    toggleLike,
+    favoriteAssetIds,
+    toggleFavorite,
     animateLikeForAssetId,
     setAnimateLikeForAssetId,
     isMuted,
@@ -149,18 +149,18 @@ export default function ModalPlayer() {
                 <motion.button
                   whileTap={{ scale: 0.95 }}
                   transition={{ duration: 0.1 }}
-                  onClick={() => toggleLike()}
+                  onClick={() => toggleFavorite()}
                   disabled={!user}
                   className={clsx(
                     "p-2 rounded-full transition bg-white/10 hover:bg-white/20",
                     user ? "" : "opacity-50 cursor-not-allowed"
                   )}
                   aria-label={
-                    isLiked.find(
-                      (item) => item.asset_id === currentTrack?.assetId
+                    [...favoriteAssetIds].find(
+                      (item) => item === currentTrack?.assetId
                     )
-                      ? "dislike"
-                      : "like"
+                      ? "unfavorite"
+                      : "favorite"
                   }
                 >
                   <span className="relative z-10 flex items-center space-x-1">
@@ -169,8 +169,8 @@ export default function ModalPlayer() {
                       fill={"white"}
                       className={clsx(
                         "!m-0",
-                        isLiked.find(
-                          (item) => item.asset_id === currentTrack?.assetId
+                        [...favoriteAssetIds].find(
+                          (item) => item === currentTrack?.assetId
                         ) && "text-pink-500 fill-pink-500/30"
                       )}
                     />

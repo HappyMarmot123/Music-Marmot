@@ -1,10 +1,8 @@
-import { Heart, LayoutList, Search, X } from "lucide-react";
-import MyTooltip from "@/shared/components/myTooltip";
+import { Search, X } from "lucide-react";
 import { motion } from "framer-motion";
-import clsx from "clsx";
 import ModalMusicList from "@/features/listModal/components/modalMusicList";
 import { useListModal } from "@/features/listModal/hook/useListModal";
-import CreateListButton from "@/features/listModal/components/tabButtonFactory";
+import TabButtonFactory from "@/features/listModal/components/tabButtonFactory";
 
 interface ModalTrackListProps {
   closeToggle: () => void;
@@ -13,11 +11,6 @@ interface ModalTrackListProps {
 export default function ModalTrackList({ closeToggle }: ModalTrackListProps) {
   const {
     user,
-    isLoading,
-    trackList,
-    isLiked,
-    toggleLike,
-    handleSelectTrack,
     searchTerm,
     setSearchTerm,
     listTitleText,
@@ -57,11 +50,11 @@ export default function ModalTrackList({ closeToggle }: ModalTrackListProps) {
         <div className="flex items-center justify-between mt-6 mb-2">
           <h2 className="text-2xl font-bold">{listTitleText}</h2>
           <div className="flex flex-row space-x-4">
-            <CreateListButton
+            <TabButtonFactory
               type="heart"
               props={{ user, activeButton, setActiveButton }}
             />
-            <CreateListButton
+            <TabButtonFactory
               type="available"
               props={{ user, activeButton, setActiveButton }}
             />

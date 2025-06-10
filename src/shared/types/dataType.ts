@@ -319,3 +319,10 @@ export interface IconToggleButtonProps {
   label: string;
   iconProps?: Omit<LucideProps, "ref">;
 }
+
+export interface LikeButtonProps {
+  track: CloudinaryResource;
+  user: any;
+  isLiked: likeType[];
+  toggleLike: () => void;
+}

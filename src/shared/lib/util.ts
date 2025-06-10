@@ -3,9 +3,10 @@ import {
   CloudinaryResource,
   likeType,
 } from "@/shared/types/dataType";
-import { SetStateAction } from "react";
+import { CSSProperties, SetStateAction } from "react";
 import { Dispatch, MouseEvent, RefObject } from "react";
 import clsx from "clsx";
+import { Variants } from "framer-motion";
 
 export function formatTime(seconds: number): string {
   if (isNaN(seconds) || seconds < 0) {
@@ -205,3 +206,20 @@ export const mergeFunction = (
   isBuffering: false,
   currentTime: 0,
 });
+
+export const listModalVariants: Variants = {
+  open: {
+    opacity: 1,
+    scale: 1,
+    visibility: "visible" as CSSProperties["visibility"],
+    transition: { duration: 0.3, ease: "easeInOut" },
+  },
+  closed: {
+    opacity: 0,
+    scale: 0.95,
+    transition: { duration: 0.3, ease: "easeInOut" },
+    transitionEnd: {
+      visibility: "hidden" as CSSProperties["visibility"],
+    },
+  },
+};

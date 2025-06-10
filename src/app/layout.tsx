@@ -65,7 +65,9 @@ const RootLayout = async ({ children }: { children: React.ReactNode }) => {
           <TanstackProvider>
             <AudioPlayerProvider>
               <ToggleProvider>
-                <Suspense fallback={<Spinner />}>{children}</Suspense>
+                {/* <Suspense fallback={<Spinner />}> */}
+                {children}
+                {/* </Suspense> */}
               </ToggleProvider>
             </AudioPlayerProvider>
           </TanstackProvider>

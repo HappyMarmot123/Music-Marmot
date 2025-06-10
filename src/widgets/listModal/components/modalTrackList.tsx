@@ -70,13 +70,7 @@ export default function ModalTrackList({ closeToggle }: ModalTrackListProps) {
       </section>
 
       <section aria-label="음악 리스트" className="space-y-3">
-        <ModalMusicList
-          loading={isLoading}
-          trackList={trackList}
-          isLiked={isLiked}
-          toggleLike={toggleLike}
-          onTrackSelect={(assetId) => handleSelectTrack(assetId)}
-        />
+        <ModalMusicList />
       </section>
     </div>
   );

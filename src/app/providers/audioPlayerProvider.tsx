@@ -84,8 +84,8 @@ function useAudioPlayerLogic() {
     const hasAlreadyTrackInStore = isEmpty(cloudinaryData) || currentTrack;
     if (hasAlreadyTrackInStore) return;
 
-    if (cloudinaryData && cloudinaryData.length > 0) {
-      const firstTrackAssetId = cloudinaryData[0].asset_id;
+    if (cloudinaryData && cloudinaryData.size > 0) {
+      const firstTrackAssetId = cloudinaryData.keys().next().value!!;
       setFindNewTrack(cloudinaryData, firstTrackAssetId, setTrack);
     }
   }, [cloudinaryData]);

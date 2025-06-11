@@ -18,10 +18,8 @@ export default function MusicList() {
     }
   }, [error]);
 
-  const recentTracks = recentAssetIds
-    .map((assetId) =>
-      cloudinaryData.find((track) => track.asset_id === assetId)
-    )
+  const recentTracks = Array.from(recentAssetIds)
+    .map((assetId) => cloudinaryData.get(assetId))
     .filter((track): track is CloudinaryResource => track !== undefined);
 
   return (
@@ -39,7 +37,7 @@ export default function MusicList() {
         {!loading && recentTracks.length > 0 && (
           <Horizontal data={recentTracks} swiperId="recent-list" />
         )}
-        {!loading && recentAssetIds.length === 0 && (
+        {!loading && recentAssetIds.size === 0 && (
           <p className="col-start-2 mt-4">최근 재생한 음악이 없습니다.</p>
         )}
       </div>

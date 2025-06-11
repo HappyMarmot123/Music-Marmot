@@ -1,8 +1,7 @@
 "use client";
 
-import { useRef } from "react";
 import useCloudinaryStore from "@/app/store/cloudinaryStore";
-import { CloudinaryResource } from "@/shared/types/dataType";
+import { CloudinaryResourceMap } from "@/shared/types/dataType";
 
 /* TODO: 
   전역상태 세팅은 Javascript XML 파일에서만 가능하므로
@@ -11,7 +10,7 @@ import { CloudinaryResource } from "@/shared/types/dataType";
 */
 
 interface TrackServiceProps {
-  tracks: CloudinaryResource[];
+  tracks: CloudinaryResourceMap;
 }
 
 function TrackService({ tracks }: TrackServiceProps) {
@@ -19,7 +18,7 @@ function TrackService({ tracks }: TrackServiceProps) {
     (state) => state.setCloudinaryData
   );
   setCloudinaryData(tracks);
-  console.log("cloudinary Data setGlobalState", tracks.length);
+  console.log("cloudinary Data setGlobalState", tracks.size);
 
   return null;
 }

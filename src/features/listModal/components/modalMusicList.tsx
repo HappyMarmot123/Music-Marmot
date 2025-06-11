@@ -35,8 +35,8 @@ const ModalMusicList = () => {
   return (
     <>
       {isLoading && <LoadingView />}
-      {trackList.length === 0 && <EmptyView />}
-      {trackList.map((track) => (
+      {trackList.size === 0 && <EmptyView />}
+      {Array.from(trackList.values()).map((track) => (
         <div
           key={track.asset_id}
           onClick={(e) => {

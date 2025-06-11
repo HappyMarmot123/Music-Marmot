@@ -1,18 +1,13 @@
 import { useEffect, useMemo, useState } from "react";
 import { useAudioPlayer } from "@/app/providers/audioPlayerProvider";
 import { useAuth } from "@/app/providers/authProvider";
-import { CloudinaryResource } from "@/shared/types/dataType";
+import { CloudinaryResourceMap } from "@/shared/types/dataType";
 import useCloudinaryStore from "@/app/store/cloudinaryStore";
 import { useFavorites } from "@/features/listModal/hook/useFavorites";
 import { useVolumeControl } from "@/features/player/hook/useVolumeControl";
 import { handleOnLike } from "@/shared/lib/util";
 
 export const useListModal = () => {
-  const cloudinaryData = useCloudinaryStore((state) => state.cloudinaryData);
-  const isLoadingCloudinary = useCloudinaryStore(
-    (state) => state.isLoadingCloudinary
-  );
-
   const {
     currentTrack,
     isPlaying,
@@ -31,24 +26,31 @@ export const useListModal = () => {
     analyserNode,
   } = useAudioPlayer();
 
+  const cloudinaryData = useCloudinaryStore((state) => state.cloudinaryData);
+  const isLoadingCloudinary = useCloudinaryStore(
+    (state) => state.isLoadingCloudinary
+  );
+
   const { user } = useAuth();
   const { data: favorites, isLoading: isLoadingFavorites } = useFavorites();
 
-  const [trackList, setTrackList] = useState<CloudinaryResource[]>([]);
   const [isCursorHidden] = useState(true);
   const [activeButton, setActiveButton] = useState("available");
   const [listTitleText, setListTitleText] = useState("Available Now");
-  const [displayedTrackList, setDisplayedTrackList] = useState<
-    CloudinaryResource[]
-  >([]);
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const [trackList, setTrackList] = useState<CloudinaryResourceMap>(new Map());
+  const [displayedTrackList, setDisplayedTrackList] =
+    useState<CloudinaryResourceMap>(new Map());
   const [animateLikeForAssetId, setAnimateLikeForAssetId] = useState<
     string | null
   >(null);
-
-  const [searchTerm, setSearchTerm] = useState("");
   const [favoriteAssetIds, setFavoriteAssetIds] = useState<Set<string>>(
     favorites || new Set([])
   );
+
+  const isLoading =
+    isLoadingCloudinary || (activeButton === "heart" && isLoadingFavorites);
 
   useEffect(() => {
     if (cloudinaryData) {
@@ -88,14 +90,18 @@ export const useListModal = () => {
   }, [isCursorHidden]);
 
   useEffect(() => {
-    let newDisplayedList: CloudinaryResource[] = [];
+    let newDisplayedList: CloudinaryResourceMap = new Map();
 
     switch (activeButton) {
       case "heart":
-        const assetIds = Array.from(favoriteAssetIds);
-        newDisplayedList = trackList.filter(
-          (track) => track.asset_id && assetIds.includes(track.asset_id)
-        );
+        const favoriteTracks: CloudinaryResourceMap = new Map();
+        favoriteAssetIds.forEach((assetId) => {
+          const track = cloudinaryData.get(assetId);
+          if (track) {
+            favoriteTracks.set(track.asset_id, track);
+          }
+        });
+        newDisplayedList = favoriteTracks;
         break;
       case "available":
         newDisplayedList = trackList;
@@ -103,17 +109,22 @@ export const useListModal = () => {
     }
 
     setDisplayedTrackList(newDisplayedList);
-  }, [activeButton, trackList, favoriteAssetIds]);
+  }, [activeButton, trackList, favoriteAssetIds, cloudinaryData]);
 
-  const searchedTrackList = useMemo(() => {
-    if (searchTerm) {
-      return displayedTrackList.filter(
-        (track) =>
-          track.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          track.producer?.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-    }
-    return displayedTrackList;
+  const searchedTrackList = useMemo((): CloudinaryResourceMap => {
+    if (!searchTerm.trim()) return displayedTrackList;
+
+    const searchTermLower = searchTerm.toLowerCase();
+    const filteredEntries = Array.from(displayedTrackList.entries()).filter(
+      ([_, value]) => {
+        const titleMatch = value.title?.toLowerCase().includes(searchTermLower);
+        const producerMatch = value.producer
+          ?.toLowerCase()
+          .includes(searchTermLower);
+        return titleMatch || producerMatch;
+      }
+    );
+    return new Map(filteredEntries);
   }, [displayedTrackList, searchTerm]);
 
   const toggleFavorite = async () => {
@@ -144,9 +155,6 @@ export const useListModal = () => {
     handleVolumeMouseEnter,
     handleVolumeMouseLeave,
   } = useVolumeControl(volume, setVolume, setLiveVolume, isMuted, toggleMute);
-
-  const isLoading =
-    isLoadingCloudinary || (activeButton === "heart" && isLoadingFavorites);
 
   return {
     currentTrack,

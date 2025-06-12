@@ -1,12 +1,19 @@
+import {
+  CloudinaryResource,
+  CloudinaryResourceMap,
+} from "@/shared/types/dataType";
+import axios from "axios";
 import cloudinaryClient from "./cloudinary/cloudinaryClient";
-import { CloudinaryResource } from "@/shared/types/dataType";
 
-export async function DataLoader(): Promise<CloudinaryResource[]> {
+export async function DataLoader(): Promise<CloudinaryResourceMap> {
   try {
     const cloudinaryData = await cloudinaryClient();
-    return cloudinaryData || [];
+
+    return new Map(
+      cloudinaryData.map((resource) => [resource.asset_id, resource])
+    );
   } catch (error) {
-    console.error("Error loading Cloudinary data:", error);
-    return [];
+    console.error("Error in DataLoader:", error);
+    return new Map();
   }
 }

@@ -4,31 +4,55 @@ import { persist, createJSONStorage } from "zustand/middleware";
 const MAX_RECENT_ASSETS = 10;
 
 interface RecentPlayState {
-  recentAssetIds: string[];
+  recentAssetIds: Set<string>;
   addRecentAssetId: (assetId: string) => void;
 }
 
 const useRecentPlayStore = create<RecentPlayState>()(
   persist(
-    (set, get) => ({
-      recentAssetIds: [],
+    (set) => ({
+      recentAssetIds: new Set(),
       addRecentAssetId: (assetId) => {
         set((state) => {
-          let newRecentAssetIds = [
-            assetId,
-            ...state.recentAssetIds.filter((id) => id !== assetId),
-          ];
+          const newRecentAssetIds = new Set(state.recentAssetIds);
 
-          if (newRecentAssetIds.length > MAX_RECENT_ASSETS) {
-            newRecentAssetIds = newRecentAssetIds.slice(0, MAX_RECENT_ASSETS);
+          if (newRecentAssetIds.has(assetId)) {
+            newRecentAssetIds.delete(assetId);
           }
+          newRecentAssetIds.add(assetId);
+
+          while (newRecentAssetIds.size > MAX_RECENT_ASSETS) {
+            const oldestAssetId = newRecentAssetIds.values().next().value;
+            if (oldestAssetId) {
+              newRecentAssetIds.delete(oldestAssetId);
+            }
+          }
+
           return { recentAssetIds: newRecentAssetIds };
         });
       },
     }),
     {
       name: "recent-play-store",
-      storage: createJSONStorage(() => localStorage),
+      storage: createJSONStorage(() => localStorage, {
+        replacer: (key, value) => {
+          if (value instanceof Set) {
+            return {
+              dataType: "Set",
+              value: Array.from(value),
+            };
+          }
+          return value;
+        },
+        reviver: (key, value) => {
+          if (typeof value === "object" && value !== null) {
+            if ((value as any).dataType === "Set") {
+              return new Set((value as any).value);
+            }
+          }
+          return value;
+        },
+      }),
       partialize: (state) => ({ recentAssetIds: state.recentAssetIds }),
     }
   )

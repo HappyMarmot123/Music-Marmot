@@ -73,7 +73,7 @@ class ButtonRenderer implements TabButtonMethod {
 const likeButtonConfig: ButtonConfig = {
   type: "heart",
   Icon: Heart,
-  text: "Like",
+  text: "Favorite",
   activeColorClasses:
     "bg-purple-600/80 hover:bg-purple-700/80 ring-1 ring-purple-500 ring-opacity-50",
   inactiveColorClasses: "bg-purple-300/50 hover:bg-purple-500/60",
@@ -95,15 +95,15 @@ const availableButtonConfig: ButtonConfig = {
   isDisabled: () => false,
 };
 
-interface CreateListButtonComponentProps {
+interface TabButtonFactoryProps {
   type: "heart" | "available";
   props: TabButtonProps;
 }
 
-export default function CreateListButton({
+export default function TabButtonFactory({
   type,
   props,
-}: CreateListButtonComponentProps): React.ReactElement | null {
+}: TabButtonFactoryProps): React.ReactElement | null {
   switch (type) {
     case "heart":
       return new ButtonRenderer(likeButtonConfig).render(props);

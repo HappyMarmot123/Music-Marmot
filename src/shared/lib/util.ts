@@ -1,8 +1,4 @@
-import {
-  AudioPlayerState,
-  CloudinaryResource,
-  likeType,
-} from "@/shared/types/dataType";
+import { AudioPlayerState, CloudinaryResource } from "@/shared/types/dataType";
 import { CSSProperties, SetStateAction } from "react";
 import { Dispatch, MouseEvent, RefObject } from "react";
 import clsx from "clsx";
@@ -30,8 +26,10 @@ export function replaceKeyName(resource: CloudinaryResource) {
 export const handleOnLike = async (
   trackAssetId: string,
   userId: string | undefined,
-  currentIsLiked: boolean,
-  setIsLiked: (updateFn: (prevLiked: likeType[]) => likeType[]) => void
+  currentFavorite: boolean,
+  setFavoriteAssetIds: (
+    updateFn: (prevFavorite: Set<string>) => Set<string>
+  ) => void
 ): Promise<void> => {
   try {
     const response = await fetch("/api/supabase", {
@@ -42,16 +40,18 @@ export const handleOnLike = async (
       body: JSON.stringify({
         assetId: trackAssetId,
         userId: userId,
-        isLiked: !currentIsLiked,
+        isFavorite: !currentFavorite,
       }),
     });
 
     if (response) {
-      setIsLiked((prevLiked) => {
-        if (currentIsLiked) {
-          return prevLiked.filter((item) => item.asset_id !== trackAssetId);
+      setFavoriteAssetIds((prevFavorite) => {
+        if (currentFavorite) {
+          return new Set(
+            [...prevFavorite].filter((item) => item !== trackAssetId)
+          );
         } else {
-          return [...prevLiked, { asset_id: trackAssetId, isLike: true }];
+          return new Set([...prevFavorite, trackAssetId]);
         }
       });
     }

@@ -1,12 +1,5 @@
-import type {
-  CloudinaryResource,
-  AudioStoreActions,
-  TrackInfo,
-  AudioPlayerState,
-  CloudinaryStoreState,
-} from "@/shared/types/dataType";
-import { isEmpty } from "lodash";
-import { playNextTrackLogic, useTrackStoreVariables } from "./audioPlayerUtil";
+import type { AudioStoreActions } from "@/shared/types/dataType";
+import { playNextTrackLogic } from "./audioPlayerUtil";
 import useTrackStore from "@/app/store/trackStore";
 import useCloudinaryStore from "@/app/store/cloudinaryStore";
 

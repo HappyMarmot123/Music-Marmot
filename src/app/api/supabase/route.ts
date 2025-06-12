@@ -16,16 +16,16 @@ import { cookies } from "next/headers";
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { assetId, userId, isLiked } = body;
+    const { assetId, userId, isFavorite } = body;
 
-    if (!assetId || !userId || typeof isLiked !== "boolean") {
+    if (!assetId || !userId || typeof isFavorite !== "boolean") {
       return NextResponse.json(
         { message: "Missing required fields or invalid data type" },
         { status: 400 }
       );
     }
 
-    if (isLiked) {
+    if (isFavorite) {
       await addFavorite(userId, assetId);
       return NextResponse.json({ message: "Favorite added" }, { status: 200 });
     } else {

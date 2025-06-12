@@ -30,10 +30,11 @@ class ClassNameBuilder {
 }
 
 export const LikeButton = React.memo(
-  ({ track, user, isLiked, toggleLike }: LikeButtonProps) => {
-    const isLikedThis = useCallback(
-      () => isLiked.find((item) => item.asset_id === track.asset_id)?.isLike,
-      [isLiked, track]
+  ({ track, user, isFavorite, toggleFavorite }: LikeButtonProps) => {
+    const isFavoriteThis = useCallback(
+      () =>
+        [...isFavorite].find((item) => item === track.asset_id) !== undefined,
+      [isFavorite, track]
     );
 
     const [playingLottieTrackId, setPlayingLottieTrackId] = useState<
@@ -44,7 +45,7 @@ export const LikeButton = React.memo(
       (e: React.MouseEvent<HTMLButtonElement>) => {
         if (!user) return;
         e.stopPropagation();
-        toggleLike();
+        toggleFavorite();
         setPlayingLottieTrackId(track.asset_id);
       },
       [user, track]
@@ -53,7 +54,7 @@ export const LikeButton = React.memo(
     const iconClassName = new ClassNameBuilder()
       .addBase("w-4 h-4")
       .addCondition(!user, "cursor-not-allowed")
-      .addCondition(isLikedThis(), "text-pink-500 fill-pink-500/30")
+      .addCondition(isFavoriteThis(), "text-pink-500 fill-pink-500/30")
       .addCondition(user, "hover:text-pink-500 transition-colors")
       .build();
 

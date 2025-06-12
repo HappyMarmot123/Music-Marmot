@@ -12,7 +12,8 @@ import EmptyView from "./emptyView";
 import { LikeButton } from "@/shared/components/likeButton";
 
 const ModalMusicList = () => {
-  const { isLoading, trackList, isLiked, toggleLike } = useListModal();
+  const { isLoading, trackList, favoriteAssetIds, toggleFavorite } =
+    useListModal();
   const { user } = useAuth();
   const { setTrack, currentTrack } = useTrackStore();
   const cloudinaryData = useCloudinaryStore((state) => state.cloudinaryData);
@@ -34,8 +35,8 @@ const ModalMusicList = () => {
   return (
     <>
       {isLoading && <LoadingView />}
-      {trackList.length === 0 && <EmptyView />}
-      {trackList.map((track) => (
+      {trackList.size === 0 && <EmptyView />}
+      {Array.from(trackList.values()).map((track) => (
         <div
           key={track.asset_id}
           onClick={(e) => {
@@ -65,8 +66,8 @@ const ModalMusicList = () => {
             <LikeButton
               track={track}
               user={user}
-              isLiked={isLiked}
-              toggleLike={toggleLike}
+              isFavorite={favoriteAssetIds}
+              toggleFavorite={toggleFavorite}
             />
             <span className="text-gray-400 text-sm">128</span>
           </div>

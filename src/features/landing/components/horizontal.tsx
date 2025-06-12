@@ -3,10 +3,12 @@
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, A11y } from "swiper/modules";
 import Card from "./card";
-import { CloudinaryResource } from "@/shared/types/dataType";
+import {
+  CloudinaryResource,
+  CloudinaryResourceMap,
+} from "@/shared/types/dataType";
 import "swiper/css";
 import { ChevronRight, ChevronLeft } from "lucide-react";
-import { isEmpty } from "lodash";
 
 /* 
   TODO:
@@ -34,15 +36,14 @@ export default function Horizontal({ data, swiperId }: HorizontalProps) {
         }}
         className="!p-8"
       >
-        {!isEmpty(data) &&
-          data.map((item) => (
-            <SwiperSlide
-              key={item.asset_id}
-              className="!select-none !w-auto !pr-4 md:!pr-8"
-            >
-              <Card card={item} />
-            </SwiperSlide>
-          ))}
+        {Array.from(data.values()).map((item) => (
+          <SwiperSlide
+            key={item.asset_id}
+            className="!select-none !w-auto !pr-4 md:!pr-8"
+          >
+            <Card card={item} />
+          </SwiperSlide>
+        ))}
       </Swiper>
 
       <div

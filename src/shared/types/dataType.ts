@@ -170,16 +170,14 @@ export interface CloudinaryResource {
   album_secure_url: string;
 }
 
-export interface likeType {
-  asset_id: string;
-  isLike: boolean;
-}
+export interface CloudinaryResourceMap
+  extends Map<string, CloudinaryResource> {}
 
 export interface ModalMusicListProps {
   loading: boolean | null;
-  trackList: CloudinaryResource[];
-  isLiked: likeType[];
-  toggleLike: (assetId: string) => void;
+  trackList: CloudinaryResourceMap;
+  isFavorite: Set<string>;
+  toggleFavorite: () => void;
   onTrackSelect?: (assetId: string) => void;
 }
 
@@ -259,26 +257,26 @@ export type SeekLogicParams = {
 };
 
 export type PlayNextTrackLogicParams = {
-  cloudinaryData: CloudinaryResource[];
+  cloudinaryData: CloudinaryResourceMap;
   currentTrack: TrackInfo | null;
   setTrack: (track: TrackInfo, playImmediately: boolean) => void;
   isPlaying: boolean;
 };
 
 export type PlayPrevTrackLogicParams = {
-  cloudinaryData: CloudinaryResource[];
+  cloudinaryData: CloudinaryResourceMap;
   currentTrack: TrackInfo | null;
   setTrack: (track: TrackInfo, playImmediately: boolean) => void;
   isPlaying: boolean;
 };
 
 export interface CloudinaryStoreState {
-  cloudinaryData: CloudinaryResource[];
+  cloudinaryData: CloudinaryResourceMap;
   cloudinaryError: Error | null;
   isLoadingCloudinary: boolean;
-  setCloudinaryData: (data: CloudinaryResource[]) => void;
+  setCloudinaryData: (data: CloudinaryResourceMap) => void;
   setCloudinaryError: (error: Error | null) => void;
-  setIsLoadingCloudinary: (isLoading: boolean) => void;
+  // setIsLoadingCloudinary: (isLoading: boolean) => void;
 }
 
 export interface AudioStoreActions {
@@ -323,6 +321,6 @@ export interface IconToggleButtonProps {
 export interface LikeButtonProps {
   track: CloudinaryResource;
   user: any;
-  isLiked: likeType[];
-  toggleLike: () => void;
+  isFavorite: Set<string>;
+  toggleFavorite: () => void;
 }

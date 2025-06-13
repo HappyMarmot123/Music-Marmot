@@ -46,7 +46,7 @@ export const useListModal = () => {
   const [listTitleText, setListTitleText] = useState("Available Now");
   const [searchTerm, setSearchTerm] = useState("");
 
-  const [trackList, setTrackList] = useState<CloudinaryResourceMap>(new Map());
+  const [allTracks, setAllTracks] = useState<CloudinaryResourceMap>(new Map());
   const [displayedTrackList, setDisplayedTrackList] =
     useState<CloudinaryResourceMap>(new Map());
 
@@ -60,7 +60,7 @@ export const useListModal = () => {
 
   useEffect(() => {
     if (cloudinaryData) {
-      setTrackList(cloudinaryData);
+      setAllTracks(cloudinaryData);
     }
   }, [cloudinaryData]);
 
@@ -110,16 +110,16 @@ export const useListModal = () => {
         newDisplayedList = favoriteTracks;
         break;
       case "available":
-        newDisplayedList = trackList;
+        newDisplayedList = allTracks;
         break;
     }
 
+    console.log("🚀 ~ useEffect ~ newDisplayedList:", newDisplayedList);
     setDisplayedTrackList(newDisplayedList);
-  }, [activeButton, trackList, favoriteAssetIds, cloudinaryData]);
+  }, [activeButton, allTracks, favoriteAssetIds, cloudinaryData]);
 
-  const searchedTrackList = useMemo((): CloudinaryResourceMap => {
+  const trackList = useMemo(() => {
     if (!searchTerm.trim()) return displayedTrackList;
-
     const searchTermLower = searchTerm.toLowerCase();
     const filteredEntries = Array.from(displayedTrackList.entries()).filter(
       ([_, value]) => {
@@ -130,6 +130,7 @@ export const useListModal = () => {
         return titleMatch || producerMatch;
       }
     );
+    console.log("🚀 ~ trackList ~ filteredEntries:", filteredEntries);
     return new Map(filteredEntries);
   }, [displayedTrackList, searchTerm]);
 
@@ -166,7 +167,8 @@ export const useListModal = () => {
     prevTrack,
     handleSelectTrack,
     user,
-    trackList: searchedTrackList,
+    allTracks,
+    trackList,
     isLoading,
     favoriteAssetIds,
     toggleFavorite,

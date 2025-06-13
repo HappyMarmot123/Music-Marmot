@@ -1,10 +1,11 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback } from "react";
 import { Heart } from "lucide-react";
-import MyTooltip from "./myTooltip";
 import { LikeButtonProps } from "../types/dataType";
 import { TrackFavoriteAdapter } from "../lib/trackFavoriteAdapter";
+import ProtectTooltip from "../../features/auth/components/protectTooltip";
 
 // TODO: 빌더패턴 적용
+// 주어진 props에 따라 순수하게 동작해야 한다
 
 class ClassNameBuilder {
   private classes: string[];
@@ -30,8 +31,9 @@ class ClassNameBuilder {
 }
 
 export const LikeButton = React.memo(
-  ({ track, user, isFavorite, toggleFavorite }: LikeButtonProps) => {
-    if (!user) return null;
+  ({ track, role, isFavorite, toggleFavorite }: LikeButtonProps) => {
+    if (!role) return null;
+    const interact = role.favoriteInteract;
 
     const wrappedButtonOnClick = useCallback(
       (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -45,29 +47,26 @@ export const LikeButton = React.memo(
 
     const iconClassName = new ClassNameBuilder()
       .addBase("w-4 h-4")
-      .addCondition(!user, "cursor-not-allowed")
+      .addCondition(!interact, "cursor-not-allowed")
       .addCondition(isFavorite, "text-pink-500 fill-pink-500/30")
-      .addCondition(user, "hover:text-pink-500 transition-colors")
+      .addCondition(interact, "hover:text-pink-500 transition-colors")
       .build();
 
     const wrappedButtonClassName = new ClassNameBuilder()
       .addBase("p-1")
-      .addCondition(!user, "cursor-not-allowed")
+      .addCondition(!interact, "cursor-not-allowed")
       .build();
 
     return (
-      <MyTooltip
-        tooltipText={!user ? "You need to Login!" : ""}
-        showTooltip={!user}
-      >
+      <ProtectTooltip>
         <button
-          disabled={!user}
+          disabled={!interact}
           className={wrappedButtonClassName}
           onClick={wrappedButtonOnClick}
         >
           <Heart className={iconClassName} />
         </button>
-      </MyTooltip>
+      </ProtectTooltip>
     );
   }
 );

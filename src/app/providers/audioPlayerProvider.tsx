@@ -119,9 +119,12 @@ function useAudioPlayerLogic() {
     playPrevTrackLogic({ cloudinaryData, currentTrack, setTrack, isPlaying });
   };
 
-  const handleSelectTrack = useCallback((assetId: string) => {
-    setFindNewTrack(cloudinaryData, assetId, setTrack);
-  }, []);
+  const handleSelectTrack = useCallback(
+    (assetId: string) => {
+      setFindNewTrack(cloudinaryData, assetId, setTrack);
+    },
+    [cloudinaryData]
+  );
 
   const setLiveVolume = useCallback(
     (newVolume: number) => {

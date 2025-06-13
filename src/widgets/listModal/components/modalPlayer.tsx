@@ -1,5 +1,4 @@
 import {
-  Heart,
   Pause,
   Play,
   SkipBack,
@@ -8,16 +7,16 @@ import {
   VolumeX,
 } from "lucide-react";
 import { CldImage } from "next-cloudinary";
-import clsx from "clsx";
 import { motion } from "framer-motion";
 import AudioVisualizer from "@/features/listModal/components/audioVisualizer";
 import LoginSection from "@/features/listModal/components/loginSection";
-import MyTooltip from "@/shared/components/myTooltip";
 import { useListModal } from "@/features/listModal/hook/useListModal";
 import { useAudioPlayer } from "@/app/providers/audioPlayerProvider";
 import TrackSeekBar from "@/shared/components/trackSeekBar";
 import { LikeButton } from "@/shared/components/likeButton";
-import { CloudinaryResource, TrackInfo } from "@/shared/types/dataType";
+import { TrackInfo } from "@/shared/types/dataType";
+import { useAuth } from "@/app/providers/authProvider";
+import ProtectTooltip from "@/features/auth/components/protectTooltip";
 
 export default function ModalPlayer() {
   const {
@@ -30,7 +29,6 @@ export default function ModalPlayer() {
     togglePlayPause,
     nextTrack,
     prevTrack,
-    user,
     favoriteAssetIds,
     toggleFavorite,
     isMuted,
@@ -42,6 +40,7 @@ export default function ModalPlayer() {
     handleVolumeMouseLeave,
     toggleMute,
   } = useListModal();
+  const { role } = useAuth();
   const { seek } = useAudioPlayer();
 
   if (!currentTrack) return null;
@@ -148,7 +147,7 @@ export default function ModalPlayer() {
 
           <section aria-label="재생 컨트롤" className="mt-6">
             <div className="flex items-center justify-between w-full">
-              <MyTooltip tooltipText="You need to Login!" showTooltip={!user}>
+              <ProtectTooltip>
                 <motion.div
                   whileTap={{ scale: 0.95 }}
                   transition={{ duration: 0.1 }}
@@ -156,12 +155,12 @@ export default function ModalPlayer() {
                 >
                   <LikeButton
                     track={currentTrack}
-                    user={user}
+                    role={role}
                     isFavorite={initFavorite(currentTrack)}
                     toggleFavorite={toggleFavorite}
                   />
                 </motion.div>
-              </MyTooltip>
+              </ProtectTooltip>
 
               <div className="flex items-center justify-center space-x-4">
                 <motion.button

@@ -25,24 +25,36 @@ const ModalMusicList = () => {
     [cloudinaryData]
   );
 
-  const isCurrentTrackStyle = useCallback(
-    (track: CloudinaryResource) => {
-      return currentTrack?.assetId === track.asset_id ? "bg-white/10" : "";
+  const handleOnClick = useCallback(
+    (e: React.MouseEvent<HTMLDivElement>, track: CloudinaryResource) => {
+      e.preventDefault();
+      handleOnClickCard(track.asset_id);
     },
-    [currentTrack]
+    [trackList]
   );
+
+  const isCurrentTrackStyle = (track: CloudinaryResource) => {
+    return currentTrack?.assetId === track.asset_id ? "bg-white/10" : "";
+  };
+
+  const initFavorite = (track: CloudinaryResource) => {
+    return favoriteAssetIds.has(track.asset_id);
+  };
+
+  if (isLoading) {
+    return <LoadingView />;
+  }
+
+  if (trackList.size === 0) {
+    return <EmptyView />;
+  }
 
   return (
     <>
-      {isLoading && <LoadingView />}
-      {trackList.size === 0 && <EmptyView />}
       {Array.from(trackList.values()).map((track) => (
         <div
           key={track.asset_id}
-          onClick={(e) => {
-            e.preventDefault();
-            handleOnClickCard(track.asset_id);
-          }}
+          onClick={(e) => handleOnClick(e, track)}
           className={clsx(
             isCurrentTrackStyle(track),
             "flex items-center p-3 rounded-lg ",
@@ -66,7 +78,7 @@ const ModalMusicList = () => {
             <LikeButton
               track={track}
               user={user}
-              isFavorite={favoriteAssetIds}
+              isFavorite={initFavorite(track)}
               toggleFavorite={toggleFavorite}
             />
             <span className="text-gray-400 text-sm">128</span>

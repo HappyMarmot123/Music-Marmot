@@ -1,11 +1,12 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useCallback } from "react";
 import { useAudioPlayer } from "@/app/providers/audioPlayerProvider";
 import { useAuth } from "@/app/providers/authProvider";
 import { CloudinaryResourceMap } from "@/shared/types/dataType";
 import useCloudinaryStore from "@/app/store/cloudinaryStore";
 import { useFavorites } from "@/features/listModal/hook/useFavorites";
 import { useVolumeControl } from "@/features/player/hook/useVolumeControl";
-import { handleOnLike } from "@/shared/lib/util";
+import { toast } from "sonner";
+import favoriteStore from "@/app/store/favoriteStore";
 
 export const useListModal = () => {
   const {
@@ -32,7 +33,13 @@ export const useListModal = () => {
   );
 
   const { user } = useAuth();
-  const { data: favorites, isLoading: isLoadingFavorites } = useFavorites();
+  const { data: initialFavorites, isLoading: isLoadingFavorites } =
+    useFavorites();
+  const {
+    favoriteAssetIds,
+    setFavorites,
+    toggleFavorite: storeToggleFavorite,
+  } = favoriteStore();
 
   const [isCursorHidden] = useState(true);
   const [activeButton, setActiveButton] = useState("available");
@@ -42,15 +49,14 @@ export const useListModal = () => {
   const [trackList, setTrackList] = useState<CloudinaryResourceMap>(new Map());
   const [displayedTrackList, setDisplayedTrackList] =
     useState<CloudinaryResourceMap>(new Map());
-  const [animateLikeForAssetId, setAnimateLikeForAssetId] = useState<
-    string | null
-  >(null);
-  const [favoriteAssetIds, setFavoriteAssetIds] = useState<Set<string>>(
-    favorites || new Set([])
-  );
 
-  const isLoading =
-    isLoadingCloudinary || (activeButton === "heart" && isLoadingFavorites);
+  const isLoading = isLoadingCloudinary || isLoadingFavorites;
+
+  useEffect(() => {
+    if (initialFavorites) {
+      setFavorites(initialFavorites);
+    }
+  }, [initialFavorites, setFavorites]);
 
   useEffect(() => {
     if (cloudinaryData) {
@@ -127,25 +133,16 @@ export const useListModal = () => {
     return new Map(filteredEntries);
   }, [displayedTrackList, searchTerm]);
 
-  const toggleFavorite = async () => {
-    if (!currentTrack) throw new Error("asset id is required");
-    if (!user) throw new Error("need login");
-
-    const currentTrackFavorite = [...favoriteAssetIds].find(
-      (item) => item === currentTrack?.assetId
-    );
-    const currentFavoriteState = !!currentTrackFavorite;
-    await handleOnLike(
-      currentTrack?.assetId,
-      user.id.toString(),
-      currentFavoriteState,
-      setFavoriteAssetIds
-    );
-
-    if (!currentFavoriteState) {
-      setAnimateLikeForAssetId(currentTrack?.assetId);
-    }
-  };
+  const toggleFavorite = useCallback(
+    (assetId: string) => {
+      if (!user) {
+        toast.error("You need to login to like tracks.");
+        return;
+      }
+      storeToggleFavorite(assetId, user.id);
+    },
+    [user, storeToggleFavorite]
+  );
 
   const {
     localVolume,
@@ -173,8 +170,6 @@ export const useListModal = () => {
     isLoading,
     favoriteAssetIds,
     toggleFavorite,
-    animateLikeForAssetId,
-    setAnimateLikeForAssetId,
     activeButton,
     setActiveButton,
     listTitleText,

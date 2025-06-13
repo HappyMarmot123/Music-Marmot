@@ -3,6 +3,9 @@ import { CSSProperties, SetStateAction } from "react";
 import { Dispatch, MouseEvent, RefObject } from "react";
 import clsx from "clsx";
 import { Variants } from "framer-motion";
+import axios from "axios";
+import { toast } from "sonner";
+import { debounce } from "lodash";
 
 export function formatTime(seconds: number): string {
   if (isNaN(seconds) || seconds < 0) {
@@ -23,42 +26,46 @@ export function replaceKeyName(resource: CloudinaryResource) {
   };
 }
 
-export const handleOnLike = async (
-  trackAssetId: string,
-  userId: string | undefined,
-  currentFavorite: boolean,
-  setFavoriteAssetIds: (
-    updateFn: (prevFavorite: Set<string>) => Set<string>
-  ) => void
-): Promise<void> => {
-  try {
-    const response = await fetch("/api/supabase", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        assetId: trackAssetId,
-        userId: userId,
-        isFavorite: !currentFavorite,
-      }),
-    });
+type FavoriteGetter = () => { favoriteAssetIds: Set<string> };
+type FavoriteSetter = (newState: { favoriteAssetIds: Set<string> }) => void;
 
-    if (response) {
-      setFavoriteAssetIds((prevFavorite) => {
-        if (currentFavorite) {
-          return new Set(
-            [...prevFavorite].filter((item) => item !== trackAssetId)
-          );
-        } else {
-          return new Set([...prevFavorite, trackAssetId]);
-        }
-      });
-    }
-    if (!response.ok) {
-      throw new Error("좋아요 처리 중 오류가 발생했습니다.");
+export const handleOnLike = async (
+  assetId: string,
+  userId: string,
+  get: FavoriteGetter,
+  set: FavoriteSetter
+): Promise<void> => {
+  const { favoriteAssetIds } = get();
+  const isCurrentlyFavorite = favoriteAssetIds.has(assetId);
+  const newIsFavorite = !isCurrentlyFavorite;
+
+  const originalFavorites = new Set(favoriteAssetIds);
+  const newFavorites = new Set(originalFavorites);
+
+  if (newIsFavorite) {
+    newFavorites.add(assetId);
+  } else {
+    newFavorites.delete(assetId);
+  }
+  set({ favoriteAssetIds: newFavorites });
+
+  try {
+    const response = await debounce(
+      () =>
+        axios.post("/api/supabase", {
+          assetId,
+          userId,
+          isFavorite: newIsFavorite,
+        }),
+      1000
+    );
+
+    if (!response) {
+      throw new Error("An error occurred while liking the track.");
     }
   } catch (error) {
+    set({ favoriteAssetIds: originalFavorites });
+    toast.error("Something went wrong. Could you try again?");
     console.error("Error liking track:", error);
   }
 };

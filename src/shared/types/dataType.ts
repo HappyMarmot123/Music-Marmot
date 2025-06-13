@@ -143,11 +143,11 @@ export interface PlayerControlsSectionProps {
 }
 
 export interface TrackInfo {
-  assetId: string;
+  assetId: string | null;
   album: string;
   name: string;
   artworkId: string | null;
-  url: string;
+  url: string | null;
   producer: string;
 }
 
@@ -348,7 +348,7 @@ export interface TabButtonMethod {
 }
 
 export interface ButtonConfig {
-  type: "heart" | "available";
+    type: "heart" | "available";
   Icon: React.ElementType;
   text: string;
   activeColorClasses: string;

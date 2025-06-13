@@ -4,28 +4,16 @@ import clsx from "clsx";
 import { Heart, LayoutList } from "lucide-react";
 import MyTooltip from "@/shared/components/myTooltip";
 import { User } from "@supabase/supabase-js";
+import {
+  ButtonConfig,
+  TabButtonMethod,
+  TabButtonProps,
+} from "@/shared/types/dataType";
 
-export interface TabButtonProps {
-  activeButton: string;
-  setActiveButton: (type: string) => void;
-  user: User | null;
-}
-
-interface TabButtonMethod {
-  isDisabled(user: User | null): boolean;
-  wrapWithTooltip(button: React.ReactNode, user: User | null): React.ReactNode;
-  render(props: TabButtonProps): React.ReactElement;
-}
-
-interface ButtonConfig {
-  type: "heart" | "available";
-  Icon: React.ElementType;
-  text: string;
-  activeColorClasses: string;
-  inactiveColorClasses: string;
-  isDisabled(user: User | null): boolean;
-  wrapWithTooltip?(button: React.ReactNode, user: User | null): React.ReactNode;
-}
+/*
+  TODO:
+  팩토리 패턴
+*/
 
 class ButtonRenderer implements TabButtonMethod {
   private config: ButtonConfig;

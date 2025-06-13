@@ -34,22 +34,19 @@ import { useAudioPlayer } from "@/app/providers/audioPlayerProvider";
 export default function AudioPlayer() {
   const { currentTrack, isPlaying, isBuffering, currentTime, duration, seek } =
     useAudioPlayer();
-
   const { openToggle } = useToggle();
-
-  if (!currentTrack) {
-    return null;
-  }
-
   const seekBarContainerRef = useRef<HTMLDivElement>(null);
   const isDragging = useRef(false);
   const draggableRef = useRef<HTMLDivElement>(null);
-
   const [bounds, setBounds] = useState<DraggableBounds | undefined>(undefined);
   const defaultPositionRef = useRef({ x: 100, y: 640 });
   const [draggableKey, setDraggableKey] = useState(Date.now());
 
   const currentProgress = duration > 0 ? (currentTime / duration) * 100 : 0;
+
+  if (!currentTrack) {
+    return null;
+  }
 
   useEffect(() => {
     const playerElement = draggableRef.current;

@@ -7,6 +7,11 @@ interface ErrorProps {
   reset: () => void;
 }
 
+/* TODO:
+  에러 페이지 커스터마이징React의 에러 바운더리(Error Boundary) 기반으로로
+  컴포넌트가 렌더링되는 도중에 발생하는 에러를 잡아내며, 이벤트 기반은 처리 못합니다.
+*/
+
 export default function Error({ error, reset }: ErrorProps) {
   useEffect(() => {
     console.error(error);

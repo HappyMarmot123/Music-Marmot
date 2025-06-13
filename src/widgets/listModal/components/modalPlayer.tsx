@@ -13,10 +13,11 @@ import { motion } from "framer-motion";
 import AudioVisualizer from "@/features/listModal/components/audioVisualizer";
 import LoginSection from "@/features/listModal/components/loginSection";
 import MyTooltip from "@/shared/components/myTooltip";
-import OnclickEffect from "@/shared/components/onclickEffect";
 import { useListModal } from "@/features/listModal/hook/useListModal";
 import { useAudioPlayer } from "@/app/providers/audioPlayerProvider";
 import TrackSeekBar from "@/shared/components/trackSeekBar";
+import { LikeButton } from "@/shared/components/likeButton";
+import { CloudinaryResource, TrackInfo } from "@/shared/types/dataType";
 
 export default function ModalPlayer() {
   const {
@@ -32,8 +33,6 @@ export default function ModalPlayer() {
     user,
     favoriteAssetIds,
     toggleFavorite,
-    animateLikeForAssetId,
-    setAnimateLikeForAssetId,
     isMuted,
     localVolume,
     showVolumeSlider,
@@ -46,6 +45,10 @@ export default function ModalPlayer() {
   const { seek } = useAudioPlayer();
 
   if (!currentTrack) return null;
+
+  const initFavorite = (track: TrackInfo) => {
+    return favoriteAssetIds.has(track.assetId);
+  };
 
   return (
     <div className="h-full p-4 sm:p-8 flex flex-col items-center border-r border-white/10 md:col-span-2">
@@ -146,42 +149,18 @@ export default function ModalPlayer() {
           <section aria-label="재생 컨트롤" className="mt-6">
             <div className="flex items-center justify-between w-full">
               <MyTooltip tooltipText="You need to Login!" showTooltip={!user}>
-                <motion.button
+                <motion.div
                   whileTap={{ scale: 0.95 }}
                   transition={{ duration: 0.1 }}
-                  onClick={() => toggleFavorite()}
-                  disabled={!user}
-                  className={clsx(
-                    "p-2 rounded-full transition bg-white/10 hover:bg-white/20",
-                    user ? "" : "opacity-50 cursor-not-allowed"
-                  )}
-                  aria-label={
-                    [...favoriteAssetIds].find(
-                      (item) => item === currentTrack?.assetId
-                    )
-                      ? "unfavorite"
-                      : "favorite"
-                  }
+                  className="p-2 rounded-full transition bg-white/10"
                 >
-                  <span className="relative z-10 flex items-center space-x-1">
-                    <Heart
-                      size={20}
-                      fill={"white"}
-                      className={clsx(
-                        "!m-0",
-                        [...favoriteAssetIds].find(
-                          (item) => item === currentTrack?.assetId
-                        ) && "text-pink-500 fill-pink-500/30"
-                      )}
-                    />
-                    <OnclickEffect
-                      play={animateLikeForAssetId === currentTrack?.assetId}
-                      onComplete={() => {
-                        setAnimateLikeForAssetId(null);
-                      }}
-                    />
-                  </span>
-                </motion.button>
+                  <LikeButton
+                    track={currentTrack}
+                    user={user}
+                    isFavorite={initFavorite(currentTrack)}
+                    toggleFavorite={toggleFavorite}
+                  />
+                </motion.div>
               </MyTooltip>
 
               <div className="flex items-center justify-center space-x-4">

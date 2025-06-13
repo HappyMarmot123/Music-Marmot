@@ -319,8 +319,18 @@ export interface IconToggleButtonProps {
 }
 
 export interface LikeButtonProps {
-  track: CloudinaryResource;
+  track: CloudinaryResource | TrackInfo;
   user: any;
-  isFavorite: Set<string>;
-  toggleFavorite: () => void;
+  isFavorite: boolean;
+  toggleFavorite: (assetId: string) => void;
+}
+
+export interface UnifiedTrack {
+  id: string;
+  name: string;
+  album: string;
+  artworkUrl: string;
+  producer: string;
+  url: string;
+  metadata: Record<string, unknown>;
 }

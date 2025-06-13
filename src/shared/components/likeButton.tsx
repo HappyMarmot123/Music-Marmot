@@ -2,7 +2,7 @@ import React, { useCallback, useState } from "react";
 import { Heart } from "lucide-react";
 import MyTooltip from "./myTooltip";
 import { LikeButtonProps } from "../types/dataType";
-import OnclickEffect from "./onclickEffect";
+import { TrackFavoriteAdapter } from "../lib/trackFavoriteAdapter";
 
 // TODO: 빌더패턴 적용
 
@@ -31,30 +31,22 @@ class ClassNameBuilder {
 
 export const LikeButton = React.memo(
   ({ track, user, isFavorite, toggleFavorite }: LikeButtonProps) => {
-    const isFavoriteThis = useCallback(
-      () =>
-        [...isFavorite].find((item) => item === track.asset_id) !== undefined,
-      [isFavorite, track]
-    );
-
-    const [playingLottieTrackId, setPlayingLottieTrackId] = useState<
-      string | null
-    >(null);
+    if (!user) return null;
 
     const wrappedButtonOnClick = useCallback(
       (e: React.MouseEvent<HTMLButtonElement>) => {
-        if (!user) return;
         e.stopPropagation();
-        toggleFavorite();
-        setPlayingLottieTrackId(track.asset_id);
+        const unifiedTrack = TrackFavoriteAdapter.unifyTrack(track);
+        toggleFavorite(unifiedTrack.id);
       },
-      [user, track]
+      // toggleFavorite: 함수 변경 여부로 클로저 캐싱하여 내부 상태 데이터 최신화
+      [track, toggleFavorite]
     );
 
     const iconClassName = new ClassNameBuilder()
       .addBase("w-4 h-4")
       .addCondition(!user, "cursor-not-allowed")
-      .addCondition(isFavoriteThis(), "text-pink-500 fill-pink-500/30")
+      .addCondition(isFavorite, "text-pink-500 fill-pink-500/30")
       .addCondition(user, "hover:text-pink-500 transition-colors")
       .build();
 
@@ -75,10 +67,6 @@ export const LikeButton = React.memo(
         >
           <Heart className={iconClassName} />
         </button>
-        <OnclickEffect
-          play={playingLottieTrackId === track.asset_id}
-          onComplete={() => setPlayingLottieTrackId(null)}
-        />
       </MyTooltip>
     );
   }

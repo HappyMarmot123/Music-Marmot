@@ -146,7 +146,7 @@ export interface TrackInfo {
   assetId: string;
   album: string;
   name: string;
-  artworkId: string;
+  artworkId: string | null;
   url: string;
   producer: string;
 }
@@ -319,8 +319,40 @@ export interface IconToggleButtonProps {
 }
 
 export interface LikeButtonProps {
-  track: CloudinaryResource;
+  track: CloudinaryResource | TrackInfo;
   user: any;
-  isFavorite: Set<string>;
-  toggleFavorite: () => void;
+  isFavorite: boolean;
+  toggleFavorite: (assetId: string) => void;
+}
+
+export interface UnifiedTrack {
+  id: string;
+  name: string;
+  album: string;
+  artworkUrl: string;
+  producer: string;
+  url: string;
+  metadata: Record<string, unknown>;
+}
+
+export interface TabButtonProps {
+  activeButton: string;
+  setActiveButton: (type: string) => void;
+  user: User | null;
+}
+
+export interface TabButtonMethod {
+  isDisabled(user: User | null): boolean;
+  wrapWithTooltip(button: React.ReactNode, user: User | null): React.ReactNode;
+  render(props: TabButtonProps): React.ReactElement;
+}
+
+export interface ButtonConfig {
+  type: "heart" | "available";
+  Icon: React.ElementType;
+  text: string;
+  activeColorClasses: string;
+  inactiveColorClasses: string;
+  isDisabled(user: User | null): boolean;
+  wrapWithTooltip?(button: React.ReactNode, user: User | null): React.ReactNode;
 }

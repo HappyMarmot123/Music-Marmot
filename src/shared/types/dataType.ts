@@ -334,3 +334,25 @@ export interface UnifiedTrack {
   url: string;
   metadata: Record<string, unknown>;
 }
+
+export interface TabButtonProps {
+  activeButton: string;
+  setActiveButton: (type: string) => void;
+  user: User | null;
+}
+
+export interface TabButtonMethod {
+  isDisabled(user: User | null): boolean;
+  wrapWithTooltip(button: React.ReactNode, user: User | null): React.ReactNode;
+  render(props: TabButtonProps): React.ReactElement;
+}
+
+export interface ButtonConfig {
+    type: "heart" | "available";
+  Icon: React.ElementType;
+  text: string;
+  activeColorClasses: string;
+  inactiveColorClasses: string;
+  isDisabled(user: User | null): boolean;
+  wrapWithTooltip?(button: React.ReactNode, user: User | null): React.ReactNode;
+}

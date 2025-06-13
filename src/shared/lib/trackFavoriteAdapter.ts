@@ -30,7 +30,7 @@ export class TrackFavoriteAdapter {
         id: track.assetId,
         name: track.name,
         album: track.album,
-        artworkUrl: track.artworkId,
+        artworkUrl: track.artworkId ?? "",
         producer: track.producer,
         url: track.url,
         metadata: {},

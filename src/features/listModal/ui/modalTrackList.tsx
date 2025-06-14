@@ -1,8 +1,8 @@
 import { Search, X } from "lucide-react";
 import { motion } from "framer-motion";
-import ModalMusicList from "@/features/listModal/components/modalMusicList";
 import { useListModal } from "@/features/listModal/hook/useListModal";
 import TabButtonFactory from "@/features/listModal/components/tabButtonFactory";
+import ModalMusicList from "@/features/listModal/components/modalMusicList";
 
 interface ModalTrackListProps {
   closeToggle: () => void;
@@ -16,6 +16,11 @@ export default function ModalTrackList({ closeToggle }: ModalTrackListProps) {
     listTitleText,
     activeButton,
     setActiveButton,
+    isLoading,
+    trackList,
+    favoriteAssetIds,
+    toggleFavorite,
+    handleSelectTrack,
   } = useListModal();
 
   return (
@@ -63,7 +68,13 @@ export default function ModalTrackList({ closeToggle }: ModalTrackListProps) {
       </section>
 
       <section aria-label="음악 리스트" className="space-y-3">
-        <ModalMusicList />
+        <ModalMusicList
+          isLoading={isLoading}
+          trackList={trackList}
+          favoriteAssetIds={favoriteAssetIds}
+          toggleFavorite={toggleFavorite}
+          handleSelectTrack={handleSelectTrack}
+        />
       </section>
     </div>
   );

@@ -1,36 +1,40 @@
-import { CloudinaryResource } from "@/shared/types/dataType";
+import {
+  CloudinaryResource,
+  CloudinaryResourceMap,
+} from "@/shared/types/dataType";
 import Image from "next/image";
 import clsx from "clsx";
 import React, { useCallback } from "react";
 import useTrackStore from "@/app/store/trackStore";
 import { useAuth } from "@/app/providers/authProvider";
-import useCloudinaryStore from "@/app/store/cloudinaryStore";
-import { setFindNewTrack } from "@/shared/lib/audioPlayerUtil";
-import { useListModal } from "../hook/useListModal";
-import LoadingView from "./loadingView";
-import EmptyView from "./emptyView";
+import LoadingView from "../components/loadingView";
+import EmptyView from "../components/emptyView";
 import { LikeButton } from "@/shared/components/likeButton";
 
-const ModalMusicList = () => {
-  const { isLoading, trackList, favoriteAssetIds, toggleFavorite } =
-    useListModal();
-  const { user } = useAuth();
-  const { setTrack, currentTrack } = useTrackStore();
-  const cloudinaryData = useCloudinaryStore((state) => state.cloudinaryData);
+interface ModalMusicListProps {
+  isLoading: boolean;
+  trackList: CloudinaryResourceMap;
+  favoriteAssetIds: Set<string>;
+  toggleFavorite: (assetId: string) => void;
+  handleSelectTrack: (assetId: string) => void;
+}
 
-  const handleOnClickCard = useCallback(
-    (paramAssetId: string) => {
-      setFindNewTrack(cloudinaryData, paramAssetId, setTrack);
-    },
-    [cloudinaryData]
-  );
+const ModalMusicList = ({
+  isLoading,
+  trackList,
+  favoriteAssetIds,
+  toggleFavorite,
+  handleSelectTrack,
+}: ModalMusicListProps) => {
+  const { role } = useAuth();
+  const { currentTrack } = useTrackStore();
 
   const handleOnClick = useCallback(
     (e: React.MouseEvent<HTMLDivElement>, track: CloudinaryResource) => {
       e.preventDefault();
-      handleOnClickCard(track.asset_id);
+      handleSelectTrack(track.asset_id);
     },
-    [trackList]
+    [handleSelectTrack]
   );
 
   const isCurrentTrackStyle = (track: CloudinaryResource) => {
@@ -41,10 +45,15 @@ const ModalMusicList = () => {
     return favoriteAssetIds.has(track.asset_id);
   };
 
+  if (isLoading) {
+    return <LoadingView />;
+  }
+
+  if (trackList.size === 0) {
+    return <EmptyView />;
+  }
   return (
     <>
-      {isLoading && <LoadingView />}
-      {trackList.size === 0 && <EmptyView />}
       {Array.from(trackList.values()).map((track) => (
         <div
           key={track.asset_id}
@@ -71,7 +80,7 @@ const ModalMusicList = () => {
           <div className="relative flex items-center space-x-2">
             <LikeButton
               track={track}
-              user={user}
+              role={role}
               isFavorite={initFavorite(track)}
               toggleFavorite={toggleFavorite}
             />

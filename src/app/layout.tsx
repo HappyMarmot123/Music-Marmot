@@ -1,14 +1,12 @@
 import type { Metadata } from "next";
 import "@/shared/styles/global.css?v=2";
-import { TanstackProvider } from "@/app/providers/tanstackProvider";
 import Script from "next/script";
 import { AuthProvider } from "@/app/providers/authProvider";
 import { ToggleProvider } from "@/app/providers/toggleProvider";
 import { AudioPlayerProvider } from "@/app/providers/audioPlayerProvider";
-import { Suspense } from "react";
 import { DataLoader } from "./api/dataLoader";
 import TrackService from "@/features/track/services/TrackService";
-import Spinner from "@/shared/components/spinner";
+import { TanstackProvider } from "./providers/tanstackProvider";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://edmm.vercel.app"),
@@ -64,11 +62,7 @@ const RootLayout = async ({ children }: { children: React.ReactNode }) => {
         <AuthProvider>
           <TanstackProvider>
             <AudioPlayerProvider>
-              <ToggleProvider>
-                {/* <Suspense fallback={<Spinner />}> */}
-                {children}
-                {/* </Suspense> */}
-              </ToggleProvider>
+              <ToggleProvider>{children}</ToggleProvider>
             </AudioPlayerProvider>
           </TanstackProvider>
         </AuthProvider>

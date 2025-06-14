@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import axios, { AxiosError } from "axios";
+import { httpClient } from "@/shared/api/httpClient";
 import { SpotifyTokenResponse, SpotifyError } from "@/shared/types/dataType";
 
 const SPOTIFY_CLIENT_ID = process.env.SPOTIFY_CLIENT_ID;
@@ -25,16 +25,19 @@ export async function GET() {
   ).toString("base64");
 
   try {
-    const response = await axios.post<SpotifyTokenResponse>(
-      `${SPOTIFY_ACCOUNTS_URL}/token`,
-      "grant_type=client_credentials",
-      {
-        headers: {
-          Authorization: `Basic ${authString}`,
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
-      }
-    );
+    const response = await httpClient.request<SpotifyTokenResponse>({
+      url: `${SPOTIFY_ACCOUNTS_URL}/token`,
+      method: "POST",
+      payload: "grant_type=client_credentials",
+      headers: {
+        Authorization: `Basic ${authString}`,
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+    });
+
+    if (!response.data) {
+      throw new Error("No data received from Spotify");
+    }
 
     // 토큰과 만료 시간을 클라이언트에 전달 (실제 만료 시간보다 약간 짧게 설정)
     return NextResponse.json({
@@ -46,14 +49,8 @@ export async function GET() {
     let errorMessage = "Failed to fetch Spotify token";
     let errorStatus = 500;
 
-    if (axios.isAxiosError(error)) {
-      const axiosError = error as AxiosError<SpotifyError>;
-      if (axiosError.response && axiosError.response.data?.error) {
-        errorMessage = `Spotify API Error: ${axiosError.response.data.error.message}`;
-        errorStatus = axiosError.response.data.error.status || 500;
-      } else if (axiosError.message) {
-        errorMessage = axiosError.message;
-      }
+    if (error instanceof Error) {
+      errorMessage = error.message;
     }
 
     return NextResponse.json({ error: errorMessage }, { status: errorStatus });

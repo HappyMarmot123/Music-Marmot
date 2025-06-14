@@ -6,6 +6,7 @@ import { Variants } from "framer-motion";
 import axios from "axios";
 import { toast } from "sonner";
 import { debounce } from "lodash";
+import { httpClient } from "@/shared/api/httpClient";
 
 export function formatTime(seconds: number): string {
   if (isNaN(seconds) || seconds < 0) {
@@ -50,18 +51,18 @@ export const handleOnLike = async (
   set({ favoriteAssetIds: newFavorites });
 
   try {
-    const response = await debounce(
-      () =>
-        axios.post("/api/supabase", {
-          assetId,
-          userId,
-          isFavorite: newIsFavorite,
-        }),
-      1000
-    );
+    const response = await httpClient.request({
+      url: "/api/supabase",
+      method: "POST",
+      payload: {
+        assetId,
+        userId,
+        isFavorite: newIsFavorite,
+      },
+    });
 
-    if (!response) {
-      throw new Error("An error occurred while liking the track.");
+    if (response.error) {
+      throw response.error;
     }
   } catch (error) {
     set({ favoriteAssetIds: originalFavorites });

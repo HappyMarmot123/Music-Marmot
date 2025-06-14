@@ -21,7 +21,7 @@
     "@radix-ui/react-tooltip": "^1.2.7",
     "@supabase/auth-helpers-nextjs": "^0.10.0",
     "@supabase/supabase-js": "^2.49.4",
-    "@tanstack/react-query": "^5.75.1",
+    "@tanstack/react-query": "^5.80.7",
     "@types/lodash.debounce": "^4.0.9",
     "@types/lodash.isempty": "^4.4.9",
     "@types/lodash.isnumber": "^3.0.9",

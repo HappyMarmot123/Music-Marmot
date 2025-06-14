@@ -7,7 +7,6 @@
 - Tailwind CSS
 - Framer Motion
 - Zustand
-- Tanstack Query
 - Supabase
 - DrizzleORM
 - Docker

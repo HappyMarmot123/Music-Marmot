@@ -297,6 +297,7 @@ export interface AuthStrategy {
 export type AuthContextType = {
   session: Session | null;
   user: User | null;
+  role: Record<string, any>;
   isLoadingSession: boolean;
   setSession: (session: Session | null) => void;
   authActions: {
@@ -320,7 +321,7 @@ export interface IconToggleButtonProps {
 
 export interface LikeButtonProps {
   track: CloudinaryResource | TrackInfo;
-  user: any;
+  role: Record<string, any>;
   isFavorite: boolean;
   toggleFavorite: (assetId: string) => void;
 }

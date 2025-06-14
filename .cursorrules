@@ -31,63 +31,46 @@ const fsdPrinciples = [
 
 // --- FSD Layer Structure (6 Layers) ---
 const fsdLayerStructure = {
-  app: "The app's entry point, managing global configurations, providers, and styles. Initializes the rest of the application.",
-  pages:
-    "Composes multiple widgets and features to form complete application pages. Each page corresponds to a route.",
+  app: "앱의 시작점으로 주요 설정 관리 - 앱 라우팅 목적으로 사용하는 것이 주 목적",
   widgets:
-    "Larger, independent functional units within a page (e.g., Navbar, Sidebar). Can combine multiple features and entities.",
+    "페이지 내에서 독립적으로 작동하는 큰 기능 단위 - 페이지 단위, feature 컴포넌트를 라이브러리 UI 형태로 조합하여 반환",
   features:
-    "Specific user interactions or business logic (e.g., authentication, search functionality). Designed to be reusable across widgets or pages.",
-  entities:
-    "Business entities or data models (e.g., User, Product, Song). Contains components, types, and logic related to a specific domain entity.",
-  shared:
-    "Reusable utilities, UI components, hooks, configurations, and types that are used across the entire application and have no business logic specific to any feature or entity.",
+    "팔로우 기능과 같은 특정 동작을 정의, 재사용 가능한 비즈니스 기능을 고려하며 작업 진행 - 로직 / UI : 주 관심사 대상",
+  entities: "데이터 모델 및 도메인 중심 관리",
+  shared: "전반에서 재사용 가능한 유틸리티, 컴포넌트, 훅",
 };
 
 // --- FSD Directory Structure ---
 // Note: Next.js App Router conventions (like app/layout.js, app/page.js for root) should be integrated within this FSD structure.
 // For example, a top-level page.js might reside in app/, but specific page components would be in pages/HomePage/HomePage.tsx etc.
 const folderStructure = `
-app/                 // FSD 'app' layer: Entry point, global providers, root layouts, global styles
-  ├── api/             // API client instances, base query functions
-  ├── providers/       // Global context providers
-  ├── store/           // Global state management (e.g., Zustand stores not specific to a feature)
-  // layout.js, page.js, loading.js, error.js for root routes (Next.js specific)
+app/
+  ├── api/
+  ├── providers/
+  ├── store/
 
-pages/               // FSD 'pages' layer: Route components, composing widgets and features
-  ├── HomePage/        // Example page structure
-  │   └── index.tsx    // Or HomePage.tsx
-  ├── ProfilePage/
-  ├── SettingsPage/
-  // ... other pages
-
-widgets/             // FSD 'widgets' layer: Larger UI blocks composed of features and entities
+widgets/
   ├── Navbar/
   ├── Sidebar/
-  ├── PlayerWidget/    // Example for a music player
   ├── Footer/
 
-features/            // FSD 'features' layer: User stories, specific functionalities
-  ├── Auth/            // e.g., LoginButton, SignUpForm, useAuth hook
-  ├── SearchTrack/     // e.g., SearchBar, SearchResults components
-  ├── PlaylistManagement/ // e.g., AddToPlaylistButton, CreatePlaylistModal
-  // Cart/ (example from user, adjust based on actual features)
+features/
+  ├── Auth/
+  ├── Search/
+  ├── Cart/
 
-entities/            // FSD 'entities' layer: Business domain models
-  ├── User/            // User model, User services
-  ├── Track/           // Track model, Track services
-  ├── Album/           // Album model, Album services
-  // 각 엔티티는 관련된 서비스 파일들을 포함해야 합니다 (예: userService.ts, trackService.ts)
+entities/
+  ├── User/
+  ├── Product/
 
-shared/              // FSD 'shared' layer: Cross-cutting concerns, no business logic
-  ├── db/              // DrizzleORM setup and database connection management
-  ├── components/      // Generic UI components (Button, Input, Modal)
-  ├── config/          // Global app configuration, environment variables
-  ├── hooks/           // Generic custom hooks (useDebounce, useLocalStorage)
-  ├── lib/             // Utility functions, helpers (formatDate, validation)
-  ├── router/          // Routing configuration or helpers (if needed beyond Next.js)
-  ├── styles/          // Global styles, theme configurations
-  ├── types/           // Global TypeScript types and interfaces
+shared/
+  ├── components/
+  ├── config/
+  ├── hooks/
+  ├── lib/
+  ├── router/
+  ├── types/
+  ├── styles/
 `;
 
 // --- Next.js App Router Best Practices (to be applied within FSD context) ---

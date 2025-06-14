@@ -1,8 +1,8 @@
 import { Search, X } from "lucide-react";
 import { motion } from "framer-motion";
-import ModalMusicList from "@/widgets/listModal/components/modalMusicList";
 import { useListModal } from "@/features/listModal/hook/useListModal";
 import TabButtonFactory from "@/features/listModal/components/tabButtonFactory";
+import ModalMusicList from "@/features/listModal/components/modalMusicList";
 
 interface ModalTrackListProps {
   closeToggle: () => void;

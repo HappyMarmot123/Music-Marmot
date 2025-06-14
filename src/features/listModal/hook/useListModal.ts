@@ -113,8 +113,6 @@ export const useListModal = () => {
         newDisplayedList = allTracks;
         break;
     }
-
-    console.log("🚀 ~ useEffect ~ newDisplayedList:", newDisplayedList);
     setDisplayedTrackList(newDisplayedList);
   }, [activeButton, allTracks, favoriteAssetIds, cloudinaryData]);
 
@@ -130,7 +128,6 @@ export const useListModal = () => {
         return titleMatch || producerMatch;
       }
     );
-    console.log("🚀 ~ trackList ~ filteredEntries:", filteredEntries);
     return new Map(filteredEntries);
   }, [displayedTrackList, searchTerm]);
 

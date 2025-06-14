@@ -7,8 +7,8 @@ import clsx from "clsx";
 import React, { useCallback } from "react";
 import useTrackStore from "@/app/store/trackStore";
 import { useAuth } from "@/app/providers/authProvider";
-import LoadingView from "../../../features/listModal/components/loadingView";
-import EmptyView from "../../../features/listModal/components/emptyView";
+import LoadingView from "../components/loadingView";
+import EmptyView from "../components/emptyView";
 import { LikeButton } from "@/shared/components/likeButton";
 
 interface ModalMusicListProps {
@@ -52,8 +52,6 @@ const ModalMusicList = ({
   if (trackList.size === 0) {
     return <EmptyView />;
   }
-
-  console.log("🚀 ~ ModalMusicList ~ trackList:", trackList);
   return (
     <>
       {Array.from(trackList.values()).map((track) => (

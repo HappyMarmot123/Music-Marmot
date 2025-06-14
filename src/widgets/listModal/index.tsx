@@ -1,6 +1,6 @@
 import { motion, Variants } from "framer-motion";
-import ModalPlayer from "./components/modalPlayer";
-import ModalTrackList from "./components/modalTrackList";
+import ModalPlayer from "@/features/listModal/ui/modalPlayer";
+import ModalTrackList from "@/features/listModal/ui/modalTrackList";
 import clsx from "clsx";
 import { CSSProperties } from "react";
 import { listModalVariants } from "@/shared/lib/util";

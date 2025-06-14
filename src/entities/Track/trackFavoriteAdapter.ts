@@ -1,4 +1,8 @@
-import { TrackInfo, CloudinaryResource, UnifiedTrack } from "../types/dataType";
+import {
+  TrackInfo,
+  CloudinaryResource,
+  UnifiedTrack,
+} from "../../shared/types/dataType";
 
 /* TODO: 
     어댑터 패턴 추가

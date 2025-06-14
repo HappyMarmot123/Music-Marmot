@@ -1,15 +1,18 @@
 import { useQuery } from "@tanstack/react-query";
 import { favorites } from "@/entities/ToggleFavorite/favoriteSchema";
 import { useAuth } from "@/app/providers/authProvider";
-import axios, { AxiosResponse } from "axios";
+import { httpClient } from "@/shared/api/httpClient";
 
 export type Favorite = typeof favorites.$inferSelect;
 
 const fetchFavorites = async (): Promise<Set<string>> => {
-  const response: AxiosResponse<Favorite[]> = await axios.get("/api/supabase");
+  const response = await httpClient.request<Favorite[]>({
+    url: "/api/supabase",
+    method: "GET",
+  });
 
-  if (response.status !== 200) {
-    throw new Error("Network response was not ok fetching favorites");
+  if (!response.data) {
+    throw new Error("No data received from favorites API");
   }
 
   const newSetResponse = new Set(

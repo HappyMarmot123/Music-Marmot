@@ -2,7 +2,6 @@ import {
   CloudinaryResource,
   CloudinaryResourceMap,
 } from "@/shared/types/dataType";
-import axios from "axios";
 import cloudinaryClient from "./cloudinary/cloudinaryClient";
 
 export async function DataLoader(): Promise<CloudinaryResourceMap> {

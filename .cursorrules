@@ -16,7 +16,6 @@ const techStack = [
   "Tailwind CSS",
   "Framer Motion (for animations)",
   "Zustand (for state management)",
-  "Tanstack Query (React Query) (for data fetching and caching)",
   "Docker (for containerization)",
   "Cloudinary (for media management, e.g., album art)",
 ];

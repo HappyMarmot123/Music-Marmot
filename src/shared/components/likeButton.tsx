@@ -1,7 +1,7 @@
 import React, { useCallback } from "react";
 import { Heart } from "lucide-react";
 import { LikeButtonProps } from "../types/dataType";
-import { TrackFavoriteAdapter } from "../lib/trackFavoriteAdapter";
+import { TrackFavoriteAdapter } from "../../entities/Track/trackFavoriteAdapter";
 import ProtectTooltip from "../../features/auth/components/protectTooltip";
 
 // TODO: 빌더패턴 적용

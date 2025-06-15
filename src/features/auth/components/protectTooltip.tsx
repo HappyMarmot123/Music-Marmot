@@ -1,6 +1,6 @@
 "use client";
 
-import MyTooltip from "../../../shared/components/myTooltip";
+import MyTooltip from "@/shared/components/myTooltip";
 import { useAuth } from "@/app/providers/authProvider";
 
 export default function ProtectTooltip({
@@ -14,7 +14,7 @@ export default function ProtectTooltip({
 
   return (
     <MyTooltip
-      tooltipText={showTooltip ? "로그인이 필요합니다!" : ""}
+      tooltipText={showTooltip ? "You need to login!" : ""}
       showTooltip={showTooltip}
     >
       {children}

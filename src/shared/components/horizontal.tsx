@@ -2,7 +2,7 @@
 
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, A11y } from "swiper/modules";
-import Card from "./card";
+import Card from "../../features/landing/components/card";
 import {
   CloudinaryResource,
   CloudinaryResourceMap,

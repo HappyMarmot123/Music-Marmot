@@ -3,11 +3,8 @@
 import { X } from "lucide-react";
 import Image from "next/image";
 import { useAuth } from "@/app/providers/authProvider";
-import {
-  GoogleAuthStrategy,
-  KakaoAuthStrategy,
-} from "@/features/auth/hooks/useAuthActions";
-//
+import { GoogleAuthStrategy } from "@/features/auth/hooks/useAuthActions";
+
 interface LoginModalProps {
   setShowLoginModal: (show: boolean) => void;
 }
@@ -20,9 +17,9 @@ export default function LoginModal({ setShowLoginModal }: LoginModalProps) {
     await signIn(GoogleAuthStrategy);
   };
 
-  const handleKakaoLogin = async () => {
-    await signIn(KakaoAuthStrategy);
-  };
+  // const handleKakaoLogin = async () => {
+  //   await signIn(KakaoAuthStrategy);
+  // };
 
   return (
     <div
@@ -64,7 +61,7 @@ export default function LoginModal({ setShowLoginModal }: LoginModalProps) {
               />
               Google 계정으로 로그인
             </button>
-            <button
+            {/* <button
               onClick={handleKakaoLogin}
               disabled={isLoading}
               className="flex items-center justify-center w-full px-4 py-3 font-semibold text-black bg-[#FEE500] rounded-lg hover:bg-[#F0D900] transition-colors disabled:opacity-50"
@@ -77,12 +74,6 @@ export default function LoginModal({ setShowLoginModal }: LoginModalProps) {
                 className="mr-3"
               />
               카카오 계정으로 로그인
-            </button>
-            {/* 다른 로그인 옵션 추가 예정 */}
-            {/* <button
-              className="flex items-center justify-center w-full px-4 py-3 font-semibold text-white bg-gray-700 rounded-lg hover:bg-gray-800 transition-colors"
-            >
-              다른 로그인 옵션 (예: Kakao)
             </button> */}
           </div>
           {isLoading && (

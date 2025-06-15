@@ -16,7 +16,6 @@ import TrackSeekBar from "@/shared/components/trackSeekBar";
 import { LikeButton } from "@/shared/components/likeButton";
 import { TrackInfo } from "@/shared/types/dataType";
 import { useAuth } from "@/app/providers/authProvider";
-import ProtectTooltip from "@/features/auth/components/protectTooltip";
 
 export default function ModalPlayer() {
   const {
@@ -147,20 +146,18 @@ export default function ModalPlayer() {
 
           <section aria-label="재생 컨트롤" className="mt-6">
             <div className="flex items-center justify-between w-full">
-              <ProtectTooltip>
-                <motion.div
-                  whileTap={{ scale: 0.95 }}
-                  transition={{ duration: 0.1 }}
-                  className="p-2 rounded-full transition bg-white/10"
-                >
-                  <LikeButton
-                    track={currentTrack}
-                    role={role}
-                    isFavorite={initFavorite(currentTrack)}
-                    toggleFavorite={toggleFavorite}
-                  />
-                </motion.div>
-              </ProtectTooltip>
+              <motion.div
+                whileTap={{ scale: 0.95 }}
+                transition={{ duration: 0.1 }}
+                className="p-2 rounded-full transition bg-white/10"
+              >
+                <LikeButton
+                  track={currentTrack}
+                  role={role}
+                  isFavorite={initFavorite(currentTrack)}
+                  toggleFavorite={toggleFavorite}
+                />
+              </motion.div>
 
               <div className="flex items-center justify-center space-x-4">
                 <motion.button
@@ -217,7 +214,7 @@ export default function ModalPlayer() {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: 10 }}
                     transition={{ duration: 0.2 }}
-                    className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 bg-gray-800/80 backdrop-blur-sm rounded-lg shadow-lg flex items-center justify-center"
+                    className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 bg-gray-800/80 backdrop-blur-sm rounded-lg shadow-lg flex flex-col items-center justify-center"
                     style={{
                       height: "120px",
                       width: "-webkit-fill-available",

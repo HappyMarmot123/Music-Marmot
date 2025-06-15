@@ -1,12 +1,12 @@
 "use client";
 
 import React, { useEffect } from "react";
-import Horizontal from "@/features/landing/components/horizontal";
+import Horizontal from "@/shared/components/horizontal";
 import useCloudinaryStore from "@/app/store/cloudinaryStore";
 import useRecentPlayStore from "@/app/store/recentPlayStore";
 import { CloudinaryResource } from "@/shared/types/dataType";
 
-export default function MusicList() {
+export default function RecentList() {
   const cloudinaryData = useCloudinaryStore((state) => state.cloudinaryData);
   const error = useCloudinaryStore((state) => state.cloudinaryError);
   const loading = useCloudinaryStore((state) => state.isLoadingCloudinary);

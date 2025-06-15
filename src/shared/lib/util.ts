@@ -51,19 +51,20 @@ export const handleOnLike = async (
   set({ favoriteAssetIds: newFavorites });
 
   try {
-    const response = await httpClient.request({
-      url: "/api/supabase",
-      method: "POST",
-      payload: {
-        assetId,
-        userId,
-        isFavorite: newIsFavorite,
-      },
-    });
+    const debouncedRequest = debounce(async () => {
+      const response = await httpClient.request({
+        url: "/api/supabase",
+        method: "POST",
+        payload: {
+          assetId,
+          userId,
+          isFavorite: newIsFavorite,
+        },
+      });
+      return response;
+    }, 1000);
 
-    if (response.error) {
-      throw response.error;
-    }
+    await debouncedRequest();
   } catch (error) {
     set({ favoriteAssetIds: originalFavorites });
     toast.error("Something went wrong. Could you try again?");

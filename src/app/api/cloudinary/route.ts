@@ -22,7 +22,7 @@ export async function GET() {
   try {
     const musicList = await cloudinary.search
       .expression("resource_type:video AND tags:EDM")
-      .max_results(20)
+      .max_results(50)
       .fields("asset_id")
       .fields("secure_url")
       .fields("context")
@@ -34,7 +34,7 @@ export async function GET() {
 
     const albumList = await cloudinary.search
       .expression("resource_type:image AND tags:EDM Cover")
-      .max_results(20)
+      .max_results(50)
       .fields("asset_id")
       .fields("secure_url")
       .fields("context")

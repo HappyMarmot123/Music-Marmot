@@ -3,12 +3,9 @@ import { motion } from "framer-motion";
 import { useListModal } from "@/features/listModal/hook/useListModal";
 import TabButtonFactory from "@/features/listModal/components/tabButtonFactory";
 import ModalMusicList from "@/features/listModal/components/modalMusicList";
+import { useToggle } from "@/app/providers/toggleProvider";
 
-interface ModalTrackListProps {
-  closeToggle: () => void;
-}
-
-export default function ModalTrackList({ closeToggle }: ModalTrackListProps) {
+export default function ModalTrackList() {
   const {
     user,
     searchTerm,
@@ -23,8 +20,10 @@ export default function ModalTrackList({ closeToggle }: ModalTrackListProps) {
     handleSelectTrack,
   } = useListModal();
 
+  const { closeToggle } = useToggle();
+
   return (
-    <div className="p-4 sm:p-8 md:h-full md:overflow-auto md:custom-scrollbar md:col-span-3">
+    <div className="p-4 sm:p-8 md:h-full md:overflow-auto md:custom-scrollbar md:col-span-2">
       <section
         aria-label="재생 목록 컨트롤"
         className="mb-6 border-b border-white/10"

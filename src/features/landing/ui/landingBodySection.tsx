@@ -1,5 +1,5 @@
-import MusicList from "@/widgets/musicList";
-import RecentList from "@/widgets/recentList";
+import MusicList from "@/features/landing/components/musicList";
+import RecentList from "@/features/landing/components/recentList";
 import Parallax from "@/features/landing/components/parallax";
 
 export default function BodySection() {

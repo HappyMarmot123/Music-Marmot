@@ -5,11 +5,11 @@ import DustySnow from "@/features/landing/components/dustySnow";
 import { motion, useScroll, useSpring, useTransform } from "framer-motion";
 import { useRef } from "react";
 
-interface MyArticleProps {
+interface LandingWrapperProps {
   children: React.ReactNode;
 }
 
-export default function MyArticle({ children }: MyArticleProps) {
+export default function LandingWrapper({ children }: LandingWrapperProps) {
   const ref = useRef(null);
   const { scrollYProgress } = useScroll();
   const { scrollYProgress: scrollYProgress2 } = useScroll({
